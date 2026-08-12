@@ -1,0 +1,27 @@
+@import 'tailwindcss';
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #0d1117;
+  color: #e6edf3;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* Barre de defilement discrete pour les panneaux lateraux. */
+.defilement-fin::-webkit-scrollbar {
+  width: 8px;
+}
+.defilement-fin::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 4px;
+}
