@@ -76,6 +76,37 @@ export function StartScreen() {
           Commencer le bilan
         </Bouton>
       </div>
+
+      <p className="text-[11px] leading-relaxed text-slate-600">
+        Modele 3D base sur{' '}
+        <a
+          className="text-slate-500 underline decoration-slate-700 hover:text-slate-400"
+          href="https://sketchfab.com/3d-models/angelica-27f75fa94c384000bb6a79a3000f8e80"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Angelica
+        </a>{' '}
+        par{' '}
+        <a
+          className="text-slate-500 underline decoration-slate-700 hover:text-slate-400"
+          href="https://sketchfab.com/NikZava284"
+          target="_blank"
+          rel="noreferrer"
+        >
+          NikZava284
+        </a>
+        , sous licence{' '}
+        <a
+          className="text-slate-500 underline decoration-slate-700 hover:text-slate-400"
+          href="https://creativecommons.org/licenses/by/4.0/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          CC-BY-4.0
+        </a>
+        .
+      </p>
     </div>
   );
 }

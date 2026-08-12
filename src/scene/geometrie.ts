@@ -27,8 +27,9 @@ export const DISTANCE_OBSERVATEUR = 50;
  * Champ vertical de la camera, en degres. La vue d'ensemble cadre le visage entier,
  * ou se lisent le modele et la position de la tete ; le gros plan sert aux reflets.
  */
-export const CHAMP_ENSEMBLE_DEG = 20;
-export const CHAMP_RAPPROCHE_DEG = 8;
+/** Vue d'ensemble un peu plus large pour cadrer la tete glTF (cheveux compris). */
+export const CHAMP_ENSEMBLE_DEG = 24;
+export const CHAMP_RAPPROCHE_DEG = 9;
 
 /**
  * Le patient regarde vers +Z, donc vers l'observateur. Sa droite pointe vers -X :
@@ -120,7 +121,7 @@ export function bordPalpebral(centreX: number): THREE.Shape {
  *
  * Ce n'est plus un rectangle arrondi mais un ovale facial : front, tempes, pommettes,
  * puis machoire qui se resserre vers un menton arrondi. Les dimensions sont celles d'un
- * visage de huit ans, soit environ 13 cm de large pour 18 cm du menton a la lisiere du
+ * visage d adolescente, soit environ 13 cm de large pour 18 cm du menton a la lisiere du
  * cuir chevelu, l'origine etant sur la ligne pupillaire.
  */
 export function masqueVisage(): THREE.Shape {

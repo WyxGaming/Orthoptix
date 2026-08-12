@@ -12,12 +12,12 @@ import type { CasClinique } from '../engine/types';
  */
 export const esotropiePrecoce: CasClinique = {
   id: 'esotropie-precoce',
-  titre: 'Strabisme convergent chez une enfant de 8 ans',
+  titre: 'Strabisme convergent chez une adolescente de 16 ans',
   resume:
     'Lea, adressee par son ophtalmologiste pour bilan orthoptique. La deviation convergente est connue, son type reste a etablir.',
   patient: {
     prenom: 'Lea',
-    age: 8,
+    age: 16,
     sexe: 'F',
     motif:
       'Bilan orthoptique de controle d un strabisme convergent, en vue d une eventuelle prise en charge chirurgicale.',
@@ -263,7 +263,7 @@ export const esotropiePrecoce: CasClinique = {
           { id: 'defaut-comprehension', libelle: 'Un simple defaut de comprehension de la consigne', correct: false },
         ],
         explication:
-          'A 8 ans la consigne est comprise. Un Lang negatif dans un strabisme apparu a 3 mois signe l absence de vision binoculaire, ce qui est la regle dans le strabisme precoce.',
+          'A 16 ans la consigne est comprise. Un Lang negatif dans un strabisme apparu a 3 mois signe l absence de vision binoculaire, ce qui est la regle dans le strabisme precoce.',
       },
     },
     motilite: {
@@ -548,7 +548,7 @@ export const esotropiePrecoce: CasClinique = {
   },
 
   compteRenduExpert: [
-    'Lea, 8 ans. Strabisme convergent apparu vers 3 mois, correction optique portee depuis, amblyotherapie par occlusion bien suivie dans la petite enfance. Mere porteuse d un strabisme convergent de naissance.',
+    'Lea, 16 ans. Strabisme convergent apparu vers 3 mois, correction optique portee depuis, amblyotherapie par occlusion bien suivie dans la petite enfance. Mere porteuse d un strabisme convergent de naissance.',
     'Correction portee : +4.00 spherique aux deux yeux. Acuite avec correction OD 10/10 P2, OG 9/10 P2 : pas d amblyopie residuelle significative.',
     'Examen sensoriel : test de Lang negatif, absence de vision stereoscopique.',
     'Motilite : poursuite complete, elevation en adduction bilaterale et marquee par hyperaction des obliques inferieurs, nystagmus manifeste latent leger majore a l occlusion.',

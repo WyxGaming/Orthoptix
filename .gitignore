@@ -7,3 +7,8 @@ dist/
 .env
 .env.*
 !.env.example
+
+# Sources Sketchfab brutes : seule la GLB convertie (lea.glb) est versionnee.
+public/models/angelica/scene.gltf
+public/models/angelica/scene.bin
+public/models/angelica/textures/

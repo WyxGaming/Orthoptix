@@ -14,8 +14,11 @@ npm test         # tests du modèle oculomoteur et du moteur de session
 npm run build    # vérification des types puis build de production
 ```
 
-Prérequis : Node.js 20 ou plus. Aucune autre installation n'est nécessaire, la géométrie 3D
-étant générée par le code.
+Prérequis : Node.js 20 ou plus.
+
+Le visage 3D utilise le modèle [Angelica](https://sketchfab.com/3d-models/angelica-27f75fa94c384000bb6a79a3000f8e80)
+par [NikZava284](https://sketchfab.com/NikZava284) (CC-BY-4.0), placé dans `public/models/angelica/`.
+Les globes oculaires cliniques (reflets, cover, prismes) restent générés par le moteur Orthoptix.
 
 ## Déployer sur Vercel
 
@@ -134,7 +137,7 @@ couloir, il évalue ses choix.
 
 ## Cas disponibles
 
-- **Strabisme convergent chez une enfant de 8 ans** *(diagnostic attendu : ésotropie précoce)* —
-  Léa, 8 ans. Ésotropie alternante de 40 DP, stable de près comme de loin,
+- **Strabisme convergent chez une adolescente de 16 ans** *(diagnostic attendu : ésotropie précoce)* —
+  Léa, 16 ans. Ésotropie alternante de 40 DP, stable de près comme de loin,
   hypermétropie de +4.00, hyperaction bilatérale des obliques inférieurs, nystagmus manifeste
   latent, Lang négatif, sans amblyopie résiduelle.

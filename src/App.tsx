@@ -42,11 +42,14 @@ function Bilan() {
         <div className="flex min-h-0 flex-col gap-4">
           {/* Le canevas et le panneau d examen se partagent la hauteur : sans cela, un
               cover test (prismes + interpretation) pousse « Consigner » hors ecran. */}
-          <div className="min-h-[12rem] flex-[3] overflow-hidden rounded-lg border border-slate-800 bg-slate-950">
+          <div className="relative min-h-[16rem] flex-[3] overflow-hidden rounded-lg border border-slate-800 bg-slate-950">
             <Canvas
+              className="!h-full !w-full"
               camera={{ position: [0, 0, DISTANCE_OBSERVATEUR], fov: CHAMP_ENSEMBLE_DEG }}
               shadows={false}
+              gl={{ antialias: true, alpha: false }}
             >
+              <color attach="background" args={['#070b12']} />
               <PatientScene zoomReflets={zoom} />
             </Canvas>
           </div>
