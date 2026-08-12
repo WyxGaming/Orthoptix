@@ -89,7 +89,16 @@ function Paupieres() {
   );
 }
 
-export function Eye({ oeil, position }: { oeil: OeilId; position: [number, number, number] }) {
+export function Eye({
+  oeil,
+  position,
+  /** Sur une tete glTF, les paupieres du mesh suffisent : on n'ajoute pas les calottes. */
+  paupieres = true,
+}: {
+  oeil: OeilId;
+  position: [number, number, number];
+  paupieres?: boolean;
+}) {
   const globe = useRef<THREE.Group>(null);
   const reflet = useRef<THREE.Mesh>(null);
   const amorti = useRef({ azimuth: 0, elevation: 0, refletX: 0, refletY: 0 });
@@ -169,7 +178,7 @@ export function Eye({ oeil, position }: { oeil: OeilId; position: [number, numbe
         <meshBasicMaterial color="#ffffff" />
       </mesh>
 
-      <Paupieres />
+      {paupieres && <Paupieres />}
     </group>
   );
 }

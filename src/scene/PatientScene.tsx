@@ -1,5 +1,5 @@
 import { useFrame, useThree } from '@react-three/fiber';
-import { Suspense, useRef } from 'react';
+import { Suspense, useCallback, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { enVisionDeLoin, EYES, type Eye as OeilId } from '../domain/ocular-model';
 import { useSession } from '../engine/session';
@@ -10,25 +10,25 @@ import {
   DISTANCE_CIBLE,
   DISTANCE_OBSERVATEUR,
   directionRegard,
-  positionOeil,
+  RAYON_GLOBE,
 } from './geometrie';
+import { ORBITES_DEFAUT, type PositionsOrbites } from './orbites';
 import { TetePatient } from './TetePatient';
 
 /** Cote temporal de l'oeil, exprime en X : la droite du patient est en -X. */
 const signeTemporal = (oeil: OeilId) => (oeil === 'OD' ? -1 : 1);
 
 /** Cache d'occlusion : glisse devant l'oeil vise et se retire hors champ. */
-function Cache() {
+function Cache({ orbites }: { orbites: PositionsOrbites }) {
   const cache = useRef<THREE.Group>(null);
   useFrame((_, dt) => {
     const { etat } = useSession.getState();
     if (!cache.current) return;
     const occlusion = etat.occlusion;
-    const cible = new THREE.Vector3(
-      occlusion === 'aucune' ? 0 : positionOeil(occlusion)[0],
-      occlusion === 'aucune' ? 16 : 0,
-      3.6,
-    );
+    const cible =
+      occlusion === 'aucune'
+        ? new THREE.Vector3(0, 16, 3.6)
+        : new THREE.Vector3(orbites[occlusion][0], orbites[occlusion][1], orbites[occlusion][2] + 2.2);
     cache.current.position.lerp(cible, 1 - Math.exp(-dt / 0.07));
   });
 
@@ -46,14 +46,14 @@ function Cache() {
   );
 }
 
-function Prismes() {
+function Prismes({ orbites }: { orbites: PositionsOrbites }) {
   const prismes = useSession((s) => s.etat.prismes);
   return (
     <>
       {EYES.map((oeil) => {
         const prisme = prismes[oeil];
         if (!prisme) return null;
-        const x = positionOeil(oeil)[0];
+        const [x, y, z] = orbites[oeil];
         const versLaBase =
           prisme.base === 'temporale'
             ? signeTemporal(oeil)
@@ -62,7 +62,7 @@ function Prismes() {
               : 0;
         const versLeHaut = prisme.base === 'superieure' ? 1 : prisme.base === 'inferieure' ? -1 : 0;
         return (
-          <group key={oeil} position={[x, 0, 2.6]}>
+          <group key={oeil} position={[x, y, z + 1.4]}>
             <mesh>
               <boxGeometry args={[2.6, 2.6, 0.3]} />
               <meshPhysicalMaterial
@@ -129,6 +129,11 @@ function Camera({ rapprochee }: { rapprochee: boolean }) {
 }
 
 export function PatientScene({ zoomReflets }: { zoomReflets: boolean }) {
+  const [orbites, setOrbites] = useState<PositionsOrbites>(ORBITES_DEFAUT);
+  const retenirOrbites = useCallback((positions: PositionsOrbites) => {
+    setOrbites(positions);
+  }, []);
+
   return (
     <>
       <Camera rapprochee={zoomReflets} />
@@ -136,15 +141,15 @@ export function PatientScene({ zoomReflets }: { zoomReflets: boolean }) {
       <directionalLight position={[-6, 8, 12]} intensity={1.15} />
       <directionalLight position={[8, -4, 10]} intensity={0.4} />
       <Suspense fallback={null}>
-        <TetePatient />
+        <TetePatient onOrbites={retenirOrbites} />
       </Suspense>
-      {EYES.map((oeil) => {
-        const [x, y] = positionOeil(oeil);
-        // Legerement en avant du mesh pour emerger des orbites du modele Sketchfab.
-        return <Eye key={oeil} oeil={oeil} position={[x, y, 0.45]} />;
-      })}
-      <Prismes />
-      <Cache />
+      {EYES.map((oeil) => (
+        <group key={oeil} position={orbites[oeil]} scale={orbites.rayon / RAYON_GLOBE}>
+          <Eye oeil={oeil} position={[0, 0, 0]} paupieres={false} />
+        </group>
+      ))}
+      <Prismes orbites={orbites} />
+      <Cache orbites={orbites} />
       <Cible />
     </>
   );
