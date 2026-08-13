@@ -100,14 +100,14 @@ function Cible() {
   useFrame((_, dt) => {
     const { etat } = useSession.getState();
     if (!groupe.current) return;
-    const cible = directionRegard(etat.gaze.azimuthDeg, etat.gaze.elevationDeg).multiplyScalar(
-      DISTANCE_CIBLE,
-    );
+    const cible = directionRegard(etat.gaze.azimuthDeg, etat.gaze.elevationDeg)
+      .multiplyScalar(DISTANCE_CIBLE)
+      .add(new THREE.Vector3(0, DECALAGE_CIBLE_Y, 0));
     groupe.current.position.lerp(cible, 1 - Math.exp(-dt / 0.09));
   });
 
   return (
-    <group ref={groupe} position={[0, 0, DISTANCE_CIBLE]}>
+    <group ref={groupe} position={[0, DECALAGE_CIBLE_Y, DISTANCE_CIBLE]}>
       <mesh visible={!deLoin}>
         <sphereGeometry args={[0.13, 16, 16]} />
         <meshBasicMaterial color="#fff8e1" />

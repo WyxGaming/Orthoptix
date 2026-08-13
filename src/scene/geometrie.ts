@@ -15,6 +15,9 @@ export const RAYON_GLOBE = 1.2;
 export const DEMI_ECART_PUPILLAIRE = DEMI_ECART_PUPILLAIRE_CM;
 export const DISTANCE_CIBLE = DISTANCE_PRES_CM;
 
+/** Decalage vertical de la mire de fixation, en centimetres. */
+export const DECALAGE_CIBLE_Y = 4;
+
 /**
  * Distance de l'oeil du praticien, donc de la camera. Elle doit rester superieure a
  * celle de la mire : le praticien tient sa lumiere devant lui, entre lui et l'enfant.
