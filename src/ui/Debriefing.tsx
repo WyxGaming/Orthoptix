@@ -37,7 +37,7 @@ export function Debriefing() {
       </header>
 
       <div className="grid gap-5 lg:grid-cols-2">
-        <Carte titre="Detail du bareme">
+        <Carte titre="Détail du barème">
           <div className="space-y-4">
             {(['malus', 'manque', 'acquis', 'bonus'] as const).map((nature) => {
               const lignes = parNature(nature);
@@ -46,7 +46,7 @@ export function Debriefing() {
                 <div key={nature}>
                   <h3 className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                     {nature === 'malus'
-                      ? 'Gestes penalises'
+                      ? 'Gestes pénalisés'
                       : nature === 'manque'
                         ? 'Ce qui manque au bilan'
                         : nature === 'bonus'
@@ -80,7 +80,7 @@ export function Debriefing() {
         </Carte>
 
         <div className="space-y-5">
-          <Carte titre="Compte rendu de l expert">
+          <Carte titre="Compte rendu de l'expert">
             <ul className="space-y-2 text-sm text-slate-300">
               {cas.compteRenduExpert.map((ligne, i) => (
                 <li key={i} className="border-l-2 border-sky-800 pl-2.5">
@@ -92,10 +92,10 @@ export function Debriefing() {
 
           <Carte
             titre="Votre bilan"
-            actions={<Etiquette>{bilan.length} elements consignes</Etiquette>}
+            actions={<Etiquette>{bilan.length} éléments consignés</Etiquette>}
           >
             {bilan.length === 0 ? (
-              <p className="text-sm text-slate-500">Aucun element consigne.</p>
+              <p className="text-sm text-slate-500">Aucun élément consigné.</p>
             ) : (
               <ul className="space-y-2 text-sm">
                 {bilan.map((ligne) => (

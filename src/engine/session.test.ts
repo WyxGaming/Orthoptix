@@ -55,7 +55,7 @@ describe('conduite de la session', () => {
   it('consigne la reponse du patient dans le cahier de bilan', () => {
     session().poserQuestion('age-apparition');
     const ligne = session().bilan.at(-1)!;
-    expect(ligne.titre).toContain('age le strabisme');
+    expect(ligne.titre).toContain('âge le strabisme');
     expect(ligne.contenu).toContain('3 mois');
   });
 
@@ -121,7 +121,7 @@ describe('conclusion du bilan', () => {
     bilanParfait();
     const lignes = session().bilan.filter((l) => l.id.startsWith('synthese-'));
     expect(lignes).toHaveLength(4);
-    expect(lignes[0]!.contenu).toContain('Esotropie precoce');
+    expect(lignes[0]!.contenu).toContain('Esotropie précoce');
     expect(lignes[2]!.contenu).toBe('Oui');
     expect(lignes.at(-1)!.contenu).toMatch(/droits mediaux/i);
   });
@@ -171,7 +171,7 @@ describe('bareme', () => {
       .resultat()
       .lignes.find((l) => l.libelle.startsWith('Conduite'))!;
     expect(ligne.points).toBe(0);
-    expect(ligne.commentaire).toContain('binocularite');
+    expect(ligne.commentaire).toMatch(/binocularit/i);
   });
 
   it('refuse une mesure hors de la fourchette attendue', () => {
@@ -211,7 +211,7 @@ describe('bareme', () => {
     });
     const mauvaiseReponse = session()
       .resultat()
-      .lignes.find((l) => l.libelle.includes('correspondance retinienne de la patiente'))!;
+      .lignes.find((l) => l.libelle.includes('correspondance rétinienne de la patiente'))!;
     expect(mauvaiseReponse.points).toBe(0);
     expect(mauvaiseReponse.commentaire).toMatch(/anormale/i);
   });

@@ -28,8 +28,8 @@ const POSITIONS_REGARD = [
 /** Ce que l'on cherche a neutraliser avec les prismes depend de l'epreuve en cours. */
 const AIDE_PRISMES: Record<ModeInteraction, string> = {
   occlusion:
-    'Montez la puissance jusqu a ce que le cache ne declenche plus aucun mouvement : le prisme neutralisant donne l angle. Un mouvement qui change de sens signe une sur-correction.',
-  reflets: 'Montez la puissance jusqu a recentrer le reflet corneen de l oeil devie.',
+    "Montez la puissance jusqu'à ce que le cache ne déclenche plus aucun mouvement : le prisme neutralisant donne l'angle. Un mouvement qui change de sens signe une sur-correction.",
+  reflets: "Montez la puissance jusqu'à recentrer le reflet cornéen de l'œil dévié.",
   motilite: '',
   presentation: '',
 };
@@ -37,8 +37,8 @@ const AIDE_PRISMES: Record<ModeInteraction, string> = {
 const BASES: { valeur: BasePrisme; libelle: string }[] = [
   { valeur: 'temporale', libelle: 'Base temporale' },
   { valeur: 'nasale', libelle: 'Base nasale' },
-  { valeur: 'superieure', libelle: 'Base superieure' },
-  { valeur: 'inferieure', libelle: 'Base inferieure' },
+  { valeur: 'superieure', libelle: 'Base supérieure' },
+  { valeur: 'inferieure', libelle: 'Base inférieure' },
 ];
 
 function CommandesMotilite() {
@@ -60,8 +60,8 @@ function CommandesMotilite() {
         ))}
       </div>
       <p className="mt-2 text-xs text-slate-500">
-        Mire tenue a 33 cm. Les positions sont nommees du cote du patient : le regard a droite se
-        lit a gauche de l ecran, comme en consultation.
+        Mire tenue à 33 cm. Les positions sont nommées du côté du patient : le regard à droite se
+        lit à gauche de l'écran, comme en consultation.
       </p>
     </div>
   );
@@ -81,12 +81,12 @@ function CommandesOcclusion() {
           </Bouton>
         ))}
         <Bouton actif={occlusion === 'aucune'} onClick={() => occlure('aucune')}>
-          Decouvrir
+          Découvrir
         </Bouton>
       </div>
       <p className="text-xs text-slate-500">
-        Commencez par un cache unilateral (restitution, preference de fixation), puis alternez
-        sans temps binoculaire pour liberer l angle total. Oeil fixateur actuel :{' '}
+        Commencez par un cache unilatéral (restitution, préférence de fixation), puis alternez
+        sans temps binoculaire pour libérer l'angle total. Œil fixateur actuel :{' '}
         <span className="text-slate-300">{oeilFixateur}</span>.
       </p>
     </div>
@@ -162,8 +162,8 @@ export function PanneauExamen({
     return (
       <Carte titre="Examen en cours" className="h-full">
         <p className="text-sm text-slate-500">
-          Aucun examen en cours. Choisissez un examen dans l onglet Examens, ou passez a la
-          synthese quand votre bilan vous parait complet.
+          Aucun examen en cours. Choisissez un examen dans l'onglet Examens, ou passez à la
+          synthèse quand votre bilan vous paraît complet.
         </p>
       </Carte>
     );
@@ -201,7 +201,7 @@ export function PanneauExamen({
       actions={
         definition.interaction === 'reflets' || definition.interaction === 'occlusion' ? (
           <Bouton ton="discret" onClick={() => setZoom(!zoom)}>
-            {zoom ? 'Vue d ensemble' : 'Zoom sur les yeux'}
+            {zoom ? "Vue d'ensemble" : 'Zoom sur les yeux'}
           </Bouton>
         ) : undefined
       }
@@ -211,10 +211,10 @@ export function PanneauExamen({
 
         {definition.distance === 'loin' && (
           <p className="rounded-md border border-amber-900/60 bg-amber-950/30 px-3 py-2 text-xs text-amber-200/90">
-            Mire placee a 5 metres, hors du champ : l enfant fixe au-dessus de votre epaule et
+            Mire placée à 5 mètres, hors du champ : l'enfant fixe au-dessus de votre épaule et
             vous ne voyez plus le point lumineux.{' '}
             {definition.interaction === 'reflets'
-              ? 'Les reflets que vous lisez sur les cornees sont ceux de cette lumiere lointaine.'
+              ? 'Les reflets que vous lisez sur les cornées sont ceux de cette lumière lointaine.'
               : 'Seuls les mouvements des yeux sont lisibles.'}
           </p>
         )}
@@ -224,8 +224,8 @@ export function PanneauExamen({
         {definition.prismes && <CommandesPrismes aide={AIDE_PRISMES[definition.interaction]} />}
         {definition.interaction === 'reflets' && !definition.prismes && (
           <p className="text-xs text-slate-500">
-            Comparez la position du reflet a celle du centre pupillaire. Un millimetre de
-            decentrement correspond a environ 15 dioptries prismatiques.
+            Comparez la position du reflet à celle du centre pupillaire. Un millimètre de
+            décentrement correspond à environ 15 dioptries prismatiques.
           </p>
         )}
 
@@ -291,7 +291,7 @@ export function PanneauExamen({
             !interpretationsCompletes
           }
         >
-          Consigner l examen
+          Consigner l'examen
         </Bouton>
         <Bouton ton="discret" onClick={abandonnerExamen}>
           Renoncer

@@ -131,8 +131,8 @@ export const useSession = create<SessionState>((set, get) => ({
                 question.poids > 0
                   ? `Question pertinente. ${question.commentaire ?? ''}`.trim()
                   : question.poids < 0
-                    ? `Cette question n apporte rien ici. ${question.commentaire ?? ''}`.trim()
-                    : 'Question neutre : ni utile ni penalisante.',
+                    ? `Cette question n'apporte rien ici. ${question.commentaire ?? ''}`.trim()
+                    : 'Question neutre : ni utile ni pénalisante.',
               ton: question.poids > 0 ? 'positif' : question.poids < 0 ? 'negatif' : 'neutre',
             },
           ]
@@ -163,7 +163,7 @@ export const useSession = create<SessionState>((set, get) => ({
           ...get().messages,
           {
             id: ++compteurMessages,
-            texte: 'Cet examen n est pas renseigne pour ce cas : il ne rapportera aucun point.',
+            texte: "Cet examen n'est pas renseigné pour ce cas : il ne rapportera aucun point.",
             ton: 'neutre',
           },
         ],
@@ -199,7 +199,7 @@ export const useSession = create<SessionState>((set, get) => ({
           id: ++compteurMessages,
           texte: juste
             ? 'Mesure coherente avec ce que montre le patient.'
-            : `Mesure eloignee : on attend entre ${examen.attendu.min} et ${examen.attendu.max} ${examen.attendu.unite}.`,
+            : `Mesure éloignée : on attend entre ${examen.attendu.min} et ${examen.attendu.max} ${examen.attendu.unite}.`,
           ton: juste ? 'positif' : 'negatif',
         });
       }
@@ -211,14 +211,14 @@ export const useSession = create<SessionState>((set, get) => ({
         const juste = interp.options.find((o) => o.correct)?.id === choix;
         messages.push({
           id: ++compteurMessages,
-          texte: juste ? 'Interpretation correcte.' : interp.explication,
+          texte: juste ? 'Interprétation correcte.' : interp.explication,
           ton: juste ? 'positif' : 'negatif',
         });
       }
     }
 
     const contenu = [
-      examen?.resultat ?? 'Examen realise, sans element notable pour ce cas.',
+      examen?.resultat ?? 'Examen réalisé, sans élément notable pour ce cas.',
       saisie?.mesure !== undefined ? `Mesure notee : ${saisie.mesure} DP.` : null,
     ]
       .filter(Boolean)
@@ -241,7 +241,7 @@ export const useSession = create<SessionState>((set, get) => ({
     // du jeu ou le diagnostic et la conduite chirurgicale sont nommes.
     const lignesSynthese = cas.synthese.questions.map((question, index) => {
       const brute = reponses[question.id]?.trim() ?? '';
-      let contenu = brute || 'Sans reponse.';
+      let contenu = brute || 'Sans réponse.';
       if (question.type === 'qcm') {
         contenu = question.options.find((o) => o.id === brute)?.libelle ?? contenu;
       } else if (question.type === 'ouiNon') {
@@ -249,7 +249,7 @@ export const useSession = create<SessionState>((set, get) => ({
       }
       return {
         id: `synthese-${question.id}`,
-        titre: `Synthese ${index + 1}`,
+        titre: `Synthèse ${index + 1}`,
         contenu,
       };
     });

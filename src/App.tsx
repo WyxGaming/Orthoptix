@@ -28,10 +28,10 @@ function Bilan() {
         </div>
         <div className="flex items-center gap-3">
           <span className="text-xs uppercase tracking-wider text-slate-500">
-            Mode {mode === 'entrainement' ? 'entrainement' : 'evaluation'}
+            Mode {mode === 'entrainement' ? 'entraînement' : 'évaluation'}
           </span>
           <Bouton ton="principal" onClick={passerALaSynthese}>
-            Passer a la synthese
+            Passer à la synthèse
           </Bouton>
         </div>
       </header>

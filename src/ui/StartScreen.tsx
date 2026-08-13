@@ -14,7 +14,7 @@ export function StartScreen() {
       <header>
         <h1 className="text-3xl font-semibold text-slate-100">Orthoptix</h1>
         <p className="mt-1 text-slate-400">
-          Bilan orthoptique simule sur patient virtuel, pour les etudiants en ophtalmologie et en
+          Bilan orthoptique simulé sur patient virtuel, pour les étudiants en ophtalmologie et en
           orthoptie.
         </p>
       </header>
@@ -48,9 +48,9 @@ export function StartScreen() {
               mode === 'entrainement' ? 'border-sky-500 bg-sky-950/40' : 'border-slate-800'
             }`}
           >
-            <div className="font-medium text-slate-100">Entrainement</div>
+            <div className="font-medium text-slate-100">Entraînement</div>
             <div className="text-sm text-slate-400">
-              Chaque geste est commente immediatement, avec la justification clinique.
+              Chaque geste est commenté immédiatement, avec la justification clinique.
             </div>
           </button>
           <button
@@ -60,9 +60,9 @@ export function StartScreen() {
               mode === 'evaluation' ? 'border-sky-500 bg-sky-950/40' : 'border-slate-800'
             }`}
           >
-            <div className="font-medium text-slate-100">Evaluation</div>
+            <div className="font-medium text-slate-100">Évaluation</div>
             <div className="text-sm text-slate-400">
-              Aucun retour pendant le bilan : score et debriefing complets a la fin.
+              Aucun retour pendant le bilan : score et debriefing complets à la fin.
             </div>
           </button>
         </div>
@@ -78,7 +78,7 @@ export function StartScreen() {
       </div>
 
       <p className="text-[11px] leading-relaxed text-slate-600">
-        Modele 3D base sur{' '}
+        Modèle 3D basé sur{' '}
         <a
           className="text-slate-500 underline decoration-slate-700 hover:text-slate-400"
           href="https://sketchfab.com/3d-models/angelica-27f75fa94c384000bb6a79a3000f8e80"
@@ -105,7 +105,7 @@ export function StartScreen() {
         >
           CC-BY-4.0
         </a>
-        . Monture 3D fournie separement.
+        . Monture 3D fournie séparément.
       </p>
     </div>
   );

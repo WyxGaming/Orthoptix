@@ -1,22 +1,22 @@
 import type { DefinitionExamen, ExamenId, Rubrique } from './types';
 
 /**
- * Catalogue generique des examens disponibles au cabinet. Il ne depend d'aucun cas :
- * c'est le cas clinique qui declare le resultat obtenu et le bareme de chacun.
+ * Catalogue générique des examens disponibles au cabinet. Il ne dépend d'aucun cas :
+ * c'est le cas clinique qui déclare le résultat obtenu et le barème de chacun.
  */
 export const CATALOGUE_EXAMENS: Record<ExamenId, DefinitionExamen> = {
   acuite: {
     id: 'acuite',
-    nom: 'Acuite visuelle',
+    nom: 'Acuité visuelle',
     rubrique: 'refraction',
-    description: 'Mesure de l acuite de loin et de pres, oeil par oeil, avec la correction portee.',
+    description: "Mesure de l'acuité de loin et de près, œil par œil, avec la correction portée.",
     interaction: 'presentation',
   },
   refraction: {
     id: 'refraction',
-    nom: 'Refraction / correction portee',
+    nom: 'Réfraction / correction portée',
     rubrique: 'refraction',
-    description: 'Releve de la correction optique portee et de la refraction objective.',
+    description: 'Relevé de la correction optique portée et de la réfraction objective.',
     interaction: 'presentation',
   },
   lang: {
@@ -24,7 +24,7 @@ export const CATALOGUE_EXAMENS: Record<ExamenId, DefinitionExamen> = {
     nom: 'Test de Lang',
     rubrique: 'sensoriel',
     description:
-      'Test stereoscopique avec correction optique, presente a 40 cm. Depistage rapide de la vision du relief.',
+      'Test stéréoscopique avec correction optique, présenté à 40 cm. Dépistage rapide de la vision du relief.',
     interaction: 'presentation',
   },
   tno: {
@@ -32,45 +32,45 @@ export const CATALOGUE_EXAMENS: Record<ExamenId, DefinitionExamen> = {
     nom: 'TNO',
     rubrique: 'sensoriel',
     description:
-      'Test stereoscopique aleatoire avec lunettes rouge-vert, quantifie le seuil de stereoscopie.',
+      'Test stéréoscopique aléatoire avec lunettes rouge-vert, quantifie le seuil de stéréoscopie.',
     interaction: 'presentation',
   },
   worth: {
     id: 'worth',
     nom: 'Test de Worth',
     rubrique: 'sensoriel',
-    description: 'Recherche de fusion et de neutralisation a l aide de quatre points colores.',
+    description: "Recherche de fusion et de neutralisation à l'aide de quatre points colorés.",
     interaction: 'presentation',
   },
   bagolini: {
     id: 'bagolini',
-    nom: 'Verres stries de Bagolini',
+    nom: 'Verres striés de Bagolini',
     rubrique: 'sensoriel',
     description:
-      'Etude de la correspondance retinienne en conditions peu dissociantes, a l aide de deux verres stries.',
+      "Étude de la correspondance rétinienne en conditions peu dissociantes, à l'aide de deux verres striés.",
     interaction: 'presentation',
   },
   verreRouge: {
     id: 'verreRouge',
     nom: 'Verre rouge',
     rubrique: 'sensoriel',
-    description: 'Recherche de diplopie et de la correspondance retinienne sous filtre rouge.',
+    description: 'Recherche de diplopie et de la correspondance rétinienne sous filtre rouge.',
     interaction: 'presentation',
   },
   motilite: {
     id: 'motilite',
-    nom: 'Motilite oculaire',
+    nom: 'Motilité oculaire',
     rubrique: 'moteur',
     description:
-      'Poursuite de la mire, tenue a 33 cm, dans les neuf positions du regard, a la recherche d une hyper ou d une hypoaction.',
+      "Poursuite de la mire, tenue à 33 cm, dans les neuf positions du regard, à la recherche d'une hyper ou d'une hypoaction.",
     interaction: 'motilite',
   },
   bielschowsky: {
     id: 'bielschowsky',
-    nom: 'Manoeuvre de Bielschowsky',
+    nom: 'Manœuvre de Bielschowsky',
     rubrique: 'moteur',
     description:
-      'Inclinaison de la tete sur chaque epaule, pour explorer une paralysie d un muscle cyclovertical.',
+      "Inclinaison de la tête sur chaque épaule, pour explorer une paralysie d'un muscle cyclovertical.",
     interaction: 'presentation',
   },
   hirschberg: {
@@ -78,7 +78,7 @@ export const CATALOGUE_EXAMENS: Record<ExamenId, DefinitionExamen> = {
     nom: 'Reflets de Hirschberg',
     rubrique: 'reflets',
     description:
-      'Lampe tenue a 33 cm dans l axe visuel : estimation de l angle par le decentrement du reflet corneen.',
+      "Lampe tenue à 33 cm dans l'axe visuel : estimation de l'angle par le décentrement du reflet cornéen.",
     interaction: 'reflets',
     saisieMesure: true,
   },
@@ -87,7 +87,7 @@ export const CATALOGUE_EXAMENS: Record<ExamenId, DefinitionExamen> = {
     nom: 'Test de Krimsky',
     rubrique: 'reflets',
     description:
-      'Prismes interposes, lampe a 33 cm, jusqu a recentrer le reflet corneen de l oeil devie : quantifie l angle.',
+      "Prismes interposés, lampe à 33 cm, jusqu'à recentrer le reflet cornéen de l'œil dévié : quantifie l'angle.",
     interaction: 'reflets',
     saisieMesure: true,
     prismes: true,
@@ -97,7 +97,7 @@ export const CATALOGUE_EXAMENS: Record<ExamenId, DefinitionExamen> = {
     nom: 'Test de Krimsky de loin',
     rubrique: 'reflets',
     description:
-      'Meme neutralisation par prismes, mais sur une lumiere placee a 5 metres : l enfant n accommode plus. Utile quand la cooperation ne permet pas le cover test.',
+      "Même neutralisation par prismes, mais sur une lumière placée à 5 mètres : l'enfant n'accommode plus. Utile quand la coopération ne permet pas le cover test.",
     interaction: 'reflets',
     saisieMesure: true,
     prismes: true,
@@ -108,7 +108,7 @@ export const CATALOGUE_EXAMENS: Record<ExamenId, DefinitionExamen> = {
     nom: 'Cover test en VP',
     rubrique: 'occlusion',
     description:
-      'Cover test unilateral puis alterne, sur mire a 33 cm : depiste la tropie, precise la fixation, puis quantifie l angle total aux prismes.',
+      "Cover test unilatéral puis alterné, sur mire à 33 cm : dépiste la tropie, précise la fixation, puis quantifie l'angle total aux prismes.",
     interaction: 'occlusion',
     saisieMesure: true,
     prismes: true,
@@ -118,7 +118,7 @@ export const CATALOGUE_EXAMENS: Record<ExamenId, DefinitionExamen> = {
     nom: 'Cover test en VL',
     rubrique: 'occlusion',
     description:
-      'Meme epreuve sur une mire a 5 metres : l enfant n accommode plus. Comparer les deux angles fait la part de l accommodation dans la deviation.',
+      "Même épreuve sur une mire à 5 mètres : l'enfant n'accommode plus. Comparer les deux angles fait la part de l'accommodation dans la déviation.",
     interaction: 'occlusion',
     saisieMesure: true,
     prismes: true,
@@ -126,29 +126,29 @@ export const CATALOGUE_EXAMENS: Record<ExamenId, DefinitionExamen> = {
   },
   deviometrie: {
     id: 'deviometrie',
-    nom: 'Deviometrie au synoptophore',
+    nom: 'Déviométrie au synoptophore',
     rubrique: 'occlusion',
     description:
-      'Mesure objective et subjective de l angle, et surtout etude de la correspondance retinienne au synoptophore.',
+      "Mesure objective et subjective de l'angle, et surtout étude de la correspondance rétinienne au synoptophore.",
     interaction: 'presentation',
   },
   biprisme: {
     id: 'biprisme',
     nom: 'Biprisme de Gracis',
     rubrique: 'occlusion',
-    description: 'Recherche d une microtropie et de la correspondance retinienne au biprisme.',
+    description: "Recherche d'une microtropie et de la correspondance rétinienne au biprisme.",
     interaction: 'presentation',
   },
 };
 
 export const LIBELLES_RUBRIQUES: Record<Rubrique, string> = {
-  anamnese: 'Anamnese',
-  antecedents: 'Antecedents',
-  refraction: 'Refraction et acuite',
+  anamnese: 'Anamnèse',
+  antecedents: 'Antécédents',
+  refraction: 'Réfraction et acuité',
   sensoriel: 'Examen sensoriel',
-  moteur: 'Motilite',
-  reflets: 'Etude des reflets',
-  occlusion: 'Epreuves d occlusion',
+  moteur: 'Motilité',
+  reflets: 'Étude des reflets',
+  occlusion: "Épreuves d'occlusion",
 };
 
 export const ORDRE_RUBRIQUES: Rubrique[] = [

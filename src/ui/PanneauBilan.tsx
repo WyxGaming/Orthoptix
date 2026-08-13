@@ -23,7 +23,7 @@ export function PanneauBilan() {
         <div className="defilement-fin flex-1 overflow-y-auto p-3">
           {bilan.length === 0 ? (
             <p className="text-sm text-slate-500">
-              Rien de consigne pour l instant. Commencez par interroger les parents de{' '}
+              Rien de consigné pour l'instant. Commencez par interroger les parents de{' '}
               {cas.patient.prenom}.
             </p>
           ) : (
@@ -50,7 +50,7 @@ export function PanneauBilan() {
           <div className="defilement-fin flex-1 overflow-y-auto p-3">
             {messages.length === 0 ? (
               <p className="text-sm text-slate-500">
-                Les commentaires apparaitront ici au fil de vos gestes.
+                Les commentaires apparaîtront ici au fil de vos gestes.
               </p>
             ) : (
               <ul className="space-y-2">

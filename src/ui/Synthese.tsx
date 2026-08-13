@@ -60,7 +60,7 @@ function ChampQuestion({
       value={valeur}
       onChange={(e) => onChange(e.target.value)}
       rows={3}
-      placeholder="Votre reponse…"
+      placeholder="Votre réponse…"
       className="w-full resize-y rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none placeholder:text-slate-600 focus:border-sky-500"
     />
   );
@@ -94,7 +94,7 @@ export function Synthese() {
       </Carte>
 
       <div className="flex-1 space-y-4">
-        <Carte titre="Synthese diagnostique">
+        <Carte titre="Synthèse diagnostique">
           <div className="space-y-6">
             {cas.synthese.questions.map((question, index) => (
               <div key={question.id} className="space-y-2">

@@ -131,7 +131,7 @@ export function calculerScore(
         libelle: question.libelle,
         points: obtenu ? question.poids : 0,
         max: question.poids,
-        commentaire: obtenu ? question.commentaire : `Question essentielle non posee. ${question.commentaire ?? ''}`.trim(),
+        commentaire: obtenu ? question.commentaire : `Question essentielle non posée. ${question.commentaire ?? ''}`.trim(),
         nature: obtenu ? 'acquis' : 'manque',
       });
     } else if (question.poids < 0 && posees.has(question.id)) {
@@ -161,7 +161,7 @@ export function calculerScore(
           max: examen.poids,
           commentaire: passage
             ? undefined
-            : 'Examen essentiel non realise dans ce bilan.',
+            : 'Examen essentiel non réalisé dans ce bilan.',
           nature: passage ? 'acquis' : 'manque',
         });
       }
@@ -224,7 +224,7 @@ export function calculerScore(
     const evaluation = evaluerQuestionSynthese(question, reponsesSynthese?.[question.id]);
     const niveau = question.niveau ? ` (${question.niveau})` : '';
     lignes.push({
-      libelle: `Synthese ${index + 1}${niveau} — ${question.question}`,
+      libelle: `Synthèse ${index + 1}${niveau} — ${question.question}`,
       points: evaluation.points,
       max: question.poids,
       commentaire: evaluation.commentaire,
@@ -234,12 +234,12 @@ export function calculerScore(
 
   const conduite = ordreRespecte(cas, journal);
   lignes.push({
-    libelle: 'Conduite du bilan dans l ordre',
+      libelle: 'Conduite du bilan dans l\'ordre',
     points: conduite ? BONUS_CONDUITE_DU_BILAN : 0,
     max: BONUS_CONDUITE_DU_BILAN,
     commentaire: conduite
       ? undefined
-      : 'Les epreuves dissociantes ont ete conduites avant l evaluation sensorielle, ce qui peut rompre la binocularite avant de l avoir mesuree.',
+      : 'Les épreuves dissociantes ont été conduites avant l\'évaluation sensorielle, ce qui peut rompre la binocularité avant de l\'avoir mesurée.',
     nature: conduite ? 'bonus' : 'manque',
   });
 

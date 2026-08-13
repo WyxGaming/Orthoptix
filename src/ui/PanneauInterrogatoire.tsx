@@ -26,7 +26,7 @@ function ListeQuestions({ questions }: { questions: QuestionAnamnese[] }) {
               }`}
             >
               {q.libelle}
-              {dejaPosee && <span className="ml-2 text-xs text-slate-600">posee</span>}
+              {dejaPosee && <span className="ml-2 text-xs text-slate-600">posée</span>}
             </button>
           </li>
         );
@@ -69,9 +69,9 @@ function EtagereExamens() {
         );
       })}
       <p className="pt-1 text-xs text-slate-500">
-        Tous les examens du cabinet sont accessibles a tout moment. A vous de choisir ceux
-        qu appelle ce tableau clinique — et de renoncer aux autres. Passez la souris sur un examen
-        pour en relire le principe. {cas.patient.prenom} est cooperante.
+        Tous les examens du cabinet sont accessibles à tout moment. À vous de choisir ceux
+        qu'appelle ce tableau clinique — et de renoncer aux autres. Passez la souris sur un examen
+        pour en relire le principe. {cas.patient.prenom} est coopérante.
       </p>
     </div>
   );
@@ -89,8 +89,8 @@ export function PanneauInterrogatoire() {
       <nav className="flex shrink-0 border-b border-slate-800">
         {(
           [
-            ['anamnese', 'Anamnese'],
-            ['antecedents', 'Antecedents'],
+            ['anamnese', 'Anamnèse'],
+            ['antecedents', 'Antécédents'],
             ['examens', 'Examens'],
           ] as const
         ).map(([cle, libelle]) => (
