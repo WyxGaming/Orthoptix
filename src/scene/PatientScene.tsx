@@ -7,6 +7,7 @@ import { Eye } from './Eye';
 import {
   CHAMP_ENSEMBLE_DEG,
   CHAMP_RAPPROCHE_DEG,
+  DECALAGE_ZOOM_Y,
   DISTANCE_CIBLE,
   DISTANCE_OBSERVATEUR,
   directionRegard,
@@ -117,13 +118,16 @@ function Cible() {
 
 function Camera({ rapprochee }: { rapprochee: boolean }) {
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
+  const regardY = useRef(0);
   useFrame((_, dt) => {
     const champVise = rapprochee ? CHAMP_RAPPROCHE_DEG : CHAMP_ENSEMBLE_DEG;
+    const regardVise = rapprochee ? DECALAGE_ZOOM_Y : 0;
     const lissage = 1 - Math.exp(-dt / 0.25);
     camera.position.z += (DISTANCE_OBSERVATEUR - camera.position.z) * lissage;
     camera.fov += (champVise - camera.fov) * lissage;
+    regardY.current += (regardVise - regardY.current) * lissage;
     camera.updateProjectionMatrix();
-    camera.lookAt(0, 0, 0);
+    camera.lookAt(0, regardY.current, 0);
   });
   return null;
 }

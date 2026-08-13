@@ -31,6 +31,9 @@ export const DISTANCE_OBSERVATEUR = 50;
 export const CHAMP_ENSEMBLE_DEG = 24;
 export const CHAMP_RAPPROCHE_DEG = 9;
 
+/** Decalage vertical du cadrage en gros plan reflets, en centimetres. */
+export const DECALAGE_ZOOM_Y = 5;
+
 /**
  * Le patient regarde vers +Z, donc vers l'observateur. Sa droite pointe vers -X :
  * un azimut positif, ou le patient regarde a sa droite, apparait a gauche de l'ecran.
