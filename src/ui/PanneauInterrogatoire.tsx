@@ -39,8 +39,7 @@ function EtagereExamens() {
   const cas = useSession((s) => s.cas);
   const lancerExamen = useSession((s) => s.lancerExamen);
   const examenEnCours = useSession((s) => s.examenEnCours);
-  const journal = useSession((s) => s.journal);
-  const realises = new Set(journal.filter((a) => a.type === 'examen').map((a) => a.id));
+  const nombreRealisations = useSession((s) => s.nombreRealisations);
 
   return (
     <div className="space-y-4">
@@ -52,18 +51,26 @@ function EtagereExamens() {
               {LIBELLES_RUBRIQUES[rubrique]}
             </h3>
             <div className="flex flex-wrap gap-1.5">
-              {examens.map((examen) => (
-                <Bouton
-                  key={examen.id}
-                  title={examen.description}
-                  actif={examenEnCours === examen.id}
-                  onClick={() => lancerExamen(examen.id)}
-                  className={realises.has(examen.id) ? 'opacity-60' : ''}
-                >
-                  {examen.nom}
-                  {realises.has(examen.id) && <span className="ml-1.5 text-emerald-400">✓</span>}
-                </Bouton>
-              ))}
+              {examens.map((examen) => {
+                const count = nombreRealisations(examen.id);
+                const repetable = Boolean(cas.optionsExamen?.[examen.id]);
+                return (
+                  <Bouton
+                    key={examen.id}
+                    title={examen.description}
+                    actif={examenEnCours === examen.id}
+                    onClick={() => lancerExamen(examen.id)}
+                    className={count > 0 && !repetable ? 'opacity-60' : ''}
+                  >
+                    {examen.nom}
+                    {count > 0 && (
+                      <span className="ml-1.5 text-emerald-400">
+                        {repetable && count > 1 ? `✓×${count}` : '✓'}
+                      </span>
+                    )}
+                  </Bouton>
+                );
+              })}
             </div>
           </div>
         );
@@ -71,7 +78,9 @@ function EtagereExamens() {
       <p className="pt-1 text-xs text-slate-500">
         Tous les examens du cabinet sont accessibles à tout moment. À vous de choisir ceux
         qu'appelle ce tableau clinique — et de renoncer aux autres. Passez la souris sur un examen
-        pour en relire le principe. {cas.patient.prenom} est coopérante.
+        pour en relire le principe. {cas.patient.prenom} est coopérant{cas.patient.sexe === 'F' ? 'e' : ''}.
+        {Object.keys(cas.optionsExamen ?? {}).length > 0 &&
+          ' Pour certains examens, choisissez ASC ou SC et éventuellement les loupes +3 avant de présenter le test.'}
       </p>
     </div>
   );

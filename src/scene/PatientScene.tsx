@@ -210,9 +210,16 @@ function Camera({ rapprochee }: { rapprochee: boolean }) {
 
 export function PatientScene({ zoomReflets }: { zoomReflets: boolean }) {
   const [orbites, setOrbites] = useState<PositionsOrbites>(ORBITES_DEFAUT);
+  const conditionsExamen = useSession((s) => s.conditionsExamen);
+  const examenEnCours = useSession((s) => s.examenEnCours);
+  const cas = useSession((s) => s.cas);
   const retenirOrbites = useCallback((positions: PositionsOrbites) => {
     setOrbites(positions);
   }, []);
+
+  const options = examenEnCours ? cas.optionsExamen?.[examenEnCours] : undefined;
+  const montreLunettes =
+    !options?.choixCorrection || conditionsExamen.correction === 'asc';
 
   return (
     <>
@@ -224,7 +231,7 @@ export function PatientScene({ zoomReflets }: { zoomReflets: boolean }) {
         <TetePatient onOrbites={retenirOrbites} />
       </Suspense>
       <Suspense fallback={null}>
-        <LunettesPatient orbites={orbites} />
+        {montreLunettes && <LunettesPatient orbites={orbites} />}
       </Suspense>
       {EYES.map((oeil) => (
         <group key={oeil} position={orbites[oeil]} scale={orbites.rayon / RAYON_GLOBE}>

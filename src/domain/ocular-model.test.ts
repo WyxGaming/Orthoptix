@@ -249,6 +249,37 @@ describe('vision de loin', () => {
   });
 });
 
+describe('correction ASC/SC et loupes +3', () => {
+  const maxime: ParametresOculaires = {
+    deviation: { horizontal: 15, vertical: 0 },
+    deviationLoin: { horizontal: 6, vertical: 0 },
+    deviationSansCorrection: { horizontal: 40, vertical: 0 },
+    deviationLoinSansCorrection: { horizontal: 10, vertical: 0 },
+    orthotropieVpSurcorrection: true,
+    fixation: { mode: 'preferee', oeil: 'OD' },
+    upshoot: { OD: 0, OG: 0 },
+    dvd: 0,
+    kappa: { OD: 0, OG: 0 },
+    correction: { OD: { sphere: 5 }, OG: { sphere: 7 } },
+    acuite: { OD: '10/10 P2', OG: '10/10 P2' },
+  };
+
+  it('majore l angle sans correction en vision de pres', () => {
+    const asc = etatOculaire(maxime, enPositionPrimaire(), { correction: 'asc' });
+    const sc = etatOculaire(maxime, enPositionPrimaire(), { correction: 'sc' });
+    expect(sc.OG.deviationLampeDp.horizontal).toBeCloseTo(40, 6);
+    expect(asc.OG.deviationLampeDp.horizontal).toBeCloseTo(15, 6);
+  });
+
+  it('donne une orthotropie de pres avec loupes +3 en ASC', () => {
+    const ot = etatOculaire(maxime, enPositionPrimaire(), {
+      correction: 'asc',
+      loupesPlus3: true,
+    });
+    expect(ot.OG.deviationLampeDp.horizontal).toBeCloseTo(0, 6);
+  });
+});
+
 describe('occlusion', () => {
   it('fait prendre la fixation par l oeil decouvert', () => {
     const etat = etatOculaire(lea, { ...enPositionPrimaire('OD'), occlusion: 'OD' });

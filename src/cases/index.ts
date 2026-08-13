@@ -1,9 +1,10 @@
 import type { CasClinique } from '../engine/types';
 import { casAvecOverrides } from '../engine/admin';
+import { esotropieAccommodative } from './esotropie-accommodative';
 import { esotropiePrecoce } from './esotropie-precoce';
 
 /** Ajouter un cas consiste a ecrire son fichier de donnees et a l inscrire ici. */
-export const CAS_DISPONIBLES: CasClinique[] = [esotropiePrecoce];
+export const CAS_DISPONIBLES: CasClinique[] = [esotropiePrecoce, esotropieAccommodative];
 
 export function casCliniqueParId(id: string): CasClinique {
   const base = CAS_DISPONIBLES.find((c) => c.id === id);
@@ -16,4 +17,4 @@ export function casCliniquePrepare(cas: CasClinique): CasClinique {
   return casAvecOverrides(base);
 }
 
-export { esotropiePrecoce };
+export { esotropieAccommodative, esotropiePrecoce };

@@ -14,7 +14,15 @@ import {
 import { CATALOGUE_EXAMENS } from './exams';
 import { casCliniquePrepare } from '../cases';
 import { calculerScore, dansIntervalle, type Resultat } from './scoring';
-import type { ActionJournal, CasClinique, ExamenId, QuestionAnamnese, ReponsesSynthese } from './types';
+import { examenResolu, libelleConditions } from './examen-resolver';
+import type {
+  ActionJournal,
+  CasClinique,
+  ConditionsExamen,
+  ExamenId,
+  QuestionAnamnese,
+  ReponsesSynthese,
+} from './types';
 import { interpretationsExamen } from './types';
 
 /** Melange Fisher-Yates : ordre different a chaque visite / nouveau bilan. */
@@ -55,6 +63,8 @@ type SessionState = {
   bilan: LigneBilan[];
   etat: EtatExamen;
   examenEnCours: ExamenId | null;
+  /** Conditions ASC/SC et loupes +3 choisies pour l'examen en cours. */
+  conditionsExamen: ConditionsExamen;
   reponsesSynthese: ReponsesSynthese | null;
   messages: Message[];
 
@@ -63,6 +73,7 @@ type SessionState = {
   quitterAdmin: () => void;
   poserQuestion: (id: string) => void;
   lancerExamen: (id: ExamenId) => void;
+  definirConditionsExamen: (conditions: ConditionsExamen) => void;
   validerExamen: (saisie?: {
     mesure?: number;
     interpretationId?: string;
@@ -80,6 +91,8 @@ type SessionState = {
 
   resultat: () => Resultat;
   aDejaFait: (id: ExamenId) => boolean;
+  /** Nombre de realisations d un examen (permet les repetitions avec conditions differentes). */
+  nombreRealisations: (id: ExamenId) => number;
   aDejaPose: (id: string) => boolean;
 };
 
@@ -97,6 +110,7 @@ export const useSession = create<SessionState>((set, get) => ({
   bilan: [],
   etat: etatExamenInitial('OD'),
   examenEnCours: null,
+  conditionsExamen: { correction: 'asc' },
   reponsesSynthese: null,
   messages: [],
 
@@ -111,6 +125,7 @@ export const useSession = create<SessionState>((set, get) => ({
       bilan: [],
       etat: etatExamenInitial(oeilFixateurInitial(prepare)),
       examenEnCours: null,
+      conditionsExamen: { correction: 'asc' },
       reponsesSynthese: null,
       messages: [],
     });
@@ -156,16 +171,18 @@ export const useSession = create<SessionState>((set, get) => ({
   lancerExamen: (id) => {
     const definition = CATALOGUE_EXAMENS[id];
     const { cas } = get();
+    const options = cas.optionsExamen?.[id];
     // Chaque examen part d'un patient sans cache ni prisme, en position primaire, et a la
     // distance de fixation qu'il impose.
     set({
       examenEnCours: id,
+      conditionsExamen: { correction: options?.choixCorrection ? 'asc' : 'asc' },
       etat: etatExamenInitial(
         get().etat.oeilFixateur,
         definition.distance === 'loin' ? DISTANCE_LOIN_CM : DISTANCE_PRES_CM,
       ),
     });
-    if (get().mode === 'entrainement' && !cas.examens[id]) {
+    if (get().mode === 'entrainement' && !cas.examens[id] && !cas.resoudreExamen) {
       set({
         messages: [
           ...get().messages,
@@ -179,18 +196,30 @@ export const useSession = create<SessionState>((set, get) => ({
     }
   },
 
+  definirConditionsExamen: (conditions) => set({ conditionsExamen: conditions }),
+
   abandonnerExamen: () =>
     set({ examenEnCours: null, etat: etatExamenInitial(get().etat.oeilFixateur) }),
 
   validerExamen: (saisie) => {
-    const { examenEnCours, cas, journal, bilan, mode } = get();
+    const { examenEnCours, cas, journal, bilan, mode, conditionsExamen } = get();
     if (!examenEnCours) return;
     const definition = CATALOGUE_EXAMENS[examenEnCours];
-    const examen = cas.examens[examenEnCours];
+    const options = cas.optionsExamen?.[examenEnCours];
+    const conditions = options?.choixCorrection || options?.choixLoupesPlus3 ? conditionsExamen : undefined;
+
+    const ctx = {
+      examenId: examenEnCours,
+      conditions: conditions ?? { correction: 'asc' as const },
+      journal,
+      indexJournal: journal.length,
+    };
+    const examen = examenResolu(cas, ctx);
 
     const action: ActionJournal = {
       type: 'examen',
       id: examenEnCours,
+      conditions,
       mesure: saisie?.mesure,
       interpretationId: saisie?.interpretationId,
       interpretationIds: saisie?.interpretationIds,
@@ -225,6 +254,7 @@ export const useSession = create<SessionState>((set, get) => ({
       }
     }
 
+    const libelleCond = conditions ? ` (${libelleConditions(conditions)})` : '';
     const contenu = [
       examen?.resultat ?? 'Examen réalisé, sans élément notable pour ce cas.',
       saisie?.mesure !== undefined ? `Mesure notee : ${saisie.mesure} DP.` : null,
@@ -234,8 +264,16 @@ export const useSession = create<SessionState>((set, get) => ({
 
     set({
       journal: [...journal, action],
-      bilan: [...bilan, { id: `e-${examenEnCours}-${journal.length}`, titre: definition.nom, contenu }],
+      bilan: [
+        ...bilan,
+        {
+          id: `e-${examenEnCours}-${journal.length}`,
+          titre: `${definition.nom}${libelleCond}`,
+          contenu,
+        },
+      ],
       examenEnCours: null,
+      conditionsExamen: { correction: 'asc' },
       etat: etatExamenInitial(get().etat.oeilFixateur),
       messages: [...get().messages, ...messages],
     });
@@ -301,5 +339,7 @@ export const useSession = create<SessionState>((set, get) => ({
   },
 
   aDejaFait: (id) => get().journal.some((a) => a.type === 'examen' && a.id === id),
+  nombreRealisations: (id) =>
+    get().journal.filter((a) => a.type === 'examen' && a.id === id).length,
   aDejaPose: (id) => get().journal.some((a) => a.type === 'question' && a.id === id),
 }));

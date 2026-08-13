@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { EYES, type BasePrisme, type Eye } from '../domain/ocular-model';
 import { CATALOGUE_EXAMENS } from '../engine/exams';
 import { useSession } from '../engine/session';
+import type { ConditionsExamen } from '../engine/types';
 import { interpretationsExamen } from '../engine/types';
 import { Bouton, Carte } from './composants';
 
@@ -30,6 +31,53 @@ const BASES: { valeur: BasePrisme; libelle: string }[] = [
   { valeur: 'superieure', libelle: 'Base supérieure' },
   { valeur: 'inferieure', libelle: 'Base inférieure' },
 ];
+
+function CommandesConditions({
+  options,
+  conditions,
+  onChange,
+  distance,
+}: {
+  options: { choixCorrection?: boolean; choixLoupesPlus3?: boolean };
+  conditions: ConditionsExamen;
+  onChange: (conditions: ConditionsExamen) => void;
+  distance?: 'pres' | 'loin';
+}) {
+  return (
+    <div className="space-y-2 rounded-md border border-slate-800 bg-slate-950/40 p-3">
+      <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+        Conditions de l'examen
+      </p>
+      {options.choixCorrection && (
+        <div className="flex flex-wrap gap-1.5">
+          <Bouton
+            actif={conditions.correction === 'asc'}
+            onClick={() => onChange({ ...conditions, correction: 'asc' })}
+          >
+            Avec correction (ASC)
+          </Bouton>
+          <Bouton
+            actif={conditions.correction === 'sc'}
+            onClick={() => onChange({ ...conditions, correction: 'sc' })}
+          >
+            Sans correction (SC)
+          </Bouton>
+        </div>
+      )}
+      {options.choixLoupesPlus3 && distance !== 'loin' && (
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-300">
+          <input
+            type="checkbox"
+            checked={Boolean(conditions.loupesPlus3)}
+            onChange={(e) => onChange({ ...conditions, loupesPlus3: e.target.checked })}
+            className="rounded border-slate-600 bg-slate-950"
+          />
+          Loupes +3 en VP (test accommodatif)
+        </label>
+      )}
+    </div>
+  );
+}
 
 function CommandesMotilite() {
   const deplacerCible = useSession((s) => s.deplacerCible);
@@ -130,6 +178,8 @@ export function PanneauExamen({
 }) {
   const examenEnCours = useSession((s) => s.examenEnCours);
   const cas = useSession((s) => s.cas);
+  const conditionsExamen = useSession((s) => s.conditionsExamen);
+  const definirConditionsExamen = useSession((s) => s.definirConditionsExamen);
   const validerExamen = useSession((s) => s.validerExamen);
   const abandonnerExamen = useSession((s) => s.abandonnerExamen);
 
@@ -149,9 +199,17 @@ export function PanneauExamen({
   }
 
   const definition = CATALOGUE_EXAMENS[examenEnCours];
+  const optionsExamen = cas.optionsExamen?.[examenEnCours];
   const examen = cas.examens[examenEnCours];
-  const demandeMesure = Boolean(examen?.attendu) || definition.saisieMesure;
-  const interpretations = examen ? interpretationsExamen(examen) : [];
+  const ctxPreview = {
+    examenId: examenEnCours,
+    conditions: conditionsExamen,
+    journal: useSession.getState().journal,
+    indexJournal: useSession.getState().journal.length,
+  };
+  const examenEffectif = cas.resoudreExamen?.(ctxPreview) ?? examen;
+  const demandeMesure = Boolean(examenEffectif?.attendu) || definition.saisieMesure;
+  const interpretations = examenEffectif ? interpretationsExamen(examenEffectif) : [];
   const interpretationsCompletes =
     interpretations.length === 0 ||
     interpretations.every((interp) => Boolean(interpretationsChoix[interp.id]));
@@ -188,6 +246,15 @@ export function PanneauExamen({
       <div className="defilement-fin min-h-0 flex-1 space-y-3 overflow-y-auto p-4">
         <p className="text-sm text-slate-400">{definition.description}</p>
 
+        {optionsExamen && (optionsExamen.choixCorrection || optionsExamen.choixLoupesPlus3) && (
+          <CommandesConditions
+            options={optionsExamen}
+            conditions={conditionsExamen}
+            onChange={definirConditionsExamen}
+            distance={definition.distance}
+          />
+        )}
+
         {definition.distance === 'loin' && (
           <p className="rounded-md border border-amber-900/60 bg-amber-950/30 px-3 py-2 text-xs text-amber-200/90">
             Mire à 5 mètres, hors du champ visuel.
@@ -206,7 +273,7 @@ export function PanneauExamen({
               </Bouton>
             ) : (
               <p className="rounded-md border border-slate-700 bg-slate-950/60 p-3 text-sm text-slate-200">
-                {examen?.resultat ?? 'Le test ne montre rien de particulier.'}
+                {examenEffectif?.resultat ?? 'Le test ne montre rien de particulier.'}
               </p>
             )}
           </div>

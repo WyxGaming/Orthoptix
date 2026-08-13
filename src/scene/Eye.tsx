@@ -108,12 +108,12 @@ export function Eye({
   const cornee = useCalotte(RAYON_GLOBE + 0.03, 0.56);
 
   useFrame((three, dt) => {
-    const { cas, etat } = useSession.getState();
+    const { cas, etat, conditionsExamen } = useSession.getState();
     if (!cas || !globe.current || !reflet.current) return;
 
     // La cible est calculee sans nystagmus : l'oscillation est ajoutee apres
     // l'amortissement pour ne pas etre lissee par lui.
-    const cible = etatOculaire(cas.oculaire, { ...etat, tempsS: 0 })[oeil];
+    const cible = etatOculaire(cas.oculaire, { ...etat, tempsS: 0 }, conditionsExamen)[oeil];
     const pas = Math.min(dt, 0.05);
     const a = amorti.current;
     a.azimuth = amortir(a.azimuth, cible.azimuthDeg, pas);

@@ -61,6 +61,15 @@ export type ParametresOculaires = {
    * un argument pour un strabisme precoce. Par defaut, l'angle ne varie pas avec la distance.
    */
   deviationLoin?: Deviation;
+  /** Deviation sans correction optique (SC), en vision de pres. */
+  deviationSansCorrection?: Deviation;
+  /** Deviation sans correction optique (SC), en vision de loin. */
+  deviationLoinSansCorrection?: Deviation;
+  /**
+   * En ASC avec loupes +3 en VP, l'accommodation est saturee et la deviation de pres
+   * devient orthotropique (O't) : la stéréoscopie existe mais n'est pas manifeste sans ce test.
+   */
+  orthotropieVpSurcorrection?: boolean;
   fixation: Fixation;
   /** Elevation en adduction, en DP, par oeil. Un upshoot bilateral se note sur les deux. */
   upshoot: Record<Eye, number>;
@@ -197,6 +206,7 @@ export function oeilFixateurEffectif(params: ParametresOculaires, etat: EtatExam
 export function etatOculaire(
   params: ParametresOculaires,
   etat: EtatExamen,
+  conditions?: ConditionsCorrection,
 ): Record<Eye, EtatOeil> {
   const fixateur = oeilFixateurEffectif(params, etat);
 
@@ -207,7 +217,7 @@ export function etatOculaire(
   const versionVerticaleDeg = prismToDegrees(prismeFixateur.vertical);
 
   const nystagmusDeg = amplitudeNystagmus(params, etat);
-  const deviation = deviationALaDistance(params, etat);
+  const deviation = deviationEffective(params, etat, conditions);
 
   const resultat = {} as Record<Eye, EtatOeil>;
 
@@ -277,6 +287,43 @@ export function etatOculaire(
  */
 export function deviationALaDistance(params: ParametresOculaires, etat: EtatExamen): Deviation {
   return enVisionDeLoin(etat) && params.deviationLoin ? params.deviationLoin : params.deviation;
+}
+
+export type ConditionsCorrection = {
+  correction: 'asc' | 'sc';
+  loupesPlus3?: boolean;
+};
+
+/**
+ * Deviation effective selon correction portee, distance et eventuelle sur-correction +3 en VP.
+ */
+export function deviationEffective(
+  params: ParametresOculaires,
+  etat: EtatExamen,
+  conditions?: ConditionsCorrection,
+): Deviation {
+  const asc = !conditions || conditions.correction === 'asc';
+  const plus3 = Boolean(conditions?.loupesPlus3 && !enVisionDeLoin(etat));
+
+  if (asc && plus3 && params.orthotropieVpSurcorrection) {
+    return { horizontal: 0, vertical: 0 };
+  }
+
+  const deLoin = enVisionDeLoin(etat);
+
+  if (!asc) {
+    if (deLoin) {
+      return (
+        params.deviationLoinSansCorrection ??
+        params.deviationSansCorrection ??
+        params.deviationLoin ??
+        params.deviation
+      );
+    }
+    return params.deviationSansCorrection ?? params.deviation;
+  }
+
+  return deviationALaDistance(params, etat);
 }
 
 /** Oscillation conjuguee du nystagmus, majoree des qu'un oeil est occlus. */

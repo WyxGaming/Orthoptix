@@ -1,12 +1,15 @@
 import { CATALOGUE_EXAMENS } from './exams';
+import { examenResolu, examensDissociantsAvant, libelleConditions } from './examen-resolver';
 import type {
   ActionJournal,
   CasClinique,
+  ConditionsExamen,
   CritereOuvert,
   ExamenId,
   Intervalle,
   QuestionSynthese,
   ReponsesSynthese,
+  RealisationAttendue,
 } from './types';
 import { interpretationsExamen } from './types';
 
@@ -96,11 +99,113 @@ export type Resultat = {
 export const dansIntervalle = (valeur: number, intervalle: Intervalle): boolean =>
   valeur >= intervalle.min && valeur <= intervalle.max;
 
+export function conditionsCorrespond(
+  a: ConditionsExamen,
+  b: ConditionsExamen,
+): boolean {
+  return a.correction === b.correction && Boolean(a.loupesPlus3) === Boolean(b.loupesPlus3);
+}
+
 const questionsPosees = (journal: ActionJournal[]) =>
   journal.filter((a): a is Extract<ActionJournal, { type: 'question' }> => a.type === 'question');
 
 const examensRealises = (journal: ActionJournal[]) =>
   journal.filter((a): a is Extract<ActionJournal, { type: 'examen' }> => a.type === 'examen');
+
+function indexPassage(journal: ActionJournal[], attendu: RealisationAttendue): number {
+  return journal.findIndex(
+    (a) =>
+      a.type === 'examen' &&
+      a.id === attendu.examenId &&
+      conditionsCorrespond(a.conditions ?? { correction: 'asc' }, attendu.conditions),
+  );
+}
+
+function scoreRealisationsAttendues(
+  cas: CasClinique,
+  journal: ActionJournal[],
+  lignes: LigneScore[],
+): Set<ExamenId> {
+  const dejaCompte = new Set<ExamenId>();
+  if (!cas.realisationsAttendues?.length) return dejaCompte;
+
+  for (const attendu of cas.realisationsAttendues) {
+    const definition = CATALOGUE_EXAMENS[attendu.examenId];
+    const index = indexPassage(journal, attendu);
+    const entree = index >= 0 ? journal.at(index) : undefined;
+    const passage =
+      entree?.type === 'examen'
+        ? entree
+        : undefined;
+    const libelle =
+      attendu.libelle ??
+      `${definition.nom} (${libelleConditions(attendu.conditions)})`;
+
+    lignes.push({
+      libelle,
+      points: passage ? attendu.poids : 0,
+      max: attendu.poids,
+      commentaire: passage ? undefined : 'Realisation attendue non effectuee dans ces conditions.',
+      nature: passage ? 'acquis' : 'manque',
+    });
+
+    if (attendu.attendu) {
+      const mesure = passage?.mesure;
+      const juste = mesure !== undefined && dansIntervalle(mesure, attendu.attendu);
+      lignes.push({
+        libelle: `${libelle} — mesure`,
+        points: juste ? POINTS_MESURE_JUSTE : 0,
+        max: POINTS_MESURE_JUSTE,
+        commentaire: juste
+          ? undefined
+          : `Valeur attendue entre ${attendu.attendu.min} et ${attendu.attendu.max} ${attendu.attendu.unite}.`,
+        nature: juste ? 'acquis' : 'manque',
+      });
+    }
+
+    if (passage && index >= 0) {
+      const ctx = {
+        examenId: attendu.examenId,
+        conditions: attendu.conditions,
+        journal,
+        indexJournal: index,
+      };
+      const examen = examenResolu(cas, ctx);
+      if (attendu.avantDissociation) {
+        const dissociants = examensDissociantsAvant(journal, index);
+        const precoce = dissociants.length === 0;
+        lignes.push({
+          libelle: `${libelle} — timing`,
+          points: precoce ? POINTS_INTERPRETATION_JUSTE : 0,
+          max: POINTS_INTERPRETATION_JUSTE,
+          commentaire: precoce
+            ? undefined
+            : 'Le TNO doit etre realise en debut de bilan, avant toute epreuve dissociante, avec ASC et loupes +3.',
+          nature: precoce ? 'acquis' : 'manque',
+        });
+      }
+
+      for (const interp of examen ? interpretationsExamen(examen) : []) {
+        const choix =
+          passage.interpretationIds?.[interp.id] ??
+          (interpretationsExamen(examen!).length === 1 ? passage.interpretationId : undefined);
+        const bonne = interp.options.find((o) => o.correct);
+        const juste = choix !== undefined && choix === bonne?.id;
+        lignes.push({
+          libelle: `${libelle} — ${interp.question}`,
+          points: juste ? POINTS_INTERPRETATION_JUSTE : 0,
+          max: POINTS_INTERPRETATION_JUSTE,
+          commentaire: juste ? undefined : interp.explication,
+          nature: juste ? 'acquis' : 'manque',
+        });
+      }
+    }
+
+    dejaCompte.add(attendu.examenId);
+  }
+
+  return dejaCompte;
+}
 
 /**
  * Verifie que les examens essentiels ont ete conduits dans l'ordre attendu.
@@ -146,10 +251,12 @@ export function calculerScore(
   }
 
   const realises = examensRealises(journal);
-  const dejaCompte = new Set<ExamenId>();
+  const dejaCompte = scoreRealisationsAttendues(cas, journal, lignes);
+  const idsRealisationsAttendues = new Set(cas.realisationsAttendues?.map((r) => r.examenId));
 
   for (const [id, examen] of Object.entries(cas.examens) as [ExamenId, CasClinique['examens'][ExamenId]][]) {
     if (!examen) continue;
+    if (idsRealisationsAttendues.has(id)) continue;
     const definition = CATALOGUE_EXAMENS[id];
     const passage = realises.find((a) => a.id === id);
 
@@ -178,19 +285,40 @@ export function calculerScore(
 
     if (examen.attendu && (passage || !examen.optionnel)) {
       const mesure = passage?.mesure;
-      const juste = mesure !== undefined && dansIntervalle(mesure, examen.attendu);
+      const ctx = passage
+        ? {
+            examenId: id,
+            conditions: passage.conditions ?? { correction: 'asc' as const },
+            journal,
+            indexJournal: journal.indexOf(passage),
+          }
+        : null;
+      const attenduEffectif =
+        ctx && cas.resoudreExamen ? examenResolu(cas, ctx)?.attendu ?? examen.attendu : examen.attendu;
+      const juste = mesure !== undefined && attenduEffectif && dansIntervalle(mesure, attenduEffectif);
       lignes.push({
         libelle: `${definition.nom} — mesure`,
         points: juste ? POINTS_MESURE_JUSTE : 0,
         max: POINTS_MESURE_JUSTE,
         commentaire: juste
           ? undefined
-          : `Valeur attendue entre ${examen.attendu.min} et ${examen.attendu.max} ${examen.attendu.unite}.`,
+          : attenduEffectif
+            ? `Valeur attendue entre ${attenduEffectif.min} et ${attenduEffectif.max} ${attenduEffectif.unite}.`
+            : undefined,
         nature: juste ? 'acquis' : 'manque',
       });
     }
 
-    for (const interp of interpretationsExamen(examen)) {
+    const examenInterp = passage && cas.resoudreExamen
+      ? examenResolu(cas, {
+          examenId: id,
+          conditions: passage.conditions ?? { correction: 'asc' },
+          journal,
+          indexJournal: journal.indexOf(passage),
+        })
+      : examen;
+
+    for (const interp of interpretationsExamen(examenInterp ?? examen)) {
       if (!(passage || !examen.optionnel)) continue;
       const choix =
         passage?.interpretationIds?.[interp.id] ??

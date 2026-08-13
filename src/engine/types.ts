@@ -146,10 +146,48 @@ export type ExamenCas = {
   optionnel?: boolean;
 };
 
+/** Conditions choisies par l'étudiant au lancement d'un examen (ASC/SC, loupes +3). */
+export type ConditionsExamen = {
+  correction: 'asc' | 'sc';
+  /** Sur-correction sphérique +3 en VP pour le test accommodatif. */
+  loupesPlus3?: boolean;
+};
+
+/** Options de conditions disponibles pour un examen donné dans un cas. */
+export type OptionsExamen = {
+  choixCorrection?: boolean;
+  choixLoupesPlus3?: boolean;
+};
+
+export type ContexteExamen = {
+  examenId: ExamenId;
+  conditions: ConditionsExamen;
+  journal: ActionJournal[];
+  indexJournal: number;
+};
+
+/** Realisation attendue avec conditions precises (ex. cover ASC puis SC puis +3). */
+export type RealisationAttendue = {
+  examenId: ExamenId;
+  conditions: ConditionsExamen;
+  poids: number;
+  attendu?: Intervalle;
+  /** Pour le TNO : doit etre realise avant tout examen dissociant. */
+  avantDissociation?: boolean;
+  libelle?: string;
+};
+
 /** Trace ordonnee de ce que le praticien a fait, seule source du score. */
 export type ActionJournal =
   | { type: 'question'; id: string }
-  | { type: 'examen'; id: ExamenId; mesure?: number; interpretationId?: string; interpretationIds?: Record<string, string> };
+  | {
+      type: 'examen';
+      id: ExamenId;
+      conditions?: ConditionsExamen;
+      mesure?: number;
+      interpretationId?: string;
+      interpretationIds?: Record<string, string>;
+    };
 
 export type CasClinique = {
   id: string;
@@ -159,6 +197,18 @@ export type CasClinique = {
   oculaire: ParametresOculaires;
   questions: QuestionAnamnese[];
   examens: Partial<Record<ExamenId, ExamenCas>>;
+  /** Examens pour lesquels l'étudiant choisit ASC/SC et éventuellement les loupes +3. */
+  optionsExamen?: Partial<Record<ExamenId, OptionsExamen>>;
+  /**
+   * Résout le résultat, la fourchette attendue et les interprétations selon les conditions
+   * choisies et l'ordre du bilan (ex. TNO avant dissociation).
+   */
+  resoudreExamen?: (ctx: ContexteExamen) => ExamenCas | null;
+  /**
+   * Realisations attendues avec conditions (cover ASC/SC/+3, TNO precoce…).
+   * Quand present, le bareme score chaque combinaison separement.
+   */
+  realisationsAttendues?: RealisationAttendue[];
   /** Ordre attendu des examens essentiels, utilise pour le bonus de conduite du bilan. */
   ordreAttendu: ExamenId[];
   synthese: SyntheseCas;
