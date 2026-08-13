@@ -7,6 +7,24 @@ import { interpretationsExamen } from '../engine/types';
 
 const session = () => useSession.getState();
 
+const ORDRE_ANAMNESE_MAXIME = [
+  'motif',
+  'mettre-lunettes',
+  'correction-portee',
+  'depuis-quand',
+  'constance',
+  'amblyopie',
+  'diplopie',
+] as const;
+
+function poserAnamneseEtAntecedents() {
+  const { cas, poserQuestion } = session();
+  for (const id of ORDRE_ANAMNESE_MAXIME) poserQuestion(id);
+  for (const q of cas.questions) {
+    if (q.rubrique === 'antecedents' && q.poids > 0) poserQuestion(q.id);
+  }
+}
+
 function mettreLunettesSiBesoin(conditions: ConditionsExamen) {
   if (conditions.correction === 'asc' && session().correctionPortee === 'sc') {
     session().poserQuestion('mettre-lunettes');
@@ -43,10 +61,8 @@ function realiser(
 }
 
 function bilanMaximeParfait() {
-  const { cas, poserQuestion, validerSynthese } = session();
-  for (const q of cas.questions) {
-    if (q.poids > 0) poserQuestion(q.id);
-  }
+  const { validerSynthese } = session();
+  poserAnamneseEtAntecedents();
   realiser('refraction');
   realiser('acuite');
   realiser('lang', { correction: 'asc', loupesPlus3: true });
@@ -95,6 +111,25 @@ describe('cas Maxime — esotropie accommodative', () => {
   it('remet les lunettes quand on le lui demande', () => {
     session().poserQuestion('mettre-lunettes');
     expect(session().correctionPortee).toBe('asc');
+  });
+
+  it('bonus anamnese si les questions essentielles sont dans le bon ordre', () => {
+    bilanMaximeParfait();
+    const ligne = session()
+      .resultat()
+      .lignes.find((l) => l.libelle.startsWith('Conduite de l\'anamnèse'))!;
+    expect(ligne.points).toBe(5);
+    expect(ligne.nature).toBe('bonus');
+  });
+
+  it('pas de bonus anamnese si lunettes demandees apres l historique optique', () => {
+    session().poserQuestion('motif');
+    session().poserQuestion('depuis-quand');
+    session().poserQuestion('mettre-lunettes');
+    const ligne = session()
+      .resultat()
+      .lignes.find((l) => l.libelle.startsWith('Conduite de l\'anamnèse'))!;
+    expect(ligne.points).toBe(0);
   });
 
   it('Lang positif seulement en ASC + loupes +3', () => {

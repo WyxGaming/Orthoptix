@@ -701,6 +701,16 @@ export const esotropieAccommodative: CasClinique = {
     'coverLoin',
   ],
 
+  ordreAnamneseAttendu: [
+    'motif',
+    'mettre-lunettes',
+    'correction-portee',
+    'depuis-quand',
+    'constance',
+    'amblyopie',
+    'diplopie',
+  ],
+
   synthese: {
     questions: [
       {

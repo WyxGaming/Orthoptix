@@ -16,6 +16,7 @@ import { interpretationsExamen } from './types';
 export const POINTS_MESURE_JUSTE = 2;
 export const POINTS_INTERPRETATION_JUSTE = 2;
 export const BONUS_CONDUITE_DU_BILAN = 5;
+export const BONUS_CONDUITE_ANAMNESE = 5;
 
 /** Normalise une chaine pour comparer sans accents ni ponctuation. */
 export function normaliserTexte(texte: string): string {
@@ -221,6 +222,19 @@ export function ordreRespecte(cas: CasClinique, journal: ActionJournal[]): boole
   return positions.every((p, i) => i === 0 || p > positions[i - 1]!);
 }
 
+/** Ordre relatif des questions d anamnese essentielles (intercalation neutre). */
+export function ordreAnamneseRespecte(cas: CasClinique, journal: ActionJournal[]): boolean {
+  const attendu = cas.ordreAnamneseAttendu;
+  if (!attendu?.length) return true;
+
+  const posees = questionsPosees(journal)
+    .map((a) => a.id)
+    .filter((id) => attendu.includes(id));
+  const uniques = posees.filter((id, i) => posees.indexOf(id) === i);
+  const positions = uniques.map((id) => attendu.indexOf(id));
+  return positions.every((p, i) => i === 0 || p > positions[i - 1]!);
+}
+
 export function calculerScore(
   cas: CasClinique,
   journal: ActionJournal[],
@@ -370,6 +384,19 @@ export function calculerScore(
       : 'Les épreuves dissociantes ont été conduites avant l\'évaluation sensorielle, ce qui peut rompre la binocularité avant de l\'avoir mesurée.',
     nature: conduite ? 'bonus' : 'manque',
   });
+
+  if (cas.ordreAnamneseAttendu?.length) {
+    const anamnese = ordreAnamneseRespecte(cas, journal);
+    lignes.push({
+      libelle: 'Conduite de l\'anamnèse dans l\'ordre',
+      points: anamnese ? BONUS_CONDUITE_ANAMNESE : 0,
+      max: BONUS_CONDUITE_ANAMNESE,
+      commentaire: anamnese
+        ? undefined
+        : 'Commencer par le motif, redemander les lunettes, vérifier le port de la correction, puis l\'historique optique (depuis quand, constance, amblyopie, diplopie).',
+      nature: anamnese ? 'bonus' : 'manque',
+    });
+  }
 
   const total = lignes.reduce((s, l) => s + l.points, 0);
   const max = lignes.reduce((s, l) => s + l.max, 0);
