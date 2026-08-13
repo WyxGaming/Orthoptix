@@ -429,18 +429,20 @@ export const esotropiePrecoce: CasClinique = {
   },
 
   ordreAttendu: [
-    'refraction',
-    'acuite',
     'lang',
+    'tno',
     'motilite',
     'hirschberg',
     'krimsky',
-    'coverPres',
-    // On termine par la série de loin : tout ce qui se fait de près d'abord, puis on
-    // reprend les mesures sur mire lointaine.
     'krimskyLoin',
     'coverLoin',
+    'coverPres',
+    'acuite',
+    'refraction',
   ],
+
+  commentaireConduiteBilan:
+    'Lang en tête de bilan, puis motilité et mesures ; cover VL avant cover VP ; acuité et réfraction en fin de bilan.',
 
   synthese: {
     questions: [

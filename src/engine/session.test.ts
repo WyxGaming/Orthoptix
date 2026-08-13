@@ -43,7 +43,11 @@ function bilanParfait() {
   for (const q of cas.questions) {
     if (q.poids > 0) poserQuestion(q.id);
   }
-  for (const id of cas.ordreAttendu) realiser(id);
+  for (const id of cas.ordreAttendu) {
+    const examen = cas.examens[id];
+    if (examen && examen.poids < 0) continue;
+    realiser(id);
+  }
   validerSynthese(reponsesSyntheseParfaites());
 }
 
@@ -171,7 +175,7 @@ describe('bareme', () => {
       .resultat()
       .lignes.find((l) => l.libelle.startsWith('Conduite'))!;
     expect(ligne.points).toBe(0);
-    expect(ligne.commentaire).toMatch(/binocularit/i);
+    expect(ligne.commentaire).toMatch(/Lang en tête de bilan/i);
   });
 
   it('refuse une mesure hors de la fourchette attendue', () => {
