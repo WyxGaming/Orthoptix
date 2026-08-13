@@ -67,6 +67,124 @@ function extraireOrbites(racine: THREE.Object3D): PositionsOrbites | null {
   };
 }
 
+const estSphereOculaire = (nom: string) => /^Sphere/i.test(nom);
+const estMeshVisage = (nom: string) => /cube|head|face|visage/i.test(nom);
+
+function trouverMeshVisage(racine: THREE.Object3D): THREE.Mesh | null {
+  const meshes: THREE.Mesh[] = [];
+  racine.traverse((obj) => {
+    if (obj instanceof THREE.Mesh && estMeshVisage(obj.name)) meshes.push(obj);
+  });
+  return meshes[0] ?? null;
+}
+
+/**
+ * Modeles sans meshes Eye (ex. April) : orbites deduites de la boite du visage.
+ */
+function extraireOrbitesVisage(racine: THREE.Object3D): PositionsOrbites | null {
+  const visage = trouverMeshVisage(racine);
+  if (!visage) return null;
+
+  racine.updateMatrixWorld(true);
+  const boite = new THREE.Box3().setFromObject(visage);
+  const taille = boite.getSize(new THREE.Vector3());
+  const hauteur = taille.y;
+  if (hauteur < 1e-3) return null;
+
+  const centre = boite.getCenter(new THREE.Vector3());
+  const yOeil = centre.y - hauteur * 0.012;
+  const zOeil = boite.max.z - taille.z * 0.14;
+  const bande = hauteur * 0.06;
+
+  const xs: number[] = [];
+  const geo = visage.geometry as THREE.BufferGeometry;
+  const pos = geo.getAttribute('position');
+  if (!pos) return null;
+
+  const local = new THREE.Vector3();
+  for (let i = 0; i < pos.count; i++) {
+    local.fromBufferAttribute(pos, i);
+    const w = visage.localToWorld(local.clone());
+    if (Math.abs(w.y - yOeil) <= bande) xs.push(w.x);
+  }
+
+  let demiEcart = taille.x * 0.14;
+  if (xs.length >= 20) {
+    xs.sort((a, b) => a - b);
+    demiEcart = Math.min((xs[Math.floor(xs.length * 0.92)]! - xs[Math.floor(xs.length * 0.08)]!) / 4, 2.85);
+  }
+
+  const rayon = Math.max(0.35, Math.min(hauteur * 0.055, RAYON_GLOBE));
+  return {
+    OD: [centre.x - demiEcart, yOeil, zOeil],
+    OG: [centre.x + demiEcart, yOeil, zOeil],
+    rayon,
+  };
+}
+
+/** @deprecated Conservé pour modeles avec sphere de reference proche du visage. */
+function extraireOrbitesSphere(racine: THREE.Object3D): PositionsOrbites | null {
+  const spheres: { centre: THREE.Vector3; rayon: number }[] = [];
+
+  racine.updateMatrixWorld(true);
+  racine.traverse((obj) => {
+    if (!(obj instanceof THREE.Mesh) || !estSphereOculaire(obj.name)) return;
+    const boite = new THREE.Box3().setFromObject(obj);
+    const centre = boite.getCenter(new THREE.Vector3());
+    const taille = boite.getSize(new THREE.Vector3());
+    spheres.push({ centre, rayon: Math.max(taille.x, taille.y, taille.z) / 2 });
+  });
+
+  if (spheres.length === 0) return null;
+
+  if (spheres.length >= 2) {
+    const triees = [...spheres].sort((a, b) => a.centre.x - b.centre.x);
+    const od = triees[0]!;
+    const og = triees[triees.length - 1]!;
+    const rayon = Math.min(od.rayon, og.rayon, RAYON_GLOBE) * 0.95;
+    return {
+      OD: [od.centre.x, od.centre.y, od.centre.z],
+      OG: [og.centre.x, og.centre.y, og.centre.z],
+      rayon: Math.max(0.35, rayon),
+    };
+  }
+
+  const ref = spheres[0]!;
+  const visage = trouverMeshVisage(racine);
+  if (!visage) return null;
+
+  const yOeil = ref.centre.y;
+  const bande = ref.rayon * 0.85;
+  const xs: number[] = [];
+  const zs: number[] = [];
+  const geo = visage.geometry as THREE.BufferGeometry;
+  const pos = geo.getAttribute('position');
+  if (!pos) return null;
+  const local = new THREE.Vector3();
+  for (let i = 0; i < pos.count; i++) {
+    local.fromBufferAttribute(pos, i);
+    const w = visage.localToWorld(local.clone());
+    if (Math.abs(w.y - yOeil) <= bande) {
+      xs.push(w.x);
+      zs.push(w.z);
+    }
+  }
+  if (xs.length < 20) return null;
+
+  xs.sort((a, b) => a - b);
+  const x05 = xs[Math.floor(xs.length * 0.08)]!;
+  const x95 = xs[Math.floor(xs.length * 0.92)]!;
+  const demiEcart = (x95 - x05) / 4;
+  const midX = (x05 + x95) / 2;
+  const zMoy = zs.reduce((s, z) => s + z, 0) / zs.length;
+
+  return {
+    OD: [midX - demiEcart, yOeil, zMoy - 0.12],
+    OG: [midX + demiEcart, yOeil, zMoy - 0.12],
+    rayon: Math.max(0.35, Math.min(ref.rayon * 0.95, RAYON_GLOBE)),
+  };
+}
+
 function TeteMesh({
   config,
   onOrbites,
@@ -83,6 +201,11 @@ function TeteMesh({
     clone.position.set(0, 0, 0);
     clone.scale.set(1, 1, 1);
     clone.updateMatrixWorld(true);
+
+    // Masquer lampes / yeux du mesh avant la boite englobante (April a des lampes hors champ).
+    clone.traverse((obj) => {
+      if (config.masquer?.test(obj.name)) obj.visible = false;
+    });
 
     const boite = new THREE.Box3().setFromObject(clone);
     const taille = boite.getSize(new THREE.Vector3());
@@ -102,7 +225,12 @@ function TeteMesh({
     );
     clone.updateMatrixWorld(true);
 
-    const orbites = config.orbites ?? extraireOrbites(clone) ?? ORBITES_DEFAUT;
+    const orbites =
+      config.orbites ??
+      extraireOrbites(clone) ??
+      extraireOrbitesVisage(clone) ??
+      extraireOrbitesSphere(clone) ??
+      ORBITES_DEFAUT;
     onOrbites?.(orbites);
 
     clone.traverse((obj) => {

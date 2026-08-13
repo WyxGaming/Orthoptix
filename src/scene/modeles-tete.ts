@@ -1,5 +1,4 @@
 import type { PositionsOrbites } from './orbites';
-import { ORBITES_DEFAUT } from './orbites';
 
 export type ConfigModeleTete = {
   url: string;
@@ -15,16 +14,6 @@ export type ConfigModeleTete = {
 };
 
 const DECALAGE_ANGELICA: [number, number, number] = [0, 1.2, 1.8];
-
-/**
- * Orbites April calibrées sur le mesh visage (Cube.002) après mise à l'échelle 22 cm.
- * Le modèle n'a qu'une sphère oculaire unique (Sphere_0), pas de meshes Eye séparés.
- */
-const ORBITES_APRIL: PositionsOrbites = {
-  OD: [-2.75, 0.55, -0.05],
-  OG: [2.75, 0.55, -0.05],
-  rayon: ORBITES_DEFAUT.rayon * 0.92,
-};
 
 export const MODELE_TETE_DEFAUT = 'esotropie-precoce';
 
@@ -45,7 +34,7 @@ export const MODELES_TETE: Record<string, ConfigModeleTete> = {
     hauteurVisageCm: 22,
     decalageFin: [0, 0.6, 1.2],
     masquer: /^(Lamp|Sphere)/i,
-    orbites: ORBITES_APRIL,
+    // Orbites extraites automatiquement (Sphere_0 + mesh visage) dans TetePatient.
     credit: {
       titre: 'April',
       auteur: 'RubenBuchholz644c9d600cf24bcb',
