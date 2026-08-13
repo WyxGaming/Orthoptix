@@ -83,7 +83,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
         "Sur les photos surtout, et quand elle regarde sur le côté. De face, de temps en temps, on se demande si on ne s'imagine pas.",
       poids: 5,
       commentaire:
-        "Photos et regard latéral : l'épicanthus accentue l'illusion — argument clé une fois le bilan objectif fait.",
+        "Photos et regard latéral : l'illusion s'accentue en latéral — argument objectif une fois l'épicanthus identifié à l'examen.",
     },
     {
       id: 'developpement',
@@ -98,12 +98,12 @@ export const pseudostrabismeEpicanthus: CasClinique = {
     {
       id: 'morphologie',
       rubrique: 'anamnese',
-      libelle: 'Avez-vous remarqué des particularités des paupières ou du nez ? (parents)',
+      libelle: 'Avez-vous remarqué quelque chose de particulier au niveau des paupières ou du nez ? (parents)',
       reponse:
-        "Elle a les paupières un peu plissées vers le nez, comme sa mère. On ne voit presque pas le blanc de l'œil du côté du nez — on pensait que c'était normal pour elle. Personne ne nous a expliqué que ça pouvait faire « loucher ».",
-      poids: 5,
+        "Non, pas vraiment. Pour nous elle a un visage normal — on ne voit rien de bizarre au niveau des paupières. C'est surtout son regard qui nous inquiète.",
+      poids: 3,
       commentaire:
-        "Les parents décrivent en langage courant, sans connaître le terme « épicanthus » : c'est à l'examen que le praticien fait le lien.",
+        "Les parents normalisent la morphologie : l'épicanthus leur échappe totalement. Seul l'examen le met en évidence.",
     },
     {
       id: 'correction',
