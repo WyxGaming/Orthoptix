@@ -406,18 +406,13 @@ export const esotropiePrecoce: CasClinique = {
               correct: true,
             },
             {
-              id: 'mesure-angle',
-              libelle: 'Pour mesurer l AO',
-              correct: false,
-            },
-            {
               id: 'stereoscopie',
               libelle: 'Pour quantifier la vision stereoscopique',
               correct: false,
             },
           ],
           explication:
-            'Le synoptophore permet aussi de mesurer l angle objectif, mais ici l angle est deja connu au cover test. L interet principal est sensoriel : decouvrir la correspondance retinienne.',
+            'L interet du synoptophore ici est sensoriel : decouvrir la correspondance retinienne, pas quantifier la stereoscopie.',
         },
         {
           id: 'correspondance-patiente',

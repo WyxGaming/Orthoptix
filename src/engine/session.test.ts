@@ -205,7 +205,7 @@ describe('bareme', () => {
     session().lancerExamen('deviometrie');
     session().validerExamen({
       interpretationIds: {
-        'pourquoi-synoptophore': 'mesure-angle',
+        'pourquoi-synoptophore': 'stereoscopie',
         'correspondance-patiente': 'normale',
       },
     });
