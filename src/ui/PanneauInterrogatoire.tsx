@@ -1,25 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { CATALOGUE_EXAMENS, LIBELLES_RUBRIQUES, ORDRE_RUBRIQUES } from '../engine/exams';
 import { useSession } from '../engine/session';
 import type { QuestionAnamnese } from '../engine/types';
 import { Bouton } from './composants';
-
-/**
- * Melange deterministe : l'ordre de declaration du cas ne doit pas trahir
- * quelles questions sont pertinentes, mais il doit rester stable d'une session
- * a l'autre pour que deux etudiants voient la meme liste.
- */
-function melangeStable<T extends { id: string }>(items: T[]): T[] {
-  const cle = (id: string) => {
-    let h = 2166136261;
-    for (let i = 0; i < id.length; i++) {
-      h ^= id.charCodeAt(i);
-      h = Math.imul(h, 16777619);
-    }
-    return h >>> 0;
-  };
-  return [...items].sort((a, b) => cle(a.id) - cle(b.id));
-}
 
 function ListeQuestions({ questions }: { questions: QuestionAnamnese[] }) {
   const poserQuestion = useSession((s) => s.poserQuestion);
@@ -95,10 +78,9 @@ function EtagereExamens() {
 }
 
 export function PanneauInterrogatoire() {
-  const cas = useSession((s) => s.cas);
+  const questions = useSession((s) => s.questionsOrdre);
   const [onglet, setOnglet] = useState<'anamnese' | 'antecedents' | 'examens'>('anamnese');
 
-  const questions = useMemo(() => melangeStable(cas.questions), [cas]);
   const anamnese = questions.filter((q) => q.rubrique === 'anamnese');
   const antecedents = questions.filter((q) => q.rubrique === 'antecedents');
 

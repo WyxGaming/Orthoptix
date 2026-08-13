@@ -13,7 +13,19 @@ import {
 } from '../domain/ocular-model';
 import { CATALOGUE_EXAMENS } from './exams';
 import { calculerScore, dansIntervalle, type Resultat } from './scoring';
-import type { ActionJournal, CasClinique, ExamenId, ReponsesSynthese } from './types';
+import type { ActionJournal, CasClinique, ExamenId, QuestionAnamnese, ReponsesSynthese } from './types';
+
+/** Melange Fisher-Yates : ordre different a chaque visite / nouveau bilan. */
+export function melangeAleatoire<T>(items: readonly T[]): T[] {
+  const copie = [...items];
+  for (let i = copie.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = copie[i]!;
+    copie[i] = copie[j]!;
+    copie[j] = tmp;
+  }
+  return copie;
+}
 
 export type Mode = 'entrainement' | 'evaluation';
 export type Phase = 'accueil' | 'bilan' | 'synthese' | 'debriefing';
@@ -33,6 +45,8 @@ export type LigneBilan = {
 
 type SessionState = {
   cas: CasClinique;
+  /** Questions anamnese + antecedents, melangees au demarrage du bilan. */
+  questionsOrdre: QuestionAnamnese[];
   mode: Mode;
   phase: Phase;
   journal: ActionJournal[];
@@ -68,6 +82,7 @@ const oeilFixateurInitial = (cas: CasClinique): Eye =>
 
 export const useSession = create<SessionState>((set, get) => ({
   cas: undefined as unknown as CasClinique,
+  questionsOrdre: [],
   mode: 'entrainement',
   phase: 'accueil',
   journal: [],
@@ -80,6 +95,7 @@ export const useSession = create<SessionState>((set, get) => ({
   demarrer: (cas, mode) =>
     set({
       cas,
+      questionsOrdre: melangeAleatoire(cas.questions),
       mode,
       phase: 'bilan',
       journal: [],

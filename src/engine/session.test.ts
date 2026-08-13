@@ -62,6 +62,16 @@ describe('conduite de la session', () => {
     session().poserQuestion('groupe-sanguin');
     expect(session().messages).toHaveLength(0);
   });
+
+  it('melange les questions a chaque nouveau bilan', () => {
+    const ordres = new Set<string>();
+    for (let i = 0; i < 24; i++) {
+      session().demarrer(esotropiePrecoce, 'entrainement');
+      ordres.add(session().questionsOrdre.map((q) => q.id).join('|'));
+    }
+    expect(ordres.size).toBeGreaterThan(1);
+    expect(session().questionsOrdre).toHaveLength(esotropiePrecoce.questions.length);
+  });
 });
 
 describe('manoeuvres d occlusion', () => {
