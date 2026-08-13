@@ -407,7 +407,7 @@ export const esotropiePrecoce: CasClinique = {
             },
             {
               id: 'mesure-angle',
-              libelle: 'Pour mesurer l angle objectif, deja connu au cover test',
+              libelle: 'Pour mesurer l AO',
               correct: false,
             },
             {
@@ -417,7 +417,7 @@ export const esotropiePrecoce: CasClinique = {
             },
           ],
           explication:
-            'L angle est deja mesure aux prismes. L interet du synoptophore ici est sensoriel : etudier la correspondance retinienne.',
+            'Le synoptophore permet aussi de mesurer l angle objectif, mais ici l angle est deja connu au cover test. L interet principal est sensoriel : decouvrir la correspondance retinienne.',
         },
         {
           id: 'correspondance-patiente',
