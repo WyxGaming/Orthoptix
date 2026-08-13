@@ -12,6 +12,8 @@ export type ConfigModeleTete = {
   orbites?: PositionsOrbites;
   /** Ajustement fin des orbites extraites automatiquement [x, y, z] en cm. */
   decalageOrbites?: [number, number, number];
+  /** Retire des cm a l'ecart interpupillaire total (chaque oeil rapproche de la moitie). */
+  reductionEcartPupillaireCm?: number;
   credit?: { titre: string; auteur: string; url: string; licence: string };
 };
 
@@ -37,6 +39,7 @@ export const MODELES_TETE: Record<string, ConfigModeleTete> = {
     decalageFin: [0, 0.6, 1.2],
     masquer: /^(Lamp|Sphere)/i,
     decalageOrbites: [0, 3, -1.5],
+    reductionEcartPupillaireCm: 1,
     // Orbites extraites automatiquement dans TetePatient, puis decalageOrbites.
     credit: {
       titre: 'April',

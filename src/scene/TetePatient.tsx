@@ -196,6 +196,16 @@ function appliquerDecalageOrbites(
   };
 }
 
+/** Rapporte les deux yeux vers le centre (OD en +X, OG en -X). */
+function reduireEcartPupillaire(orbites: PositionsOrbites, cm: number): PositionsOrbites {
+  const demi = cm / 2;
+  return {
+    OD: [orbites.OD[0] + demi, orbites.OD[1], orbites.OD[2]],
+    OG: [orbites.OG[0] - demi, orbites.OG[1], orbites.OG[2]],
+    rayon: orbites.rayon,
+  };
+}
+
 function TeteMesh({
   config,
   onOrbites,
@@ -242,9 +252,12 @@ function TeteMesh({
       extraireOrbitesVisage(clone) ??
       extraireOrbitesSphere(clone) ??
       ORBITES_DEFAUT;
-    const orbites = config.decalageOrbites
+    let orbites = config.decalageOrbites
       ? appliquerDecalageOrbites(orbitesBrutes, config.decalageOrbites)
       : orbitesBrutes;
+    if (config.reductionEcartPupillaireCm) {
+      orbites = reduireEcartPupillaire(orbites, config.reductionEcartPupillaireCm);
+    }
     onOrbites?.(orbites);
 
     clone.traverse((obj) => {
