@@ -36,8 +36,7 @@ function realiserMulti(
   passages: Array<{ conditions: ConditionsExamen; mesure: number }>,
 ) {
   mettreLunettesSiBesoin({ correction: 'asc' });
-  const { cas, lancerExamen } = session();
-  lancerExamen(id);
+  session().lancerExamen(id);
   session().validerExamen({
     passages: passages.map((p) => ({
       conditions: p.conditions,
