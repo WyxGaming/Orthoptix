@@ -275,12 +275,12 @@ export const esotropiePrecoce: CasClinique = {
         options: [
           {
             id: 'hyperaction-oi',
-            libelle: 'Hyperaction des obliques inferieurs, bilaterale',
+            libelle: 'Hyperaction des obliques inferieurs',
             correct: true,
           },
           {
-            id: 'paralysie-droit-lateral',
-            libelle: 'Paralysie bilaterale des droits lateraux',
+            id: 'paralysie-droits-mediaux',
+            libelle: 'Paralysie bilaterale des droits mediaux',
             correct: false,
           },
           { id: 'dvd', libelle: 'Deviation verticale dissociee', correct: false },
