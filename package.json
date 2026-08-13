@@ -14,7 +14,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepare:april-model": "node scripts/prepare-april-model.mjs && npx @gltf-transform/cli copy public/models/april/scene.gltf public/models/april/maxime.glb"
+    "prepare:april-model": "node scripts/prepare-april-model.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",

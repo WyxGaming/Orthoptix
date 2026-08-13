@@ -16,11 +16,14 @@ export type ConfigModeleTete = {
 
 const DECALAGE_ANGELICA: [number, number, number] = [0, 1.2, 1.8];
 
-/** Orbites provisoires pour April — calibrage fin a venir. */
+/**
+ * Orbites April calibrées sur le mesh visage (Cube.002) après mise à l'échelle 22 cm.
+ * Le modèle n'a qu'une sphère oculaire unique (Sphere_0), pas de meshes Eye séparés.
+ */
 const ORBITES_APRIL: PositionsOrbites = {
-  OD: [-2.85, 0.35, -0.15],
-  OG: [2.85, 0.35, -0.15],
-  rayon: ORBITES_DEFAUT.rayon,
+  OD: [-2.75, 0.55, -0.05],
+  OG: [2.75, 0.55, -0.05],
+  rayon: ORBITES_DEFAUT.rayon * 0.92,
 };
 
 export const MODELE_TETE_DEFAUT = 'esotropie-precoce';
@@ -40,8 +43,8 @@ export const MODELES_TETE: Record<string, ConfigModeleTete> = {
   'esotropie-accommodative': {
     url: '/models/april/maxime.glb',
     hauteurVisageCm: 22,
-    decalageFin: [0, 0.8, 1.4],
-    masquer: /^Lamp/i,
+    decalageFin: [0, 0.6, 1.2],
+    masquer: /^(Lamp|Sphere)/i,
     orbites: ORBITES_APRIL,
     credit: {
       titre: 'April',

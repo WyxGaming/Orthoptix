@@ -20,7 +20,7 @@ Le visage 3D varie selon le cas clinique :
 - **Léa** — [Angelica](https://sketchfab.com/3d-models/angelica-27f75fa94c384000bb6a79a3000f8e80) par [NikZava284](https://sketchfab.com/NikZava284) (CC-BY-4.0), `public/models/angelica/lea.glb`
 - **Maxime** — [April](https://sketchfab.com/3d-models/april-4027a613edc14aacb3751c878a08d46e) par [RubenBuchholz644c9d600cf24bcb](https://sketchfab.com/RubenBuchholz644c9d600cf24bcb) (CC-BY-4.0), `public/models/april/maxime.glb`
 
-Pour régénérer `maxime.glb` : déposer les 7 PNG dans `public/models/april/textures/` (voir le README du dossier), puis `npm run prepare:april-model`.
+Pour régénérer `maxime.glb` (textures procédurales embarquées, sans upload manuel) : `npm run prepare:april-model`.
 
 Les globes oculaires cliniques (reflets, cover, prismes) restent générés par le moteur Orthoptix.
 

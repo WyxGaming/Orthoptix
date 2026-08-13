@@ -1,21 +1,11 @@
 # Textures April (Maxime)
 
-Copier ici les 7 PNG exportés avec le GLTF Sketchfab, **avec ces noms exacts** :
+Les textures sont **générées automatiquement** par `npm run prepare:april-model`.
+Aucun fichier PNG à déposer manuellement.
 
-| Fichier | Contenu |
-|---|---|
-| `Material.004_baseColor.png` | Peau / visage (albedo) |
-| `Material.004_metallicRoughness.png` | ORM visage (métal / rugosité) |
-| `Material.004_normal.png` | Normal map visage |
-| `Material.002_baseColor.png` | Globe oculaire (yeux du mesh, masqués en jeu) |
-| `hair_baseColor.png` | Cheveux (albedo) |
-| `hair_metallicRoughness.png` | Cheveux (alpha / ORM — fond magenta) |
-| `hair_normal.png` | Normal map cheveux |
+Le script produit des textures procédurales (peau, cheveux, yeux) puis emballe
+tout dans `../maxime.glb` avec les textures embarquées.
 
-Puis à la racine du projet :
-
-```bash
-npm run prepare:april-model
-```
-
-Le script emballe tout dans `../maxime.glb`.
+Pour remplacer par les textures Sketchfab originales : déposer les 7 PNG exportés
+depuis Sketchfab (noms identiques à ceux référencés dans `scene-source.gltf`),
+puis relancer `npm run prepare:april-model`.
