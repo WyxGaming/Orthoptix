@@ -9,7 +9,7 @@
 import { createHash } from 'node:crypto';
 import { execSync } from 'node:child_process';
 import { deflateSync } from 'node:zlib';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -165,6 +165,37 @@ function textureOeil(w, h) {
   });
 }
 
+function texturesCompletes() {
+  return TEXTURES.every((f) => existsSync(join(texturesDir, f)));
+}
+
+/** Récupère les PNG déposés via l'upload GitHub (public/models/*.png.png). */
+function importerDepuisUpload() {
+  const uploadDir = join(racine, 'public/models');
+  if (!existsSync(uploadDir)) return 0;
+
+  mkdirSync(texturesDir, { recursive: true });
+  let copies = 0;
+
+  for (const nom of TEXTURES) {
+    const cible = join(texturesDir, nom);
+    const base = nom.replace(/\.png$/, '');
+    const candidats = [
+      join(uploadDir, `${base}.png.png`),
+      join(uploadDir, `${nom}.png`),
+      join(uploadDir, nom),
+    ];
+
+    const src = candidats.find((p) => existsSync(p));
+    if (!src) continue;
+    copyFileSync(src, cible);
+    copies++;
+    console.log(`Importé : ${src.replace(racine, '.')} → textures/${nom}`);
+  }
+
+  return copies;
+}
+
 function genererTextures() {
   mkdirSync(texturesDir, { recursive: true });
   const w = 256;
@@ -181,9 +212,11 @@ function genererTextures() {
 
   for (const [nom, rgba] of Object.entries(map)) {
     const fichier = nom.endsWith('.png') ? nom : `${nom}.png`;
-    writeFileSync(join(texturesDir, fichier), encodePng(w, h, rgba));
+    const chemin = join(texturesDir, fichier);
+    if (existsSync(chemin)) continue;
+    writeFileSync(chemin, encodePng(w, h, rgba));
   }
-  console.log(`Textures procédurales générées (${TEXTURES.length} PNG, ${w}×${h}).`);
+  console.log(`Textures procédurales complétées (${w}×${h}) pour les fichiers manquants.`);
 }
 
 // ── Pipeline GLB ─────────────────────────────────────────────────────────────
@@ -198,7 +231,15 @@ if (!existsSync(join(dossier, 'scene.bin'))) {
   process.exit(1);
 }
 
-genererTextures();
+importerDepuisUpload();
+
+if (texturesCompletes()) {
+  console.log('Textures Sketchfab trouvées — pas de génération procédurale.');
+} else {
+  const manquantes = TEXTURES.filter((f) => !existsSync(join(texturesDir, f)));
+  console.warn(`Textures manquantes (${manquantes.length}/7) — complément procédural.`);
+  genererTextures();
+}
 
 const gltf = JSON.parse(readFileSync(source, 'utf8'));
 writeFileSync(join(dossier, 'scene.gltf'), `${JSON.stringify(gltf, null, 2)}\n`);
