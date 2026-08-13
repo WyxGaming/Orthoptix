@@ -1,0 +1,11 @@
+Model Information:
+* title:	April
+* source:	https://sketchfab.com/3d-models/april-4027a613edc14aacb3751c878a08d46e
+* author:	RubenBuchholz644c9d600cf24bcb (https://sketchfab.com/RubenBuchholz644c9d600cf24bcb)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "April" (https://sketchfab.com/3d-models/april-4027a613edc14aacb3751c878a08d46e) by RubenBuchholz644c9d600cf24bcb (https://sketchfab.com/RubenBuchholz644c9d600cf24bcb) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
