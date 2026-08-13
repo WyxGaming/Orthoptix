@@ -1,6 +1,12 @@
-import { useMemo } from 'react';
+import { useGLTF } from '@react-three/drei';
+import { Suspense, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import * as THREE from 'three';
 import type { PositionsOrbites } from './orbites';
+
+/** glTF + scene.bin dans public/models/lunettes/, ou lunettes.glb compresse. */
+const MODELE_GLTf = '/models/lunettes/scene.gltf';
+const MODELE_GLB = '/models/lunettes/lunettes.glb';
+const BIN_URL = '/models/lunettes/scene.bin';
 
 /** Demi-largeur de verre au-dela de l'ecart pupillaire, en cm. */
 const DEMI_VERRE_CM = 1.15;
@@ -21,13 +27,13 @@ function cadreOrbites(orbites: PositionsOrbites) {
       (odY + ogY) / 2 + DECALAGE_FIN[1],
       (odZ + ogZ) / 2 + DECALAGE_FIN[2],
     ] as [number, number, number],
+    ecartPupillaire,
     demiEcart: ecartPupillaire / 2,
     demiVerre: ecartPupillaire / 2 + DEMI_VERRE_CM,
   };
 }
 
-/** Monture procedurale calée sur les orbites : legere, sans asset externe. */
-export function LunettesPatient({ orbites }: { orbites: PositionsOrbites }) {
+function LunettesProcedurales({ orbites }: { orbites: PositionsOrbites }) {
   const { position, demiEcart, demiVerre } = cadreOrbites(orbites);
   const rayonVerre = demiVerre * 0.72;
   const epaisseurMonture = 0.07;
@@ -74,5 +80,77 @@ export function LunettesPatient({ orbites }: { orbites: PositionsOrbites }) {
         </mesh>
       ))}
     </group>
+  );
+}
+
+function LunettesGltf({ url, orbites }: { url: string; orbites: PositionsOrbites }) {
+  const { scene } = useGLTF(url);
+  const clone = useMemo(() => scene.clone(true), [scene]);
+
+  useLayoutEffect(() => {
+    clone.position.set(0, 0, 0);
+    clone.rotation.set(0, 0, 0);
+    clone.scale.set(1, 1, 1);
+    clone.updateMatrixWorld(true);
+
+    const boite = new THREE.Box3().setFromObject(clone);
+    const taille = boite.getSize(new THREE.Vector3());
+    if (taille.x < 1e-3) return;
+
+    const { position, ecartPupillaire } = cadreOrbites(orbites);
+    const largeurCible = ecartPupillaire + DEMI_VERRE_CM * 2;
+    const facteur = largeurCible / taille.x;
+    clone.scale.setScalar(facteur);
+    clone.updateMatrixWorld(true);
+
+    const centreEchelle = new THREE.Box3().setFromObject(clone).getCenter(new THREE.Vector3());
+    clone.position.set(
+      position[0] - centreEchelle.x,
+      position[1] - centreEchelle.y,
+      position[2] - centreEchelle.z,
+    );
+  }, [clone, orbites]);
+
+  return <primitive object={clone} />;
+}
+
+type SourceModele = 'glb' | 'gltf' | 'procedurale';
+
+async function detecterSource(): Promise<SourceModele> {
+  try {
+    const glb = await fetch(MODELE_GLB, { method: 'HEAD' });
+    if (glb.ok) return 'glb';
+    const bin = await fetch(BIN_URL, { method: 'HEAD' });
+    if (bin.ok) return 'gltf';
+  } catch {
+    /* repli procedurale */
+  }
+  return 'procedurale';
+}
+
+/**
+ * Monture Sketchfab si lunettes.glb ou scene.bin est present, sinon repli procedurale.
+ */
+export function LunettesPatient({ orbites }: { orbites: PositionsOrbites }) {
+  const [source, setSource] = useState<SourceModele | null>(null);
+
+  useEffect(() => {
+    let actif = true;
+    detecterSource().then((mode) => {
+      if (actif) setSource(mode);
+    });
+    return () => {
+      actif = false;
+    };
+  }, []);
+
+  if (source === null) return null;
+  if (source === 'procedurale') return <LunettesProcedurales orbites={orbites} />;
+
+  const url = source === 'glb' ? MODELE_GLB : MODELE_GLTf;
+  return (
+    <Suspense fallback={<LunettesProcedurales orbites={orbites} />}>
+      <LunettesGltf url={url} orbites={orbites} />
+    </Suspense>
   );
 }
