@@ -24,7 +24,7 @@ export function Debriefing() {
         <div>
           <h1 className="text-2xl font-semibold text-slate-100">Debriefing — {cas.titre}</h1>
           <p className="text-slate-400">
-            {cas.patient.prenom}, {cas.patient.ageLibelle ?? `${cas.patient.age} ans`}.
+            {cas.patient.prenom}, {cas.patient.age} ans.
           </p>
         </div>
         <div className="text-right">

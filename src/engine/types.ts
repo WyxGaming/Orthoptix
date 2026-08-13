@@ -1,5 +1,4 @@
 import type { ParametresOculaires } from '../domain/ocular-model';
-import type { EtapeComportementVisuelId } from './comportement-visuel';
 
 export type Rubrique =
   | 'anamnese'
@@ -12,7 +11,6 @@ export type Rubrique =
 
 export type ExamenId =
   | 'acuite'
-  | 'comportementVisuel'
   | 'refraction'
   | 'lang'
   | 'tno'
@@ -26,7 +24,6 @@ export type ExamenId =
   | 'krimskyLoin'
   | 'coverPres'
   | 'coverLoin'
-  | 'reactionOcclusion'
   | 'deviometrie'
   | 'biprisme';
 
@@ -35,12 +32,7 @@ export type ExamenId =
  * Un examen de type presentation n'a pas d'interaction : on montre un test au patient
  * et on recueille sa reponse.
  */
-export type ModeInteraction =
-  | 'presentation'
-  | 'reflets'
-  | 'motilite'
-  | 'occlusion'
-  | 'comportementVisuel';
+export type ModeInteraction = 'presentation' | 'reflets' | 'motilite' | 'occlusion';
 
 export type DefinitionExamen = {
   id: ExamenId;
@@ -161,8 +153,6 @@ export type ExamenCas = {
   nonContributifSiPresente?: boolean;
   /** Points retires si l'examen non contributif est presente. */
   malusSiPresente?: number;
-  /** Ordre strict des epreuves pour l examen comportement visuel. */
-  etapesComportementVisuelAttendues?: EtapeComportementVisuelId[];
 };
 
 /** Conditions choisies par l'étudiant au lancement d'un examen (ASC/SC, loupes +3). */
@@ -206,21 +196,13 @@ export type ActionJournal =
       mesure?: number;
       interpretationId?: string;
       interpretationIds?: Record<string, string>;
-      etapesComportementVisuel?: EtapeComportementVisuelId[];
     };
 
 export type CasClinique = {
   id: string;
   titre: string;
   resume: string;
-  patient: {
-    prenom: string;
-    age: number;
-    /** Affichage alternatif (ex. « 5 mois ») à la place de « {age} ans ». */
-    ageLibelle?: string;
-    sexe: 'F' | 'M';
-    motif: string;
-  };
+  patient: { prenom: string; age: number; sexe: 'F' | 'M'; motif: string };
   oculaire: ParametresOculaires;
   /** Le patient arrive sans lunettes ; le praticien doit les lui redemander. */
   debutSansCorrection?: boolean;
@@ -247,10 +229,6 @@ export type CasClinique = {
    * de l interrogatoire. Seules ces questions comptent ; les autres peuvent s intercaler.
    */
   ordreAnamneseAttendu?: string[];
-  /** Examens absents de l etagere pour ce cas (remplaces par d autres epreuves). */
-  examensMasques?: ExamenId[];
-  /** Message affiche sous l etagere d examens (cooperation, conduite attendue…). */
-  messageExamens?: string;
   synthese: SyntheseCas;
   /** Compte rendu tel que l'aurait redige un orthoptiste experimente. */
   compteRenduExpert: string[];

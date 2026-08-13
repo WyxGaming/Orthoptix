@@ -44,9 +44,7 @@ function EtagereExamens() {
   return (
     <div className="space-y-4">
       {ORDRE_RUBRIQUES.map((rubrique) => {
-        const examens = Object.values(CATALOGUE_EXAMENS).filter(
-          (e) => e.rubrique === rubrique && !cas.examensMasques?.includes(e.id),
-        );
+        const examens = Object.values(CATALOGUE_EXAMENS).filter((e) => e.rubrique === rubrique);
         return (
           <div key={rubrique}>
             <h3 className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
@@ -78,10 +76,9 @@ function EtagereExamens() {
         );
       })}
       <p className="pt-1 text-xs text-slate-500">
-        {cas.messageExamens ??
-          `Tous les examens du cabinet sont accessibles à tout moment. À vous de choisir ceux
+        Tous les examens du cabinet sont accessibles à tout moment. À vous de choisir ceux
         qu'appelle ce tableau clinique — et de renoncer aux autres. Passez la souris sur un examen
-        pour en relire le principe. ${cas.patient.prenom} est coopérant${cas.patient.sexe === 'F' ? 'e' : ''}.`}
+        pour en relire le principe. {cas.patient.prenom} est coopérant{cas.patient.sexe === 'F' ? 'e' : ''}.
         {Object.keys(cas.optionsExamen ?? {}).length > 0 &&
           ' Pour certains examens, choisissez ASC ou SC et éventuellement les loupes +3 avant de présenter le test.'}
         {cas.debutSansCorrection &&

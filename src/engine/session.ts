@@ -23,8 +23,6 @@ import type {
   QuestionAnamnese,
   ReponsesSynthese,
 } from './types';
-import type { EtapeComportementVisuelId } from './comportement-visuel';
-import { ordreComportementVisuelRespecte } from './comportement-visuel';
 import { interpretationsExamen } from './types';
 
 /** Melange Fisher-Yates : ordre different a chaque visite / nouveau bilan. */
@@ -89,8 +87,6 @@ type SessionState = {
       interpretationId?: string;
       interpretationIds?: Record<string, string>;
     }>;
-    /** Etapes consignees pour l examen comportement visuel. */
-    etapesComportementVisuel?: EtapeComportementVisuelId[];
   }) => void;
   abandonnerExamen: () => void;
   passerALaSynthese: () => void;
@@ -236,7 +232,6 @@ export const useSession = create<SessionState>((set, get) => ({
       mesure?: number;
       interpretationId?: string;
       interpretationIds?: Record<string, string>;
-      etapesComportementVisuel?: EtapeComportementVisuelId[];
     };
 
     const passages: PassageSaisie[] = saisie?.passages?.length
@@ -250,7 +245,6 @@ export const useSession = create<SessionState>((set, get) => ({
             mesure: saisie?.mesure,
             interpretationId: saisie?.interpretationId,
             interpretationIds: saisie?.interpretationIds,
-            etapesComportementVisuel: saisie?.etapesComportementVisuel,
           },
         ];
 
@@ -296,27 +290,9 @@ export const useSession = create<SessionState>((set, get) => ({
         mesure: passage.mesure,
         interpretationId: passage.interpretationId,
         interpretationIds: passage.interpretationIds,
-        etapesComportementVisuel: passage.etapesComportementVisuel,
       };
 
       if (mode === 'entrainement' && examen) {
-        if (
-          examenEnCours === 'comportementVisuel' &&
-          passage.etapesComportementVisuel?.length &&
-          examen.etapesComportementVisuelAttendues?.length
-        ) {
-          const ordreOk = ordreComportementVisuelRespecte(
-            passage.etapesComportementVisuel,
-            examen.etapesComportementVisuelAttendues,
-          );
-          messages.push({
-            id: ++compteurMessages,
-            texte: ordreOk
-              ? 'Ordre des épreuves correct (lumière mono → bino, objet mono → bino).'
-              : 'Ordre attendu : lumière monoculaire, lumière binoculaire, objet monoculaire, objet binoculaire.',
-            ton: ordreOk ? 'positif' : 'negatif',
-          });
-        }
         if (examen.nonContributifSiPresente && examen.justificationMalus) {
           messages.push({ id: ++compteurMessages, texte: examen.justificationMalus, ton: 'negatif' });
         } else if (examen.poids < 0 && examen.justificationMalus) {

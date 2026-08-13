@@ -23,7 +23,7 @@ function Bilan() {
       <header className="flex shrink-0 items-center justify-between border-b border-slate-800 px-5 py-2.5">
         <div>
           <h1 className="font-semibold text-slate-100">
-            {cas.patient.prenom}, {cas.patient.ageLibelle ?? `${cas.patient.age} ans`}
+            {cas.patient.prenom}, {cas.patient.age} ans
           </h1>
           <p className="text-xs text-slate-500">{cas.patient.motif}</p>
         </div>
