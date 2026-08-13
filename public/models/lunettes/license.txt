@@ -1,0 +1,11 @@
+Model Information:
+* title:	Lunettes à montures maronne
+* source:	https://sketchfab.com/3d-models/lunettes-a-montures-maronne-38c5d0da8276449583ca1ae9d3e3045b
+* author:	donystark (https://sketchfab.com/donystark)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Lunettes à montures maronne" (https://sketchfab.com/3d-models/lunettes-a-montures-maronne-38c5d0da8276449583ca1ae9d3e3045b) by donystark (https://sketchfab.com/donystark) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
