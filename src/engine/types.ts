@@ -202,7 +202,14 @@ export type CasClinique = {
   id: string;
   titre: string;
   resume: string;
-  patient: { prenom: string; age: number; sexe: 'F' | 'M'; motif: string };
+  patient: {
+    prenom: string;
+    age: number;
+    /** Affichage alternatif (ex. « 5 mois ») à la place de « {age} ans ». */
+    ageLibelle?: string;
+    sexe: 'F' | 'M';
+    motif: string;
+  };
   oculaire: ParametresOculaires;
   /** Le patient arrive sans lunettes ; le praticien doit les lui redemander. */
   debutSansCorrection?: boolean;

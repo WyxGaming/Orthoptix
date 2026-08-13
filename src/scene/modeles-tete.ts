@@ -48,6 +48,18 @@ export const MODELES_TETE: Record<string, ConfigModeleTete> = {
       licence: 'CC-BY-4.0',
     },
   },
+  /** Nourrisson : modele adulte reduit (~15 cm) en attendant un mesh dedie. */
+  'pseudostrabisme-epicanthus': {
+    url: '/models/angelica/lea.glb',
+    hauteurVisageCm: 15,
+    decalageFin: DECALAGE_ANGELICA,
+    credit: {
+      titre: 'Angelica',
+      auteur: 'NikZava284',
+      url: 'https://sketchfab.com/3d-models/angelica-27f75fa94c384000bb6a79a3000f8e80',
+      licence: 'CC-BY-4.0',
+    },
+  },
 };
 
 export function configModeleTete(casId: string): ConfigModeleTete {

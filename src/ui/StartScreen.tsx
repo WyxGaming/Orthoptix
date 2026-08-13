@@ -93,7 +93,7 @@ export function StartScreen() {
 
       <div className="flex items-center justify-between">
         <p className="text-sm text-slate-500">
-          {cas.patient.prenom}, {cas.patient.age} ans. {cas.patient.motif}
+          {cas.patient.prenom}, {cas.patient.ageLibelle ?? `${cas.patient.age} ans`}. {cas.patient.motif}
         </p>
         <Bouton ton="principal" onClick={() => demarrer(casBase, mode)}>
           Commencer le bilan
