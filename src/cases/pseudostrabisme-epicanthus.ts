@@ -4,8 +4,7 @@ import type { CasClinique } from '../engine/types';
  * Cas 3 : inquiétude parentale chez un nourrisson de 5 mois.
  *
  * Piège pédagogique : les parents suspectent une exotropie, les reflets au
- * Hirschberg peuvent sembler temporalisés (angle kappa positif), mais le
- * bilan fonctionnel est normal. Le cover test n'est pas réalisable à 5 mois.
+ * Hirschberg peuvent sembler temporalisés, mais le bilan fonctionnel est normal. Le cover test n'est pas réalisable à 5 mois.
  */
 export const pseudostrabismeEpicanthus: CasClinique = {
   id: 'pseudostrabisme-epicanthus',
@@ -205,9 +204,9 @@ export const pseudostrabismeEpicanthus: CasClinique = {
         question: 'Comment interpréter ces reflets ?',
         options: [
           {
-            id: 'kappa-positif',
+            id: 'reflets-sans-tropie',
             libelle:
-              'Reflets temporalisés symétriques, à confronter au comportement visuel (angle kappa ?)',
+              'Reflets temporalisés symétriques, discordance avec un comportement visuel normal',
             correct: true,
           },
           {
@@ -222,7 +221,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
           },
         ],
         explication:
-          "Des reflets temporalisés peuvent mimiquer une exotropie ; ici le comportement visuel est normal : penser à un angle kappa positif, pas à une vraie X't.",
+          "Des reflets temporalisés peuvent faire penser à une exotropie ; ici le comportement visuel est normal et ne confirme pas une tropie.",
       },
     },
     lang: {
@@ -421,7 +420,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
           },
         ],
         explication:
-          "Comportement visuel normal, réaction à l'occlusion symétrique : pas de strabisme malgré des reflets temporalisés (angle kappa positif). Le récit parental ne suffit pas.",
+          "Comportement visuel normal, réaction à l'occlusion symétrique : pas de strabisme malgré des reflets temporalisés. Le récit parental ne suffit pas.",
       },
       {
         id: 'signes-cles',
@@ -440,13 +439,13 @@ export const pseudostrabismeEpicanthus: CasClinique = {
           },
           {
             id: 'reflets',
-            variantes: ['reflet', 'hirschberg', 'temporal', 'kappa', 'lambda', 'orthotrop', 'primaire'],
+            variantes: ['reflet', 'hirschberg', 'temporal', 'orthotrop', 'primaire', 'centr'],
           },
         ],
         reponseAttendue:
-          "Suivi lumière/objet normal et symétrique, réaction à l'occlusion symétrique sans rattrapage, reflets temporalisés expliqués par un angle kappa positif.",
+          "Suivi lumière/objet normal et symétrique, réaction à l'occlusion symétrique sans rattrapage, reflets temporalisés sans tropie objectivable.",
         explication:
-          "Le comportement visuel et la réaction à l'occlusion priment sur l'impression au Hirschberg : un angle kappa positif peut mimiquer une exotropie.",
+          "Le comportement visuel et la réaction à l'occlusion priment sur l'impression au Hirschberg.",
       },
       {
         id: 'conduite',
@@ -485,16 +484,16 @@ export const pseudostrabismeEpicanthus: CasClinique = {
         poids: 2,
         correct: false,
         explication:
-          "Non : orthotropie avec angle kappa positif, pas de tropie objectivable. Chirurgie strabologique non indiquée.",
+          "Non : orthotropie, pas de tropie objectivable. Chirurgie strabologique non indiquée.",
       },
     ],
   },
 
   compteRenduExpert: [
-    "Angelica, 5 mois, adressée par le pédiatre. Parents inquiets d'une exotropie depuis les premières semaines — récit orientant vers une X't, à ne pas prendre pour une preuve. Pas d'ATCD familiaux de strabisme. À l'examen : alignement oculaire normal, angle kappa positif bilatéral.",
+    "Angelica, 5 mois, adressée par le pédiatre. Parents inquiets d'une exotropie depuis les premières semaines — récit orientant vers une X't, à ne pas prendre pour une preuve. Pas d'ATCD familiaux de strabisme. À l'examen : alignement oculaire normal.",
     "Étude du comportement visuel : suivi lumière monoculaire puis binoculaire, suivi objet monoculaire puis binoculaire — symétrique, sans préférence pathologique.",
     "Réaction à l'occlusion : mouvements de tête symétriques OD/OG, sans rattrapage oculaire visible.",
-    "Reflets : temporalisés en position primaire, symétriques — fausse impression exotropique (angle kappa positif).",
+    "Reflets : temporalisés en position primaire, symétriques — sans tropie objectivable au bilan fonctionnel.",
     "Lang : regard fugace, sans fixation prolongée ni recherche du relief. Cover test non réalisable (coopération).",
     "Réfraction : +1.50 D bilatéral, physiologique. Conclusion : orthotropie, pas de strabisme. Rassurance parentale, surveillance.",
   ],

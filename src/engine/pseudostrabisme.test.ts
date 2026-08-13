@@ -65,7 +65,7 @@ function bilanAngelicaParfait() {
   validerSynthese({
     diagnostic: 'orthotropie',
     'signes-cles':
-      'Suivi lumiere objet symetrique, reaction occlusion symetrique, reflets temporalises kappa positif',
+      'Suivi lumiere objet symetrique, reaction occlusion symetrique, reflets temporalises sans tropie',
     conduite: 'rassurance',
     chirurgie: 'non',
   });
@@ -76,7 +76,7 @@ describe('pseudostrabisme-epicanthus', () => {
     useSession.getState().demarrer(pseudostrabismeEpicanthus, 'evaluation');
   });
 
-  it('mimique une fausse exotropie au Hirschberg par angle kappa positif', () => {
+  it('deporte les reflets au Hirschberg sans tropie reelle', () => {
     const etat = {
       gaze: { azimuthDeg: 0, elevationDeg: 0 },
       distanceFixationCm: 33,
@@ -152,7 +152,7 @@ describe('pseudostrabisme-epicanthus', () => {
     session().validerSynthese({
       diagnostic: 'orthotropie',
       'signes-cles':
-        'Suivi lumiere symetrique, reaction occlusion symetrique, reflets temporalises angle kappa',
+        'Suivi lumiere symetrique, reaction occlusion symetrique, reflets temporalises',
       conduite: 'rassurance',
       chirurgie: 'non',
     });
