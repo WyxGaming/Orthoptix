@@ -644,10 +644,38 @@ export const esotropieAccommodative: CasClinique = {
       libelle: 'Hirschberg VP (ASC)',
     },
     {
+      examenId: 'hirschberg',
+      conditions: { correction: 'sc' },
+      poids: 3,
+      attendu: { min: 35, max: 45, unite: 'DP' },
+      libelle: 'Hirschberg VP (SC)',
+    },
+    {
+      examenId: 'hirschberg',
+      conditions: { correction: 'asc', loupesPlus3: true },
+      poids: 3,
+      attendu: { min: 0, max: 2, unite: 'DP' },
+      libelle: 'Hirschberg VP (ASC + loupes +3)',
+    },
+    {
       examenId: 'krimsky',
       conditions: { correction: 'asc' },
       poids: 3,
       attendu: { min: 12, max: 18, unite: 'DP' },
+    },
+    {
+      examenId: 'krimsky',
+      conditions: { correction: 'sc' },
+      poids: 3,
+      attendu: { min: 35, max: 45, unite: 'DP' },
+      libelle: 'Krimsky VP (SC)',
+    },
+    {
+      examenId: 'krimsky',
+      conditions: { correction: 'asc', loupesPlus3: true },
+      poids: 3,
+      attendu: { min: 0, max: 2, unite: 'DP' },
+      libelle: 'Krimsky VP (ASC + loupes +3)',
     },
     {
       examenId: 'coverPres',
@@ -673,6 +701,13 @@ export const esotropieAccommodative: CasClinique = {
       conditions: { correction: 'asc' },
       poids: 3,
       attendu: { min: 4, max: 8, unite: 'DP' },
+    },
+    {
+      examenId: 'krimskyLoin',
+      conditions: { correction: 'sc' },
+      poids: 3,
+      attendu: { min: 8, max: 12, unite: 'DP' },
+      libelle: 'Krimsky VL (SC)',
     },
     {
       examenId: 'coverLoin',

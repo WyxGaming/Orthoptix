@@ -31,6 +31,47 @@ function mettreLunettesSiBesoin(conditions: ConditionsExamen) {
   }
 }
 
+function realiserMulti(
+  id: ExamenId,
+  passages: Array<{ conditions: ConditionsExamen; mesure: number }>,
+) {
+  mettreLunettesSiBesoin({ correction: 'asc' });
+  const { cas, lancerExamen } = session();
+  lancerExamen(id);
+  const interpretationIdsParCondition: Record<string, Record<string, string>> = {};
+  for (const passage of passages) {
+    const ctx = {
+      examenId: id,
+      conditions: passage.conditions,
+      journal: session().journal,
+      indexJournal: session().journal.length,
+    };
+    const examen = cas.resoudreExamen?.(ctx) ?? cas.examens[id];
+    if (!examen) continue;
+    const cle =
+      passage.conditions.loupesPlus3
+        ? 'asc+3'
+        : passage.conditions.correction;
+    for (const interp of interpretationsExamen(examen)) {
+      const bonne = interp.options.find((o) => o.correct)?.id;
+      if (bonne) {
+        interpretationIdsParCondition[cle] = {
+          ...interpretationIdsParCondition[cle],
+          [interp.id]: bonne,
+        };
+      }
+    }
+  }
+  session().validerExamen({
+    passages: passages.map((p) => ({
+      conditions: p.conditions,
+      mesure: p.mesure,
+      interpretationIds:
+        interpretationIdsParCondition[p.conditions.loupesPlus3 ? 'asc+3' : p.conditions.correction],
+    })),
+  });
+}
+
 function realiser(
   id: ExamenId,
   conditions: ConditionsExamen = { correction: 'asc' },
@@ -68,14 +109,29 @@ function bilanMaximeParfait() {
   realiser('lang', { correction: 'asc', loupesPlus3: true });
   realiser('tno', { correction: 'asc', loupesPlus3: true });
   realiser('motilite');
-  realiser('hirschberg', { correction: 'asc' }, 15);
-  realiser('krimsky', { correction: 'asc' }, 15);
-  realiser('coverPres', { correction: 'asc' }, 15);
-  realiser('coverPres', { correction: 'sc' }, 40);
-  realiser('coverPres', { correction: 'asc', loupesPlus3: true }, 0);
-  realiser('krimskyLoin', { correction: 'asc' }, 6);
-  realiser('coverLoin', { correction: 'asc' }, 6);
-  realiser('coverLoin', { correction: 'sc' }, 10);
+  realiserMulti('hirschberg', [
+    { conditions: { correction: 'asc' }, mesure: 15 },
+    { conditions: { correction: 'sc' }, mesure: 40 },
+    { conditions: { correction: 'asc', loupesPlus3: true }, mesure: 0 },
+  ]);
+  realiserMulti('krimsky', [
+    { conditions: { correction: 'asc' }, mesure: 15 },
+    { conditions: { correction: 'sc' }, mesure: 40 },
+    { conditions: { correction: 'asc', loupesPlus3: true }, mesure: 0 },
+  ]);
+  realiserMulti('coverPres', [
+    { conditions: { correction: 'asc' }, mesure: 15 },
+    { conditions: { correction: 'sc' }, mesure: 40 },
+    { conditions: { correction: 'asc', loupesPlus3: true }, mesure: 0 },
+  ]);
+  realiserMulti('krimskyLoin', [
+    { conditions: { correction: 'asc' }, mesure: 6 },
+    { conditions: { correction: 'sc' }, mesure: 10 },
+  ]);
+  realiserMulti('coverLoin', [
+    { conditions: { correction: 'asc' }, mesure: 6 },
+    { conditions: { correction: 'sc' }, mesure: 10 },
+  ]);
   validerSynthese({
     'type-strabisme': 'accommodative',
     conduite: 'correction',
@@ -156,8 +212,25 @@ describe('cas Maxime — esotropie accommodative', () => {
   });
 
   it('cover +3 montre orthotropie de pres', () => {
-    realiser('coverPres', { correction: 'asc', loupesPlus3: true }, 0);
+    realiserMulti('coverPres', [
+      { conditions: { correction: 'asc', loupesPlus3: true }, mesure: 0 },
+    ]);
     expect(session().bilan.at(-1)!.contenu).toMatch(/O't|paralleles|orthotropie/i);
+  });
+
+  it('consigne les trois mesures VP en une fois', () => {
+    realiserMulti('hirschberg', [
+      { conditions: { correction: 'asc' }, mesure: 15 },
+      { conditions: { correction: 'sc' }, mesure: 40 },
+      { conditions: { correction: 'asc', loupesPlus3: true }, mesure: 0 },
+    ]);
+    const passages = session().journal.filter(
+      (a) => a.type === 'examen' && a.id === 'hirschberg',
+    );
+    expect(passages).toHaveLength(3);
+    expect(passages.map((a) => (a.type === 'examen' ? a.mesure : undefined))).toEqual([
+      15, 40, 0,
+    ]);
   });
 
   it('attribue le score maximal a un bilan mene correctement', () => {

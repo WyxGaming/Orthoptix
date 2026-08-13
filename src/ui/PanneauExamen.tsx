@@ -1,6 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { EYES, type BasePrisme, type Eye } from '../domain/ocular-model';
 import { CATALOGUE_EXAMENS } from '../engine/exams';
+import {
+  cleConditions,
+  conditionsMesureAttendues,
+  libelleConditionsMesure,
+} from '../engine/examen-resolver';
+import { conditionsCorrespond } from '../engine/scoring';
 import { useSession } from '../engine/session';
 import type { ConditionsExamen } from '../engine/types';
 import { interpretationsExamen } from '../engine/types';
@@ -31,6 +37,54 @@ const BASES: { valeur: BasePrisme; libelle: string }[] = [
   { valeur: 'superieure', libelle: 'Base supérieure' },
   { valeur: 'inferieure', libelle: 'Base inférieure' },
 ];
+
+function SaisieMesuresConditions({
+  combos,
+  mesures,
+  onChange,
+  dejaConsignes,
+}: {
+  combos: ConditionsExamen[];
+  mesures: Record<string, string>;
+  onChange: (cle: string, valeur: string) => void;
+  dejaConsignes: Set<string>;
+}) {
+  return (
+    <div className="space-y-2 rounded-md border border-slate-800 bg-slate-950/40 p-3">
+      <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+        Mesures en dioptries prismatiques
+      </p>
+      <p className="text-xs text-slate-500">
+        Renseignez l angle pour chaque condition. Basculez les conditions ci-dessus pour observer
+        le patient, puis saisissez la mesure correspondante.
+      </p>
+      <div className="space-y-2">
+        {combos.map((combo) => {
+          const cle = cleConditions(combo);
+          const consigne = dejaConsignes.has(cle);
+          return (
+            <label
+              key={cle}
+              className={`flex items-center gap-2 text-sm ${consigne ? 'text-slate-500' : 'text-slate-300'}`}
+            >
+              <span className="min-w-[10rem]">{libelleConditionsMesure(combo)}</span>
+              <input
+                value={mesures[cle] ?? ''}
+                onChange={(e) => onChange(cle, e.target.value)}
+                inputMode="decimal"
+                placeholder="0"
+                disabled={consigne}
+                className="w-24 rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-right font-mono text-slate-100 outline-none focus:border-sky-500 disabled:opacity-60"
+              />
+              <span className="text-slate-500">DP</span>
+              {consigne && <span className="text-xs text-slate-600">consignée</span>}
+            </label>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 function CommandesConditions({
   options,
@@ -184,8 +238,44 @@ export function PanneauExamen({
   const abandonnerExamen = useSession((s) => s.abandonnerExamen);
 
   const [mesure, setMesure] = useState('');
+  const [mesures, setMesures] = useState<Record<string, string>>({});
   const [interpretationsChoix, setInterpretationsChoix] = useState<Record<string, string>>({});
+  const [interpretationsParCondition, setInterpretationsParCondition] = useState<
+    Record<string, Record<string, string>>
+  >({});
   const [resultatRevele, setResultatRevele] = useState(false);
+
+  useEffect(() => {
+    if (!examenEnCours) return;
+    const definition = CATALOGUE_EXAMENS[examenEnCours];
+    const options = cas.optionsExamen?.[examenEnCours];
+    const journal = useSession.getState().journal;
+    const prefill: Record<string, string> = {};
+    const deja: Record<string, Record<string, string>> = {};
+
+    if (options?.choixCorrection) {
+      for (const combo of conditionsMesureAttendues(options, definition.distance)) {
+        const cle = cleConditions(combo);
+        const entree = journal.find(
+          (a) =>
+            a.type === 'examen' &&
+            a.id === examenEnCours &&
+            conditionsCorrespond(a.conditions ?? { correction: 'asc' }, combo),
+        );
+        if (entree?.type === 'examen') {
+          if (entree.mesure !== undefined) prefill[cle] = String(entree.mesure);
+          if (entree.interpretationIds) deja[cle] = entree.interpretationIds;
+          else if (entree.interpretationId) deja[cle] = { unique: entree.interpretationId };
+        }
+      }
+    }
+
+    setMesure('');
+    setMesures(prefill);
+    setInterpretationsChoix({});
+    setInterpretationsParCondition(deja);
+    setResultatRevele(false);
+  }, [examenEnCours, cas]);
 
   if (!examenEnCours) {
     return (
@@ -208,26 +298,132 @@ export function PanneauExamen({
     indexJournal: useSession.getState().journal.length,
   };
   const examenEffectif = cas.resoudreExamen?.(ctxPreview) ?? examen;
-  const demandeMesure = Boolean(examenEffectif?.attendu) || definition.saisieMesure;
+  const demandeMesuresMultiples = Boolean(
+    definition.saisieMesure && optionsExamen?.choixCorrection,
+  );
+  const combosMesure =
+    demandeMesuresMultiples && optionsExamen
+      ? conditionsMesureAttendues(optionsExamen, definition.distance)
+      : [];
+  const dejaConsignes = new Set(
+    combosMesure
+      .filter((combo) =>
+        useSession
+          .getState()
+          .journal.some(
+            (a) =>
+              a.type === 'examen' &&
+              a.id === examenEnCours &&
+              conditionsCorrespond(a.conditions ?? { correction: 'asc' }, combo),
+          ),
+      )
+      .map((combo) => cleConditions(combo)),
+  );
+  const demandeMesure =
+    !demandeMesuresMultiples &&
+    (Boolean(examenEffectif?.attendu) || definition.saisieMesure);
   const interpretations = examenEffectif ? interpretationsExamen(examenEffectif) : [];
+  const cleActive = cleConditions(conditionsExamen);
+  const interpretationsActives = demandeMesuresMultiples
+    ? (interpretationsParCondition[cleActive] ?? {})
+    : interpretationsChoix;
+
+  const mesureValide = (valeur: string) => {
+    const n = Number.parseFloat(valeur.replace(',', '.'));
+    return Number.isFinite(n);
+  };
+
+  const mesuresMultiplesCompletes =
+    combosMesure
+      .filter((combo) => !dejaConsignes.has(cleConditions(combo)))
+      .every((combo) => mesureValide(mesures[cleConditions(combo)] ?? '')) ?? true;
+
+  const interpretationsCompletesPour = (conditions: ConditionsExamen) => {
+    const ctx = {
+      examenId: examenEnCours,
+      conditions,
+      journal: useSession.getState().journal,
+      indexJournal: useSession.getState().journal.length,
+    };
+    const eff = cas.resoudreExamen?.(ctx) ?? examen;
+    const interps = eff ? interpretationsExamen(eff) : [];
+    if (interps.length === 0) return true;
+    const cle = cleConditions(conditions);
+    const choix = interpretationsParCondition[cle] ?? {};
+    return interps.every((interp) => Boolean(choix[interp.id]));
+  };
+
+  const aInterpretationRequise = (conditions: ConditionsExamen) => {
+    const ctx = {
+      examenId: examenEnCours,
+      conditions,
+      journal: useSession.getState().journal,
+      indexJournal: useSession.getState().journal.length,
+    };
+    const eff = cas.resoudreExamen?.(ctx) ?? examen;
+    return eff ? interpretationsExamen(eff).length > 0 : false;
+  };
+
+  const interpretationsCompletesMulti =
+    !demandeMesuresMultiples ||
+    combosMesure
+      .filter((combo) => !dejaConsignes.has(cleConditions(combo)))
+      .every((combo) => interpretationsCompletesPour(combo));
+
   const interpretationsCompletes =
     interpretations.length === 0 ||
-    interpretations.every((interp) => Boolean(interpretationsChoix[interp.id]));
+    interpretations.every((interp) => Boolean(interpretationsActives[interp.id]));
+
+  const peutConsigner =
+    (definition.interaction !== 'presentation' || resultatRevele) &&
+    (demandeMesuresMultiples
+      ? (mesuresMultiplesCompletes && interpretationsCompletesMulti) ||
+        (dejaConsignes.size === combosMesure.length && combosMesure.length > 0)
+      : interpretationsCompletes && (!demandeMesure || mesureValide(mesure)));
 
   const consigner = () => {
-    const valeur = Number.parseFloat(mesure.replace(',', '.'));
-    const interpretationIds =
-      interpretations.length > 0 ? interpretationsChoix : undefined;
-    const interpretationId =
-      interpretations.length === 1 ? interpretationsChoix[interpretations[0]!.id] : undefined;
-    validerExamen({
-      mesure: Number.isFinite(valeur) ? valeur : undefined,
-      interpretationId,
-      interpretationIds,
-    });
+    if (demandeMesuresMultiples && optionsExamen) {
+      const passages = combosMesure
+        .filter((combo) => !dejaConsignes.has(cleConditions(combo)))
+        .map((conditions) => {
+          const cle = cleConditions(conditions);
+          const valeur = Number.parseFloat(mesures[cle]!.replace(',', '.'));
+          const choix = interpretationsParCondition[cle];
+          return {
+            conditions,
+            mesure: valeur,
+            interpretationIds: choix && Object.keys(choix).length > 0 ? choix : undefined,
+          };
+        });
+      validerExamen({ passages });
+    } else {
+      const valeur = Number.parseFloat(mesure.replace(',', '.'));
+      const interpretationIds =
+        interpretations.length > 0 ? interpretationsChoix : undefined;
+      const interpretationId =
+        interpretations.length === 1 ? interpretationsChoix[interpretations[0]!.id] : undefined;
+      validerExamen({
+        mesure: Number.isFinite(valeur) ? valeur : undefined,
+        interpretationId,
+        interpretationIds,
+      });
+    }
     setMesure('');
+    setMesures({});
     setInterpretationsChoix({});
+    setInterpretationsParCondition({});
     setResultatRevele(false);
+  };
+
+  const choisirInterpretation = (interpId: string, optionId: string) => {
+    if (demandeMesuresMultiples) {
+      setInterpretationsParCondition((prev) => ({
+        ...prev,
+        [cleActive]: { ...prev[cleActive], [interpId]: optionId },
+      }));
+      return;
+    }
+    setInterpretationsChoix((prev) => ({ ...prev, [interpId]: optionId }));
   };
 
   return (
@@ -279,6 +475,15 @@ export function PanneauExamen({
           </div>
         )}
 
+        {demandeMesuresMultiples && (
+          <SaisieMesuresConditions
+            combos={combosMesure}
+            mesures={mesures}
+            dejaConsignes={dejaConsignes}
+            onChange={(cle, valeur) => setMesures((prev) => ({ ...prev, [cle]: valeur }))}
+          />
+        )}
+
         {demandeMesure && (
           <label className="flex items-center gap-2 text-sm text-slate-300">
             Mesure retenue
@@ -297,16 +502,19 @@ export function PanneauExamen({
           (definition.interaction !== 'presentation' || resultatRevele) &&
           interpretations.map((interp) => (
             <fieldset key={interp.id} className="space-y-1.5">
-              <legend className="mb-1 text-sm text-slate-300">{interp.question}</legend>
+              <legend className="mb-1 text-sm text-slate-300">
+                {demandeMesuresMultiples && (
+                  <span className="text-sky-400">{libelleConditionsMesure(conditionsExamen)} — </span>
+                )}
+                {interp.question}
+              </legend>
               {interp.options.map((option) => (
                 <button
                   key={option.id}
                   type="button"
-                  onClick={() =>
-                    setInterpretationsChoix((prev) => ({ ...prev, [interp.id]: option.id }))
-                  }
+                  onClick={() => choisirInterpretation(interp.id, option.id)}
                   className={`block w-full rounded-md border px-3 py-2 text-left text-sm ${
-                    interpretationsChoix[interp.id] === option.id
+                    interpretationsActives[interp.id] === option.id
                       ? 'border-sky-500 bg-sky-950/40 text-slate-100'
                       : 'border-slate-700 text-slate-300 hover:border-slate-500'
                   }`}
@@ -316,17 +524,29 @@ export function PanneauExamen({
               ))}
             </fieldset>
           ))}
+
+        {demandeMesuresMultiples && combosMesure.length > 0 && (
+          <ul className="text-xs text-slate-500">
+            {combosMesure.map((combo) => {
+              const cle = cleConditions(combo);
+              const mesureOk = dejaConsignes.has(cle) || mesureValide(mesures[cle] ?? '');
+              const interpOk =
+                dejaConsignes.has(cle) ||
+                !aInterpretationRequise(combo) ||
+                interpretationsCompletesPour(combo);
+              const complet = dejaConsignes.has(cle) || (mesureOk && interpOk);
+              return (
+                <li key={cle}>
+                  {libelleConditionsMesure(combo)} : {complet ? 'complet ✓' : 'en cours…'}
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </div>
 
       <div className="flex shrink-0 items-center gap-2 border-t border-slate-800 px-4 py-3">
-        <Bouton
-          ton="principal"
-          onClick={consigner}
-          disabled={
-            (definition.interaction === 'presentation' && !resultatRevele) ||
-            !interpretationsCompletes
-          }
-        >
+        <Bouton ton="principal" onClick={consigner} disabled={!peutConsigner}>
           Consigner l'examen
         </Bouton>
         <Bouton ton="discret" onClick={abandonnerExamen}>

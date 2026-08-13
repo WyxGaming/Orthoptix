@@ -1,4 +1,31 @@
-import type { ActionJournal, CasClinique, ContexteExamen, ExamenCas, ExamenId } from './types';
+import type { ActionJournal, CasClinique, ConditionsExamen, ContexteExamen, ExamenCas, ExamenId, OptionsExamen } from './types';
+
+/** Cle stable pour indexer les mesures par combinaison de conditions. */
+export function cleConditions(c: ConditionsExamen): string {
+  if (c.loupesPlus3) return 'asc+3';
+  return c.correction;
+}
+
+/** Combinaisons SC / ASC / ASC+3 a mesurer pour les reflets et cover tests. */
+export function conditionsMesureAttendues(
+  options: OptionsExamen,
+  distance?: 'pres' | 'loin',
+): ConditionsExamen[] {
+  const combos: ConditionsExamen[] = [];
+  if (options.choixCorrection) {
+    combos.push({ correction: 'sc' });
+    combos.push({ correction: 'asc' });
+  }
+  if (options.choixLoupesPlus3 && distance !== 'loin') {
+    combos.push({ correction: 'asc', loupesPlus3: true });
+  }
+  return combos;
+}
+
+export function libelleConditionsMesure(c: ConditionsExamen): string {
+  if (c.loupesPlus3) return 'ASC + loupes +3';
+  return c.correction === 'asc' ? 'Avec correction (ASC)' : 'Sans correction (SC)';
+}
 
 /** Examens qui rompent la binocularité avant un TNO fiable. */
 export const EXAMENS_DISSOCIANTS: ExamenId[] = [

@@ -13,7 +13,7 @@ import {
 } from '../domain/ocular-model';
 import { CATALOGUE_EXAMENS } from './exams';
 import { casCliniquePrepare } from '../cases';
-import { calculerScore, dansIntervalle, type Resultat } from './scoring';
+import { calculerScore, dansIntervalle, conditionsCorrespond, type Resultat } from './scoring';
 import { examenResolu, libelleConditions } from './examen-resolver';
 import type {
   ActionJournal,
@@ -80,6 +80,13 @@ type SessionState = {
     mesure?: number;
     interpretationId?: string;
     interpretationIds?: Record<string, string>;
+    /** Plusieurs conditions consignees en une fois (SC / ASC / ASC+3). */
+    passages?: Array<{
+      conditions: ConditionsExamen;
+      mesure?: number;
+      interpretationId?: string;
+      interpretationIds?: Record<string, string>;
+    }>;
   }) => void;
   abandonnerExamen: () => void;
   passerALaSynthese: () => void;
@@ -219,72 +226,123 @@ export const useSession = create<SessionState>((set, get) => ({
     if (!examenEnCours) return;
     const definition = CATALOGUE_EXAMENS[examenEnCours];
     const options = cas.optionsExamen?.[examenEnCours];
-    const conditions = options?.choixCorrection || options?.choixLoupesPlus3 ? conditionsExamen : undefined;
 
-    const ctx = {
-      examenId: examenEnCours,
-      conditions: conditions ?? { correction: 'asc' as const },
-      journal,
-      indexJournal: journal.length,
-    };
-    const examen = examenResolu(cas, ctx);
-
-    const action: ActionJournal = {
-      type: 'examen',
-      id: examenEnCours,
-      conditions,
-      mesure: saisie?.mesure,
-      interpretationId: saisie?.interpretationId,
-      interpretationIds: saisie?.interpretationIds,
+    type PassageSaisie = {
+      conditions: ConditionsExamen;
+      mesure?: number;
+      interpretationId?: string;
+      interpretationIds?: Record<string, string>;
     };
 
-    const messages: Message[] = [];
-    if (mode === 'entrainement' && examen) {
-      if (examen.poids < 0 && examen.justificationMalus) {
-        messages.push({ id: ++compteurMessages, texte: examen.justificationMalus, ton: 'negatif' });
-      }
-      if (examen.attendu && saisie?.mesure !== undefined) {
-        const juste = dansIntervalle(saisie.mesure, examen.attendu);
-        messages.push({
-          id: ++compteurMessages,
-          texte: juste
-            ? 'Mesure coherente avec ce que montre le patient.'
-            : `Mesure éloignée : on attend entre ${examen.attendu.min} et ${examen.attendu.max} ${examen.attendu.unite}.`,
-          ton: juste ? 'positif' : 'negatif',
-        });
-      }
-      for (const interp of interpretationsExamen(examen)) {
-        const choix =
-          saisie?.interpretationIds?.[interp.id] ??
-          (interpretationsExamen(examen).length === 1 ? saisie?.interpretationId : undefined);
-        if (choix === undefined) continue;
-        const juste = interp.options.find((o) => o.correct)?.id === choix;
-        messages.push({
-          id: ++compteurMessages,
-          texte: juste ? 'Interprétation correcte.' : interp.explication,
-          ton: juste ? 'positif' : 'negatif',
-        });
-      }
+    const passages: PassageSaisie[] = saisie?.passages?.length
+      ? saisie.passages
+      : [
+          {
+            conditions:
+              options?.choixCorrection || options?.choixLoupesPlus3
+                ? conditionsExamen
+                : { correction: 'asc' as const },
+            mesure: saisie?.mesure,
+            interpretationId: saisie?.interpretationId,
+            interpretationIds: saisie?.interpretationIds,
+          },
+        ];
+
+    const dejaConsigne = (conditions: ConditionsExamen) =>
+      journal.some(
+        (a) =>
+          a.type === 'examen' &&
+          a.id === examenEnCours &&
+          conditionsCorrespond(a.conditions ?? { correction: 'asc' }, conditions),
+      );
+
+    const nouveauxPassages = passages.filter((p) => !dejaConsigne(p.conditions));
+    if (nouveauxPassages.length === 0) {
+      set({
+        examenEnCours: null,
+        conditionsExamen: { correction: get().correctionPortee },
+        etat: etatExamenInitial(get().etat.oeilFixateur),
+      });
+      return;
     }
 
-    const libelleCond = conditions ? ` (${libelleConditions(conditions)})` : '';
-    const contenu = [
-      examen?.resultat ?? 'Examen réalisé, sans élément notable pour ce cas.',
-      saisie?.mesure !== undefined ? `Mesure notee : ${saisie.mesure} DP.` : null,
-    ]
-      .filter(Boolean)
-      .join(' ');
+    let journalCourant = journal;
+    let bilanCourant = bilan;
+    const messages: Message[] = [];
 
-    set({
-      journal: [...journal, action],
-      bilan: [
-        ...bilan,
+    for (const passage of nouveauxPassages) {
+      const conditions =
+        options?.choixCorrection || options?.choixLoupesPlus3 ? passage.conditions : undefined;
+
+      const ctx = {
+        examenId: examenEnCours,
+        conditions: conditions ?? { correction: 'asc' as const },
+        journal: journalCourant,
+        indexJournal: journalCourant.length,
+      };
+      const examen = examenResolu(cas, ctx);
+
+      const action: ActionJournal = {
+        type: 'examen',
+        id: examenEnCours,
+        conditions,
+        mesure: passage.mesure,
+        interpretationId: passage.interpretationId,
+        interpretationIds: passage.interpretationIds,
+      };
+
+      if (mode === 'entrainement' && examen) {
+        if (examen.poids < 0 && examen.justificationMalus) {
+          messages.push({ id: ++compteurMessages, texte: examen.justificationMalus, ton: 'negatif' });
+        }
+        if (examen.attendu && passage.mesure !== undefined) {
+          const juste = dansIntervalle(passage.mesure, examen.attendu);
+          messages.push({
+            id: ++compteurMessages,
+            texte: juste
+              ? `Mesure coherente (${libelleConditions(ctx.conditions)}).`
+              : `${libelleConditions(ctx.conditions)} : valeur attendue entre ${examen.attendu.min} et ${examen.attendu.max} ${examen.attendu.unite}.`,
+            ton: juste ? 'positif' : 'negatif',
+          });
+        }
+        for (const interp of interpretationsExamen(examen)) {
+          const choix =
+            passage.interpretationIds?.[interp.id] ??
+            (interpretationsExamen(examen).length === 1 ? passage.interpretationId : undefined);
+          if (choix === undefined) continue;
+          const juste = interp.options.find((o) => o.correct)?.id === choix;
+          messages.push({
+            id: ++compteurMessages,
+            texte: juste
+              ? `Interprétation correcte (${libelleConditions(ctx.conditions)}).`
+              : interp.explication,
+            ton: juste ? 'positif' : 'negatif',
+          });
+        }
+      }
+
+      const libelleCond = conditions ? ` (${libelleConditions(conditions)})` : '';
+      const contenu = [
+        examen?.resultat ?? 'Examen réalisé, sans élément notable pour ce cas.',
+        passage.mesure !== undefined ? `Mesure notee : ${passage.mesure} DP.` : null,
+      ]
+        .filter(Boolean)
+        .join(' ');
+
+      journalCourant = [...journalCourant, action];
+      bilanCourant = [
+        ...bilanCourant,
         {
-          id: `e-${examenEnCours}-${journal.length}`,
+          id: `e-${examenEnCours}-${journalCourant.length - 1}`,
           titre: `${definition.nom}${libelleCond}`,
           contenu,
         },
-      ],
+      ];
+    }
+
+    set({
+      journal: journalCourant,
+      bilan: bilanCourant,
       examenEnCours: null,
       conditionsExamen: { correction: get().correctionPortee },
       etat: etatExamenInitial(get().etat.oeilFixateur),
