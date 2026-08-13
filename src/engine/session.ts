@@ -14,6 +14,7 @@ import {
 import { CATALOGUE_EXAMENS } from './exams';
 import { calculerScore, dansIntervalle, type Resultat } from './scoring';
 import type { ActionJournal, CasClinique, ExamenId, QuestionAnamnese, ReponsesSynthese } from './types';
+import { interpretationsExamen } from './types';
 
 /** Melange Fisher-Yates : ordre different a chaque visite / nouveau bilan. */
 export function melangeAleatoire<T>(items: readonly T[]): T[] {
@@ -59,7 +60,11 @@ type SessionState = {
   demarrer: (cas: CasClinique, mode: Mode) => void;
   poserQuestion: (id: string) => void;
   lancerExamen: (id: ExamenId) => void;
-  validerExamen: (saisie?: { mesure?: number; interpretationId?: string }) => void;
+  validerExamen: (saisie?: {
+    mesure?: number;
+    interpretationId?: string;
+    interpretationIds?: Record<string, string>;
+  }) => void;
   abandonnerExamen: () => void;
   passerALaSynthese: () => void;
   validerSynthese: (reponses: ReponsesSynthese) => void;
@@ -180,6 +185,7 @@ export const useSession = create<SessionState>((set, get) => ({
       id: examenEnCours,
       mesure: saisie?.mesure,
       interpretationId: saisie?.interpretationId,
+      interpretationIds: saisie?.interpretationIds,
     };
 
     const messages: Message[] = [];
@@ -197,11 +203,15 @@ export const useSession = create<SessionState>((set, get) => ({
           ton: juste ? 'positif' : 'negatif',
         });
       }
-      if (examen.interpretation && saisie?.interpretationId) {
-        const juste = examen.interpretation.options.find((o) => o.correct)?.id === saisie.interpretationId;
+      for (const interp of interpretationsExamen(examen)) {
+        const choix =
+          saisie?.interpretationIds?.[interp.id] ??
+          (interpretationsExamen(examen).length === 1 ? saisie?.interpretationId : undefined);
+        if (choix === undefined) continue;
+        const juste = interp.options.find((o) => o.correct)?.id === choix;
         messages.push({
           id: ++compteurMessages,
-          texte: juste ? 'Interpretation correcte.' : examen.interpretation.explication,
+          texte: juste ? 'Interpretation correcte.' : interp.explication,
           ton: juste ? 'positif' : 'negatif',
         });
       }

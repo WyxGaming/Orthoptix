@@ -395,30 +395,42 @@ export const esotropiePrecoce: CasClinique = {
       poids: 2,
       optionnel: true,
       resultat:
-        'Angle objectif concordant avec le cover test. Angle subjectif non superposable : AO different de AS. Correspondance retinienne anormale, comme attendu dans une esotropie precoce a grand angle.',
-      interpretation: {
-        question:
-          'Pourquoi demander le synoptophore, et quelle est la correspondance retinienne du patient ?',
-        options: [
-          {
-            id: 'ao-different-as',
-            libelle: 'AO different de AS',
-            correct: true,
-          },
-          {
-            id: 'ao-egal-as',
-            libelle: 'AO egal a AS',
-            correct: false,
-          },
-          {
-            id: 'correspondance-normale',
-            libelle: 'Correspondance retinienne normale',
-            correct: false,
-          },
-        ],
-        explication:
-          'Le synoptophore compare l angle objectif (AO) et l angle subjectif (AS). Ici AO est different de AS : la correspondance retinienne est anormale, comme attendu dans une esotropie precoce a grand angle.',
-      },
+        'AO different de AS. Angle objectif concordant avec le cover test. Correspondance retinienne anormale.',
+      interpretations: [
+        {
+          id: 'pourquoi-synoptophore',
+          question: 'Pourquoi avez-vous demande le synoptophore ?',
+          options: [
+            {
+              id: 'correspondance',
+              libelle: 'Pour decouvrir la correspondance retinienne',
+              correct: true,
+            },
+            {
+              id: 'mesure-angle',
+              libelle: 'Pour mesurer l angle objectif, deja connu au cover test',
+              correct: false,
+            },
+            {
+              id: 'stereoscopie',
+              libelle: 'Pour quantifier la vision stereoscopique',
+              correct: false,
+            },
+          ],
+          explication:
+            'L angle est deja mesure aux prismes. L interet du synoptophore ici est sensoriel : etudier la correspondance retinienne.',
+        },
+        {
+          id: 'correspondance-patiente',
+          question: 'Quelle est la correspondance retinienne de la patiente ?',
+          options: [
+            { id: 'normale', libelle: 'Normale', correct: false },
+            { id: 'anormale', libelle: 'Anormale', correct: true },
+          ],
+          explication:
+            'AO different de AS traduit une correspondance retinienne anormale, attendue dans une esotropie precoce a grand angle.',
+        },
+      ],
     },
   },
 

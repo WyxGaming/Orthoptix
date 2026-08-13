@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { esotropiePrecoce } from '../cases/esotropie-precoce';
 import { useSession } from './session';
 import type { ExamenId } from './types';
+import { interpretationsExamen } from './types';
 
 const session = () => useSession.getState();
 
@@ -13,8 +14,18 @@ function realiser(id: ExamenId) {
   const milieu = examen?.attendu
     ? (examen.attendu.min + examen.attendu.max) / 2
     : undefined;
-  const bonneOption = examen?.interpretation?.options.find((o) => o.correct)?.id;
-  session().validerExamen({ mesure: milieu, interpretationId: bonneOption });
+  const interpretationIds: Record<string, string> = {};
+  if (examen) {
+    for (const interp of interpretationsExamen(examen)) {
+      const bonne = interp.options.find((o) => o.correct)?.id;
+      if (bonne) interpretationIds[interp.id] = bonne;
+    }
+  }
+  const interpretationId =
+    Object.keys(interpretationIds).length === 1
+      ? Object.values(interpretationIds)[0]
+      : undefined;
+  session().validerExamen({ mesure: milieu, interpretationId, interpretationIds });
 }
 
 /** Reponses de synthese qui saturent le bareme du cas. */
@@ -191,11 +202,17 @@ describe('bareme', () => {
 
     session().demarrer(esotropiePrecoce, 'evaluation');
     session().lancerExamen('deviometrie');
-    session().validerExamen({ interpretationId: 'ao-egal-as' });
-    const interpretation = session()
+    session().lancerExamen('deviometrie');
+    session().validerExamen({
+      interpretationIds: {
+        'pourquoi-synoptophore': 'mesure-angle',
+        'correspondance-patiente': 'normale',
+      },
+    });
+    const mauvaiseReponse = session()
       .resultat()
-      .lignes.find((l) => l.libelle.includes('synoptophore') && l.libelle.includes('interpretation'))!;
-    expect(interpretation.points).toBe(0);
-    expect(interpretation.commentaire).toMatch(/AO|correspondance/i);
+      .lignes.find((l) => l.libelle.includes('correspondance retinienne de la patiente'))!;
+    expect(mauvaiseReponse.points).toBe(0);
+    expect(mauvaiseReponse.commentaire).toMatch(/anormale/i);
   });
 });

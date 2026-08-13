@@ -8,6 +8,7 @@ import type {
   QuestionSynthese,
   ReponsesSynthese,
 } from './types';
+import { interpretationsExamen } from './types';
 
 export const POINTS_MESURE_JUSTE = 2;
 export const POINTS_INTERPRETATION_JUSTE = 2;
@@ -189,15 +190,18 @@ export function calculerScore(
       });
     }
 
-    if (examen.interpretation && (passage || !examen.optionnel)) {
-      const choix = passage?.interpretationId;
-      const bonne = examen.interpretation.options.find((o) => o.correct);
+    for (const interp of interpretationsExamen(examen)) {
+      if (!(passage || !examen.optionnel)) continue;
+      const choix =
+        passage?.interpretationIds?.[interp.id] ??
+        (interpretationsExamen(examen).length === 1 ? passage?.interpretationId : undefined);
+      const bonne = interp.options.find((o) => o.correct);
       const juste = choix !== undefined && choix === bonne?.id;
       lignes.push({
-        libelle: `${definition.nom} — interpretation`,
+        libelle: `${definition.nom} — ${interp.question}`,
         points: juste ? POINTS_INTERPRETATION_JUSTE : 0,
         max: POINTS_INTERPRETATION_JUSTE,
-        commentaire: juste ? undefined : examen.interpretation.explication,
+        commentaire: juste ? undefined : interp.explication,
         nature: juste ? 'acquis' : 'manque',
       });
     }

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { EYES, type BasePrisme, type Eye } from '../domain/ocular-model';
 import { CATALOGUE_EXAMENS } from '../engine/exams';
 import { useSession } from '../engine/session';
+import { interpretationsExamen } from '../engine/types';
 import type { ModeInteraction } from '../engine/types';
 import { Bouton, Carte } from './composants';
 
@@ -154,7 +155,7 @@ export function PanneauExamen({
   const abandonnerExamen = useSession((s) => s.abandonnerExamen);
 
   const [mesure, setMesure] = useState('');
-  const [interpretationId, setInterpretationId] = useState<string | null>(null);
+  const [interpretationsChoix, setInterpretationsChoix] = useState<Record<string, string>>({});
   const [resultatRevele, setResultatRevele] = useState(false);
 
   if (!examenEnCours) {
@@ -171,15 +172,24 @@ export function PanneauExamen({
   const definition = CATALOGUE_EXAMENS[examenEnCours];
   const examen = cas.examens[examenEnCours];
   const demandeMesure = Boolean(examen?.attendu) || definition.saisieMesure;
+  const interpretations = examen ? interpretationsExamen(examen) : [];
+  const interpretationsCompletes =
+    interpretations.length === 0 ||
+    interpretations.every((interp) => Boolean(interpretationsChoix[interp.id]));
 
   const consigner = () => {
     const valeur = Number.parseFloat(mesure.replace(',', '.'));
+    const interpretationIds =
+      interpretations.length > 0 ? interpretationsChoix : undefined;
+    const interpretationId =
+      interpretations.length === 1 ? interpretationsChoix[interpretations[0]!.id] : undefined;
     validerExamen({
       mesure: Number.isFinite(valeur) ? valeur : undefined,
-      interpretationId: interpretationId ?? undefined,
+      interpretationId,
+      interpretationIds,
     });
     setMesure('');
-    setInterpretationId(null);
+    setInterpretationsChoix({});
     setResultatRevele(false);
   };
 
@@ -247,26 +257,29 @@ export function PanneauExamen({
           </label>
         )}
 
-        {examen?.interpretation &&
-          (definition.interaction !== 'presentation' || resultatRevele) && (
-          <fieldset className="space-y-1.5">
-            <legend className="mb-1 text-sm text-slate-300">{examen.interpretation.question}</legend>
-            {examen.interpretation.options.map((option) => (
-              <button
-                key={option.id}
-                type="button"
-                onClick={() => setInterpretationId(option.id)}
-                className={`block w-full rounded-md border px-3 py-2 text-left text-sm ${
-                  interpretationId === option.id
-                    ? 'border-sky-500 bg-sky-950/40 text-slate-100'
-                    : 'border-slate-700 text-slate-300 hover:border-slate-500'
-                }`}
-              >
-                {option.libelle}
-              </button>
-            ))}
-          </fieldset>
-        )}
+        {interpretations.length > 0 &&
+          (definition.interaction !== 'presentation' || resultatRevele) &&
+          interpretations.map((interp) => (
+            <fieldset key={interp.id} className="space-y-1.5">
+              <legend className="mb-1 text-sm text-slate-300">{interp.question}</legend>
+              {interp.options.map((option) => (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() =>
+                    setInterpretationsChoix((prev) => ({ ...prev, [interp.id]: option.id }))
+                  }
+                  className={`block w-full rounded-md border px-3 py-2 text-left text-sm ${
+                    interpretationsChoix[interp.id] === option.id
+                      ? 'border-sky-500 bg-sky-950/40 text-slate-100'
+                      : 'border-slate-700 text-slate-300 hover:border-slate-500'
+                  }`}
+                >
+                  {option.libelle}
+                </button>
+              ))}
+            </fieldset>
+          ))}
       </div>
 
       <div className="flex shrink-0 items-center gap-2 border-t border-slate-800 px-4 py-3">
@@ -275,7 +288,7 @@ export function PanneauExamen({
           onClick={consigner}
           disabled={
             (definition.interaction === 'presentation' && !resultatRevele) ||
-            (Boolean(examen?.interpretation) && !interpretationId)
+            !interpretationsCompletes
           }
         >
           Consigner l examen

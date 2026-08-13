@@ -64,10 +64,28 @@ export type Intervalle = { min: number; max: number; unite: string };
 export type OptionQcm = { id: string; libelle: string; correct: boolean };
 
 export type Interpretation = {
+  /** Identifiant stable quand plusieurs questions d interpretation sur un meme examen. */
+  id?: string;
   question: string;
   options: OptionQcm[];
   explication: string;
 };
+
+/** Toutes les questions d interpretation d un examen (une ou plusieurs). */
+export function interpretationsExamen(
+  examen: Pick<ExamenCas, 'interpretation' | 'interpretations'>,
+): (Interpretation & { id: string })[] {
+  if (examen.interpretations?.length) {
+    return examen.interpretations.map((interp, index) => ({
+      ...interp,
+      id: interp.id ?? `q${index}`,
+    }));
+  }
+  if (examen.interpretation) {
+    return [{ ...examen.interpretation, id: examen.interpretation.id ?? 'unique' }];
+  }
+  return [];
+}
 
 /** Un critere d'une reponse ouverte : au moins une variante doit apparaitre. */
 export type CritereOuvert = {
@@ -119,6 +137,8 @@ export type ExamenCas = {
   /** Pourquoi cet examen n'apporte rien dans ce cas precis. */
   justificationMalus?: string;
   interpretation?: Interpretation;
+  /** Plusieurs questions d interpretation pour un meme examen (ex. synoptophore). */
+  interpretations?: Interpretation[];
   /**
    * Examen utile mais non requis : s'il n'est pas fait, il n'apparait pas au bareme ;
    * s'il est fait, la realisation et l'interpretation comptent (et doivent etre justes).
@@ -129,7 +149,7 @@ export type ExamenCas = {
 /** Trace ordonnee de ce que le praticien a fait, seule source du score. */
 export type ActionJournal =
   | { type: 'question'; id: string }
-  | { type: 'examen'; id: ExamenId; mesure?: number; interpretationId?: string };
+  | { type: 'examen'; id: ExamenId; mesure?: number; interpretationId?: string; interpretationIds?: Record<string, string> };
 
 export type CasClinique = {
   id: string;
