@@ -65,6 +65,8 @@ type SessionState = {
   examenEnCours: ExamenId | null;
   /** Conditions ASC/SC et loupes +3 choisies pour l'examen en cours. */
   conditionsExamen: ConditionsExamen;
+  /** Lunettes portées par le patient (distinct du choix ASC/SC par examen). */
+  correctionPortee: 'asc' | 'sc';
   reponsesSynthese: ReponsesSynthese | null;
   messages: Message[];
 
@@ -111,11 +113,13 @@ export const useSession = create<SessionState>((set, get) => ({
   etat: etatExamenInitial('OD'),
   examenEnCours: null,
   conditionsExamen: { correction: 'asc' },
+  correctionPortee: 'asc',
   reponsesSynthese: null,
   messages: [],
 
   demarrer: (cas, mode) => {
     const prepare = casCliniquePrepare(cas);
+    const sansLunettes = Boolean(prepare.debutSansCorrection);
     set({
       cas: prepare,
       questionsOrdre: melangeAleatoire(prepare.questions),
@@ -125,7 +129,8 @@ export const useSession = create<SessionState>((set, get) => ({
       bilan: [],
       etat: etatExamenInitial(oeilFixateurInitial(prepare)),
       examenEnCours: null,
-      conditionsExamen: { correction: 'asc' },
+      conditionsExamen: { correction: sansLunettes ? 'sc' : 'asc' },
+      correctionPortee: sansLunettes ? 'sc' : 'asc',
       reponsesSynthese: null,
       messages: [],
     });
@@ -140,43 +145,51 @@ export const useSession = create<SessionState>((set, get) => ({
   quitterAdmin: () => set({ phase: 'accueil' }),
 
   poserQuestion: (id) => {
-    const { cas, journal, bilan, mode, aDejaPose } = get();
+    const { cas, journal, bilan, mode, aDejaPose, correctionPortee } = get();
     if (aDejaPose(id)) return;
     const question = cas.questions.find((q) => q.id === id);
     if (!question) return;
 
-    const messages: Message[] =
-      mode === 'entrainement'
-        ? [
-            {
-              id: ++compteurMessages,
-              texte:
-                question.poids > 0
-                  ? `Question pertinente. ${question.commentaire ?? ''}`.trim()
-                  : question.poids < 0
-                    ? `Cette question n'apporte rien ici. ${question.commentaire ?? ''}`.trim()
-                    : 'Question neutre : ni utile ni pénalisante.',
-              ton: question.poids > 0 ? 'positif' : question.poids < 0 ? 'negatif' : 'neutre',
-            },
-          ]
-        : [];
+    const messages: Message[] = [];
+    if (mode === 'entrainement') {
+      messages.push({
+        id: ++compteurMessages,
+        texte:
+          question.poids > 0
+            ? `Question pertinente. ${question.commentaire ?? ''}`.trim()
+            : question.poids < 0
+              ? `Cette question n'apporte rien ici. ${question.commentaire ?? ''}`.trim()
+              : 'Question neutre : ni utile ni pénalisante.',
+        ton: question.poids > 0 ? 'positif' : question.poids < 0 ? 'negatif' : 'neutre',
+      });
+    }
+    if (question.activeCorrection && correctionPortee === 'sc') {
+      if (mode === 'entrainement') {
+        messages.push({
+          id: ++compteurMessages,
+          texte: `${cas.patient.prenom} remet ses lunettes. Les examens sous correction (ASC) deviennent possibles.`,
+          ton: 'positif',
+        });
+      }
+    }
 
     set({
       journal: [...journal, { type: 'question', id }],
       bilan: [...bilan, { id: `q-${id}`, titre: question.libelle, contenu: question.reponse }],
       messages: [...get().messages, ...messages],
+      ...(question.activeCorrection ? { correctionPortee: 'asc' as const } : {}),
     });
   },
 
   lancerExamen: (id) => {
     const definition = CATALOGUE_EXAMENS[id];
-    const { cas } = get();
+    const { cas, correctionPortee } = get();
     const options = cas.optionsExamen?.[id];
-    // Chaque examen part d'un patient sans cache ni prisme, en position primaire, et a la
-    // distance de fixation qu'il impose.
     set({
       examenEnCours: id,
-      conditionsExamen: { correction: options?.choixCorrection ? 'asc' : 'asc' },
+      conditionsExamen: {
+        correction: options?.choixCorrection ? correctionPortee : correctionPortee,
+      },
       etat: etatExamenInitial(
         get().etat.oeilFixateur,
         definition.distance === 'loin' ? DISTANCE_LOIN_CM : DISTANCE_PRES_CM,
@@ -273,7 +286,7 @@ export const useSession = create<SessionState>((set, get) => ({
         },
       ],
       examenEnCours: null,
-      conditionsExamen: { correction: 'asc' },
+      conditionsExamen: { correction: get().correctionPortee },
       etat: etatExamenInitial(get().etat.oeilFixateur),
       messages: [...get().messages, ...messages],
     });

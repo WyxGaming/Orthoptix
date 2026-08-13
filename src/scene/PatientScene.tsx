@@ -17,6 +17,7 @@ import {
 import { ORBITES_DEFAUT, type PositionsOrbites } from './orbites';
 import { LunettesPatient } from './LunettesPatient';
 import { configModeleTete } from './modeles-tete';
+import { correctionEffective } from '../engine/correction';
 import { TetePatient } from './TetePatient';
 
 /** Cote temporal de l'oeil, exprime en X : la droite du patient est en -X. */
@@ -212,6 +213,7 @@ function Camera({ rapprochee }: { rapprochee: boolean }) {
 export function PatientScene({ zoomReflets }: { zoomReflets: boolean }) {
   const [orbites, setOrbites] = useState<PositionsOrbites>(ORBITES_DEFAUT);
   const conditionsExamen = useSession((s) => s.conditionsExamen);
+  const correctionPortee = useSession((s) => s.correctionPortee);
   const examenEnCours = useSession((s) => s.examenEnCours);
   const cas = useSession((s) => s.cas);
   const configTete = configModeleTete(cas.id);
@@ -219,9 +221,8 @@ export function PatientScene({ zoomReflets }: { zoomReflets: boolean }) {
     setOrbites(positions);
   }, []);
 
-  const options = examenEnCours ? cas.optionsExamen?.[examenEnCours] : undefined;
-  const montreLunettes =
-    !options?.choixCorrection || conditionsExamen.correction === 'asc';
+  const conditions = correctionEffective(cas, examenEnCours, conditionsExamen, correctionPortee);
+  const montreLunettes = conditions.correction === 'asc';
 
   return (
     <>

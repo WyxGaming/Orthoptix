@@ -81,6 +81,8 @@ function EtagereExamens() {
         pour en relire le principe. {cas.patient.prenom} est coopérant{cas.patient.sexe === 'F' ? 'e' : ''}.
         {Object.keys(cas.optionsExamen ?? {}).length > 0 &&
           ' Pour certains examens, choisissez ASC ou SC et éventuellement les loupes +3 avant de présenter le test.'}
+        {cas.debutSansCorrection &&
+          ` ${cas.patient.prenom} est arrivé sans lunettes : demandez-lui de les remettre avant les examens sous correction.`}
       </p>
     </div>
   );

@@ -7,11 +7,18 @@ import { interpretationsExamen } from '../engine/types';
 
 const session = () => useSession.getState();
 
+function mettreLunettesSiBesoin(conditions: ConditionsExamen) {
+  if (conditions.correction === 'asc' && session().correctionPortee === 'sc') {
+    session().poserQuestion('mettre-lunettes');
+  }
+}
+
 function realiser(
   id: ExamenId,
   conditions: ConditionsExamen = { correction: 'asc' },
   mesure?: number,
 ) {
+  mettreLunettesSiBesoin(conditions);
   const { cas, lancerExamen, definirConditionsExamen } = session();
   lancerExamen(id);
   definirConditionsExamen(conditions);
@@ -81,6 +88,15 @@ describe('conditions examen', () => {
 });
 
 describe('cas Maxime — esotropie accommodative', () => {
+  it('arrive sans lunettes', () => {
+    expect(session().correctionPortee).toBe('sc');
+  });
+
+  it('remet les lunettes quand on le lui demande', () => {
+    session().poserQuestion('mettre-lunettes');
+    expect(session().correctionPortee).toBe('asc');
+  });
+
   it('Lang positif en ASC et negatif en SC', () => {
     realiser('lang', { correction: 'asc' });
     expect(session().bilan.at(-1)!.contenu).toMatch(/positif/i);

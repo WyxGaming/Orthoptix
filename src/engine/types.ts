@@ -57,6 +57,8 @@ export type QuestionAnamnese = {
   /** Positif si la question est essentielle, negatif si elle est hors sujet. */
   poids: number;
   commentaire?: string;
+  /** Pose la correction du patient (lunettes remises). */
+  activeCorrection?: boolean;
 };
 
 export type Intervalle = { min: number; max: number; unite: string };
@@ -195,6 +197,8 @@ export type CasClinique = {
   resume: string;
   patient: { prenom: string; age: number; sexe: 'F' | 'M'; motif: string };
   oculaire: ParametresOculaires;
+  /** Le patient arrive sans lunettes ; le praticien doit les lui redemander. */
+  debutSansCorrection?: boolean;
   questions: QuestionAnamnese[];
   examens: Partial<Record<ExamenId, ExamenCas>>;
   /** Examens pour lesquels l'étudiant choisit ASC/SC et éventuellement les loupes +3. */

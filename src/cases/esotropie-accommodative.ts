@@ -371,7 +371,7 @@ export const esotropieAccommodative: CasClinique = {
   id: 'esotropie-accommodative',
   titre: 'Déviation convergente chez un jeune adulte de 23 ans',
   resume:
-    'Maxime consulte seul pour un bilan orthoptique. Il porte ses lunettes depuis l enfance ; la nature exacte de sa déviation reste à préciser.',
+    'Maxime consulte seul pour un bilan orthoptique. Il est arrivé sans lunettes ; la nature exacte de sa déviation reste à préciser.',
   patient: {
     prenom: 'Maxime',
     age: 23,
@@ -379,6 +379,8 @@ export const esotropieAccommodative: CasClinique = {
     motif:
       'Bilan orthoptique pour déviation oculaire convergente, à la demande de son ophtalmologiste.',
   },
+
+  debutSansCorrection: true,
 
   oculaire: {
     deviation: { horizontal: 15, vertical: 0 },
@@ -406,6 +408,17 @@ export const esotropieAccommodative: CasClinique = {
         'Mon ophtalmologiste m a adressé pour un bilan. Je ne sais pas trop ce qu il cherche, je viens faire ce qu on me demande.',
       poids: 2,
       commentaire: 'Poser le cadre même si le patient est vague : il consulte seul et est un peu perdu.',
+    },
+    {
+      id: 'mettre-lunettes',
+      rubrique: 'anamnese',
+      libelle: 'Pouvez-vous mettre vos lunettes, s il vous plaît ?',
+      reponse:
+        'Ah oui, pardon — les voici. Je les avais enlevées en entrant dans la salle d attente.',
+      poids: 4,
+      activeCorrection: true,
+      commentaire:
+        'Maxime arrive sans lunettes : les lui redemander avant tout examen sous correction (ASC).',
     },
     {
       id: 'depuis-quand',
@@ -443,10 +456,11 @@ export const esotropieAccommodative: CasClinique = {
     {
       id: 'correction-portee',
       rubrique: 'anamnese',
-      libelle: 'Portez-vous bien votre correction actuelle ?',
-      reponse: 'Oui, mes lunettes actuelles, je les porte tout le temps.',
-      poids: 4,
-      commentaire: 'Correction totale portée : les mesures ASC sont fiables.',
+      libelle: 'Portez-vous bien votre correction actuelle au quotidien ?',
+      reponse:
+        'Oui, en général tout le temps. Là je les avais juste enlevées en arrivant.',
+      poids: 3,
+      commentaire: 'Port effectif au quotidien ; ne confond pas avec l absence de lunettes à l accueil.',
     },
     {
       id: 'chirurgie',
@@ -490,14 +504,14 @@ export const esotropieAccommodative: CasClinique = {
     refraction: {
       poids: 4,
       resultat:
-        'Correction portée : +5.00 OD, +7.00 OG — hypermétropie modérée, anisométropie. Verres portés en permanence, correction totale.',
+        'Réfraction : +5.00 D sph OD, +7.00 D sph OG. Hypermétropie modérée avec anisométropie de 2 D entre les deux yeux.',
       interpretation: {
         question: 'Comment interprétez-vous cette réfraction ?',
         options: [
           {
             id: 'anisometropie-accommodative',
             libelle:
-              'Hypermétropie avec anisométropie ; la correction totale est indispensable et explique en partie l angle sans correction',
+              'Hypermétropie avec anisométropie ; une correction totale est indispensable pour compenser l effort accommodatif',
             correct: true,
           },
           {
@@ -512,7 +526,7 @@ export const esotropieAccommodative: CasClinique = {
           },
         ],
         explication:
-          'L hypermétropie non compensée majore l esotropie. L anisométropie (+2 D entre les yeux) impose une correction totale, ici bien portée.',
+          'L anisométropie (+2 D entre les yeux) impose une correction équilibrée. L hypermétropie non compensée favorise l esotropie accommodative.',
       },
     },
     acuite: {
