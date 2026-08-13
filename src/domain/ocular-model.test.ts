@@ -124,11 +124,16 @@ describe('upshoot bilateral en adduction', () => {
     expect(etat.OG.elevationDeg).toBeGreaterThan(10);
   });
 
-  it('en regard lateral, l oeil fixateur suit la mire sans fixation croisee', () => {
+  it('en regard a droite, l oeil droit fixe la mire', () => {
     const gaze: Gaze = { azimuthDeg: 25, elevationDeg: 0 };
-    const etat = etatOculaire(lea, { ...enPositionPrimaire('OD'), gaze });
+    const etat = etatOculaire(lea, { ...enPositionPrimaire('OG'), gaze });
     expect(ecartMire(etat, 'OD', gaze)).toBeCloseTo(0, 3);
-    expect(etat.OG.deviationLampeDp.horizontal).toBeGreaterThan(30);
+  });
+
+  it('en regard a gauche, l oeil gauche fixe la mire', () => {
+    const gaze: Gaze = { azimuthDeg: -25, elevationDeg: 0 };
+    const etat = etatOculaire(lea, { ...enPositionPrimaire('OD'), gaze });
+    expect(ecartMire(etat, 'OG', gaze)).toBeCloseTo(0, 3);
   });
 
   it('n eleve aucun oeil en position primaire', () => {

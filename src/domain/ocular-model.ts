@@ -171,13 +171,21 @@ export function effetPrisme(prisme: Prisme | undefined): { horizontal: number; v
   }
 }
 
+/** Version laterale au-dela de laquelle le fixateur bascule vers le cote du regard. */
+export const SEUIL_FIXATION_LATERALE_DEG = 10;
+
 /**
- * Oeil qui fixe reellement, compte tenu de l'occlusion.
- * La fixation alternante se lit au cover test ; en motilite, les versions laterales
- * restent conjuguees sans basculer le fixateur vers l'oeil en adduction.
+ * Oeil qui fixe reellement, compte tenu de la position du regard et de l'occlusion.
+ *
+ * En fixation alternante, regard a droite → OD fixe ; regard a gauche → OG fixe.
+ * La fixation croisee (oeil en adduction) n'est pas simulee en motilite.
  */
-export function oeilFixateurEffectif(_params: ParametresOculaires, etat: EtatExamen): Eye {
-  const souhaite = etat.oeilFixateur;
+export function oeilFixateurEffectif(params: ParametresOculaires, etat: EtatExamen): Eye {
+  let souhaite = etat.oeilFixateur;
+  if (params.fixation.mode === 'alternante') {
+    if (etat.gaze.azimuthDeg > SEUIL_FIXATION_LATERALE_DEG) souhaite = 'OD';
+    else if (etat.gaze.azimuthDeg < -SEUIL_FIXATION_LATERALE_DEG) souhaite = 'OG';
+  }
   return etat.occlusion === souhaite ? autreOeil(souhaite) : souhaite;
 }
 
