@@ -38,36 +38,14 @@ function realiserMulti(
   mettreLunettesSiBesoin({ correction: 'asc' });
   const { cas, lancerExamen } = session();
   lancerExamen(id);
-  const interpretationIdsParCondition: Record<string, Record<string, string>> = {};
-  for (const passage of passages) {
-    const ctx = {
-      examenId: id,
-      conditions: passage.conditions,
-      journal: session().journal,
-      indexJournal: session().journal.length,
-    };
-    const examen = cas.resoudreExamen?.(ctx) ?? cas.examens[id];
-    if (!examen) continue;
-    const cle =
-      passage.conditions.loupesPlus3
-        ? 'asc+3'
-        : passage.conditions.correction;
-    for (const interp of interpretationsExamen(examen)) {
-      const bonne = interp.options.find((o) => o.correct)?.id;
-      if (bonne) {
-        interpretationIdsParCondition[cle] = {
-          ...interpretationIdsParCondition[cle],
-          [interp.id]: bonne,
-        };
-      }
-    }
-  }
   session().validerExamen({
     passages: passages.map((p) => ({
       conditions: p.conditions,
       mesure: p.mesure,
       interpretationIds:
-        interpretationIdsParCondition[p.conditions.loupesPlus3 ? 'asc+3' : p.conditions.correction],
+        id === 'coverPres' && p.conditions.correction === 'asc' && !p.conditions.loupesPlus3
+          ? { unique: 'non' }
+          : undefined,
     })),
   });
 }
@@ -231,6 +209,23 @@ describe('cas Maxime — esotropie accommodative', () => {
     expect(passages.map((a) => (a.type === 'examen' ? a.mesure : undefined))).toEqual([
       15, 40, 0,
     ]);
+  });
+
+  it('penalise la presentation du synoptophore ou du biprisme', () => {
+    session().lancerExamen('deviometrie');
+    session().validerExamen();
+    let ligne = session()
+      .resultat()
+      .lignes.find((l) => l.libelle.startsWith('Déviométrie'))!;
+    expect(ligne.nature).toBe('malus');
+
+    session().demarrer(esotropieAccommodative, 'entrainement');
+    session().lancerExamen('biprisme');
+    session().validerExamen();
+    ligne = session()
+      .resultat()
+      .lignes.find((l) => l.libelle.startsWith('Biprisme'))!;
+    expect(ligne.nature).toBe('malus');
   });
 
   it('attribue le score maximal a un bilan mene correctement', () => {

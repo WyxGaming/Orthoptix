@@ -147,29 +147,6 @@ function resoudreExamenMaxime(ctx: ContexteExamen): ExamenCas | null {
           resultat:
             'Reflets centrés des deux côtés en position primaire : orthotropie de près (O\'t) avec loupes +3.',
           attendu: { min: 0, max: 2, unite: 'DP' },
-          interpretation: {
-            question: 'Que signifie l orthotropie de près avec les loupes +3 ?',
-            options: [
-              {
-                id: 'stereo-existe',
-                libelle:
-                  'Une vision stéréoscopique existe si l accommodation est totalement saturée ; la tropie de près est accommodative',
-                correct: true,
-              },
-              {
-                id: 'gueri',
-                libelle: 'Le patient est orthophorique et n a plus de strabisme',
-                correct: false,
-              },
-              {
-                id: 'esophorie',
-                libelle: 'Esophorie simplement décompensée',
-                correct: false,
-              },
-            ],
-            explication:
-              'O\'t sous +3 montre que la composante accommodative peut être neutralisée : la stéréoscopie existe mais n est pas manifeste au quotidien sans ce test.',
-          },
         };
       }
       if (asc) {
@@ -210,29 +187,6 @@ function resoudreExamenMaxime(ctx: ContexteExamen): ExamenCas | null {
           resultat:
             'Cover test de près avec loupes +3 : pas de mouvement de restitution, yeux parallèles (O\'t).',
           attendu: { min: 0, max: 2, unite: 'DP' },
-          interpretation: {
-            question: 'Que démontre le cover test de près avec +3 ?',
-            options: [
-              {
-                id: 'composante-accommodative',
-                libelle:
-                  'Composante accommodative majeure : la tropie disparaît quand l accommodation est saturée',
-                correct: true,
-              },
-              {
-                id: 'phorie',
-                libelle: 'Esophorie simplement décompensée',
-                correct: false,
-              },
-              {
-                id: 'guerison',
-                libelle: 'Absence de strabisme',
-                correct: false,
-              },
-            ],
-            explication:
-              'L orthotropie sous +3 prouve qu une vision stéréoscopique existe et que l angle de près est lié à l effort accommodatif.',
-          },
         };
       }
       if (asc) {
@@ -241,28 +195,6 @@ function resoudreExamenMaxime(ctx: ContexteExamen): ExamenCas | null {
           resultat:
             "Cover unilatéral positif : mouvement de restitution de dedans en dehors, esotropie de près d'environ 15 DP (E't) avec correction.",
           attendu: { min: 12, max: 18, unite: 'DP' },
-          interpretation: {
-            question: 'Que conclure du cover test de près avec correction ?',
-            options: [
-              {
-                id: 'tropie',
-                libelle: 'Tropie manifeste (E\'t), jamais de phorie seule',
-                correct: true,
-              },
-              {
-                id: 'phorie',
-                libelle: 'Esophorie décompensée',
-                correct: false,
-              },
-              {
-                id: 'ortho',
-                libelle: 'Orthotropie de près',
-                correct: false,
-              },
-            ],
-            explication:
-              'Le mouvement dès le premier caché signe une tropie. Avec correction, l angle reste modéré (~15 DP) mais manifeste.',
-          },
         };
       }
       return {
@@ -270,29 +202,6 @@ function resoudreExamenMaxime(ctx: ContexteExamen): ExamenCas | null {
         resultat:
           'Sans correction : cover test très positif, esotropie de près d environ 40 DP.',
         attendu: { min: 35, max: 45, unite: 'DP' },
-        interpretation: {
-          question: 'Que montre la comparaison SC / ASC au cover test de près ?',
-          options: [
-            {
-              id: 'accommodative',
-              libelle:
-                'Angle nettement plus large sans correction : composante accommodative évidente',
-              correct: true,
-            },
-            {
-              id: 'stable',
-              libelle: 'Angle identique avec ou sans correction',
-              correct: false,
-            },
-            {
-              id: 'phorie',
-              libelle: 'Esophorie décompensée sans correction seulement',
-              correct: false,
-            },
-          ],
-          explication:
-            'L écart entre ~15 DP en ASC et ~40 DP en SC est l argument central de l esotropie accommodative.',
-        },
       };
     }
 
@@ -303,57 +212,12 @@ function resoudreExamenMaxime(ctx: ContexteExamen): ExamenCas | null {
           resultat:
             'Cover test de loin avec correction : esotropie d environ 6 DP (Et), tropie manifeste.',
           attendu: { min: 4, max: 8, unite: 'DP' },
-          interpretation: {
-            question: 'Que conclure du cover test de loin avec correction ?',
-            options: [
-              {
-                id: 'et-residuel',
-                libelle: 'Esotropie de loin résiduelle (Et) malgré la correction totale',
-                correct: true,
-              },
-              {
-                id: 'ortho',
-                libelle: 'Orthotropie de loin sous correction',
-                correct: false,
-              },
-              {
-                id: 'phorie',
-                libelle: 'Esophorie de loin',
-                correct: false,
-              },
-            ],
-            explication:
-              'Même parfaitement corrigé optiquement, Maxime reste en esotropie de loin (~6 DP) : ce n est pas une forme purement accommodative.',
-          },
         };
       }
       return {
         poids: 0,
         resultat: 'Sans correction : esotropie de loin d environ 10 DP.',
         attendu: { min: 8, max: 12, unite: 'DP' },
-        interpretation: {
-          question: 'Comment interpréter l angle de loin sans correction ?',
-          options: [
-            {
-              id: 'part-accommodative',
-              libelle:
-                'Angle plus large sans correction qu avec : part accommodative aussi en vision de loin',
-              correct: true,
-            },
-            {
-              id: 'identique',
-              libelle: 'Angle identique avec ou sans correction',
-              correct: false,
-            },
-            {
-              id: 'exophorie',
-              libelle: 'Exophorie décompensée',
-              correct: false,
-            },
-          ],
-          explication:
-            'L angle de loin augmente aussi sans correction (6 → 10 DP), traduisant l influence de l hypermétropie non compensée même au loin.',
-        },
       };
     }
 
@@ -606,19 +470,33 @@ export const esotropieAccommodative: CasClinique = {
     deviometrie: {
       poids: -1,
       resultat: 'Mesure difficile, sans élément décisif.',
-      justificationMalus: 'Le synoptophore n est pas prioritaire : le Lang ASC + loupes +3 et le TNO précoce suffisent.',
+      justificationMalus:
+        'Examen non nécessaire dans ce tableau clinique : le Lang ASC + loupes +3 et le TNO précoce suffisent.',
     },
     biprisme: {
       poids: -2,
       resultat: 'Examen non contributif.',
-      justificationMalus: 'Le biprisme explore la microtropie ; les angles ici sont trop larges.',
+      justificationMalus:
+        'Examen non nécessaire : le biprisme explore la microtropie, incompatible avec des angles aussi larges.',
     },
     tno: { poids: 0, resultat: '' },
     lang: { poids: 0, resultat: '' },
     hirschberg: { poids: 0, resultat: '' },
     krimsky: { poids: 0, resultat: '' },
     krimskyLoin: { poids: 0, resultat: '' },
-    coverPres: { poids: 0, resultat: '' },
+    coverPres: {
+      poids: 0,
+      resultat: '',
+      interpretation: {
+        question: 'Le patient présente-t-il une alternance spontanée ?',
+        options: [
+          { id: 'oui', libelle: 'Oui', correct: false },
+          { id: 'non', libelle: 'Non', correct: true },
+        ],
+        explication:
+          'Pas d alternance spontanée chez Maxime : fixateur stable, pas de permutations.',
+      },
+    },
     coverLoin: { poids: 0, resultat: '' },
   },
 

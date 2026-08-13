@@ -186,10 +186,21 @@ function scoreRealisationsAttendues(
         });
       }
 
-      for (const interp of examen ? interpretationsExamen(examen) : []) {
+      let interps = examen ? interpretationsExamen(examen) : [];
+      if (
+        interps.length === 0 &&
+        attendu.examenId === 'coverPres' &&
+        attendu.conditions.correction === 'asc' &&
+        !attendu.conditions.loupesPlus3 &&
+        cas.examens.coverPres
+      ) {
+        interps = interpretationsExamen(cas.examens.coverPres);
+      }
+
+      for (const interp of interps) {
         const choix =
           passage.interpretationIds?.[interp.id] ??
-          (interpretationsExamen(examen!).length === 1 ? passage.interpretationId : undefined);
+          (interps.length === 1 ? passage.interpretationId : undefined);
         const bonne = interp.options.find((o) => o.correct);
         const juste = choix !== undefined && choix === bonne?.id;
         lignes.push({

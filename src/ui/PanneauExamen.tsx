@@ -240,9 +240,6 @@ export function PanneauExamen({
   const [mesure, setMesure] = useState('');
   const [mesures, setMesures] = useState<Record<string, string>>({});
   const [interpretationsChoix, setInterpretationsChoix] = useState<Record<string, string>>({});
-  const [interpretationsParCondition, setInterpretationsParCondition] = useState<
-    Record<string, Record<string, string>>
-  >({});
   const [resultatRevele, setResultatRevele] = useState(false);
 
   useEffect(() => {
@@ -251,7 +248,6 @@ export function PanneauExamen({
     const options = cas.optionsExamen?.[examenEnCours];
     const journal = useSession.getState().journal;
     const prefill: Record<string, string> = {};
-    const deja: Record<string, Record<string, string>> = {};
 
     if (options?.choixCorrection) {
       for (const combo of conditionsMesureAttendues(options, definition.distance)) {
@@ -262,10 +258,8 @@ export function PanneauExamen({
             a.id === examenEnCours &&
             conditionsCorrespond(a.conditions ?? { correction: 'asc' }, combo),
         );
-        if (entree?.type === 'examen') {
-          if (entree.mesure !== undefined) prefill[cle] = String(entree.mesure);
-          if (entree.interpretationIds) deja[cle] = entree.interpretationIds;
-          else if (entree.interpretationId) deja[cle] = { unique: entree.interpretationId };
+        if (entree?.type === 'examen' && entree.mesure !== undefined) {
+          prefill[cle] = String(entree.mesure);
         }
       }
     }
@@ -273,7 +267,6 @@ export function PanneauExamen({
     setMesure('');
     setMesures(prefill);
     setInterpretationsChoix({});
-    setInterpretationsParCondition(deja);
     setResultatRevele(false);
   }, [examenEnCours, cas]);
 
@@ -322,11 +315,14 @@ export function PanneauExamen({
   const demandeMesure =
     !demandeMesuresMultiples &&
     (Boolean(examenEffectif?.attendu) || definition.saisieMesure);
-  const interpretations = examenEffectif ? interpretationsExamen(examenEffectif) : [];
-  const cleActive = cleConditions(conditionsExamen);
-  const interpretationsActives = demandeMesuresMultiples
-    ? (interpretationsParCondition[cleActive] ?? {})
-    : interpretationsChoix;
+  const interpretationsExamenNiveau =
+    examenEnCours === 'coverPres' && examen
+      ? interpretationsExamen(examen)
+      : [];
+  const interpretationsConditionnelles =
+    demandeMesuresMultiples ? [] : examenEffectif ? interpretationsExamen(examenEffectif) : [];
+  const examenNonContributif = Boolean(examen && examen.poids < 0);
+  const interpretationsActives = interpretationsChoix;
 
   const mesureValide = (valeur: string) => {
     const n = Number.parseFloat(valeur.replace(',', '.'));
@@ -338,46 +334,19 @@ export function PanneauExamen({
       .filter((combo) => !dejaConsignes.has(cleConditions(combo)))
       .every((combo) => mesureValide(mesures[cleConditions(combo)] ?? '')) ?? true;
 
-  const interpretationsCompletesPour = (conditions: ConditionsExamen) => {
-    const ctx = {
-      examenId: examenEnCours,
-      conditions,
-      journal: useSession.getState().journal,
-      indexJournal: useSession.getState().journal.length,
-    };
-    const eff = cas.resoudreExamen?.(ctx) ?? examen;
-    const interps = eff ? interpretationsExamen(eff) : [];
-    if (interps.length === 0) return true;
-    const cle = cleConditions(conditions);
-    const choix = interpretationsParCondition[cle] ?? {};
-    return interps.every((interp) => Boolean(choix[interp.id]));
-  };
-
-  const aInterpretationRequise = (conditions: ConditionsExamen) => {
-    const ctx = {
-      examenId: examenEnCours,
-      conditions,
-      journal: useSession.getState().journal,
-      indexJournal: useSession.getState().journal.length,
-    };
-    const eff = cas.resoudreExamen?.(ctx) ?? examen;
-    return eff ? interpretationsExamen(eff).length > 0 : false;
-  };
-
-  const interpretationsCompletesMulti =
-    !demandeMesuresMultiples ||
-    combosMesure
-      .filter((combo) => !dejaConsignes.has(cleConditions(combo)))
-      .every((combo) => interpretationsCompletesPour(combo));
+  const alternanceComplete =
+    examenEnCours !== 'coverPres' ||
+    interpretationsExamenNiveau.every((interp) => Boolean(interpretationsChoix[interp.id]));
 
   const interpretationsCompletes =
-    interpretations.length === 0 ||
-    interpretations.every((interp) => Boolean(interpretationsActives[interp.id]));
+    interpretationsConditionnelles.length === 0 ||
+    interpretationsConditionnelles.every((interp) => Boolean(interpretationsChoix[interp.id]));
 
   const peutConsigner =
+    !examenNonContributif &&
     (definition.interaction !== 'presentation' || resultatRevele) &&
     (demandeMesuresMultiples
-      ? (mesuresMultiplesCompletes && interpretationsCompletesMulti) ||
+      ? (mesuresMultiplesCompletes && alternanceComplete) ||
         (dejaConsignes.size === combosMesure.length && combosMesure.length > 0)
       : interpretationsCompletes && (!demandeMesure || mesureValide(mesure)));
 
@@ -388,20 +357,28 @@ export function PanneauExamen({
         .map((conditions) => {
           const cle = cleConditions(conditions);
           const valeur = Number.parseFloat(mesures[cle]!.replace(',', '.'));
-          const choix = interpretationsParCondition[cle];
+          const rattacherAlternance =
+            examenEnCours === 'coverPres' &&
+            conditions.correction === 'asc' &&
+            !conditions.loupesPlus3;
           return {
             conditions,
             mesure: valeur,
-            interpretationIds: choix && Object.keys(choix).length > 0 ? choix : undefined,
+            interpretationIds:
+              rattacherAlternance && Object.keys(interpretationsChoix).length > 0
+                ? interpretationsChoix
+                : undefined,
           };
         });
       validerExamen({ passages });
     } else {
       const valeur = Number.parseFloat(mesure.replace(',', '.'));
       const interpretationIds =
-        interpretations.length > 0 ? interpretationsChoix : undefined;
+        interpretationsConditionnelles.length > 0 ? interpretationsChoix : undefined;
       const interpretationId =
-        interpretations.length === 1 ? interpretationsChoix[interpretations[0]!.id] : undefined;
+        interpretationsConditionnelles.length === 1
+          ? interpretationsChoix[interpretationsConditionnelles[0]!.id]
+          : undefined;
       validerExamen({
         mesure: Number.isFinite(valeur) ? valeur : undefined,
         interpretationId,
@@ -411,18 +388,10 @@ export function PanneauExamen({
     setMesure('');
     setMesures({});
     setInterpretationsChoix({});
-    setInterpretationsParCondition({});
     setResultatRevele(false);
   };
 
   const choisirInterpretation = (interpId: string, optionId: string) => {
-    if (demandeMesuresMultiples) {
-      setInterpretationsParCondition((prev) => ({
-        ...prev,
-        [cleActive]: { ...prev[cleActive], [interpId]: optionId },
-      }));
-      return;
-    }
     setInterpretationsChoix((prev) => ({ ...prev, [interpId]: optionId }));
   };
 
@@ -463,14 +432,28 @@ export function PanneauExamen({
 
         {definition.interaction === 'presentation' && (
           <div className="space-y-2">
+            {examenNonContributif && (
+              <p className="rounded-md border border-amber-900/60 bg-amber-950/30 px-3 py-2 text-xs text-amber-200/90">
+                Examen non nécessaire dans ce tableau clinique. Le présenter compte comme non
+                contributif.
+              </p>
+            )}
             {!resultatRevele ? (
-              <Bouton ton="principal" onClick={() => setResultatRevele(true)}>
+              <Bouton
+                ton="principal"
+                onClick={() => {
+                  setResultatRevele(true);
+                  if (examenNonContributif) validerExamen();
+                }}
+              >
                 Présenter le test à {cas.patient.prenom}
               </Bouton>
             ) : (
-              <p className="rounded-md border border-slate-700 bg-slate-950/60 p-3 text-sm text-slate-200">
-                {examenEffectif?.resultat ?? 'Le test ne montre rien de particulier.'}
-              </p>
+              !examenNonContributif && (
+                <p className="rounded-md border border-slate-700 bg-slate-950/60 p-3 text-sm text-slate-200">
+                  {examenEffectif?.resultat ?? 'Le test ne montre rien de particulier.'}
+                </p>
+              )
             )}
           </div>
         )}
@@ -498,16 +481,32 @@ export function PanneauExamen({
           </label>
         )}
 
-        {interpretations.length > 0 &&
+        {interpretationsConditionnelles.length > 0 &&
           (definition.interaction !== 'presentation' || resultatRevele) &&
-          interpretations.map((interp) => (
+          interpretationsConditionnelles.map((interp) => (
             <fieldset key={interp.id} className="space-y-1.5">
-              <legend className="mb-1 text-sm text-slate-300">
-                {demandeMesuresMultiples && (
-                  <span className="text-sky-400">{libelleConditionsMesure(conditionsExamen)} — </span>
-                )}
-                {interp.question}
-              </legend>
+              <legend className="mb-1 text-sm text-slate-300">{interp.question}</legend>
+              {interp.options.map((option) => (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() => choisirInterpretation(interp.id, option.id)}
+                  className={`block w-full rounded-md border px-3 py-2 text-left text-sm ${
+                    interpretationsActives[interp.id] === option.id
+                      ? 'border-sky-500 bg-sky-950/40 text-slate-100'
+                      : 'border-slate-700 text-slate-300 hover:border-slate-500'
+                  }`}
+                >
+                  {option.libelle}
+                </button>
+              ))}
+            </fieldset>
+          ))}
+
+        {interpretationsExamenNiveau.length > 0 &&
+          interpretationsExamenNiveau.map((interp) => (
+            <fieldset key={interp.id} className="space-y-1.5">
+              <legend className="mb-1 text-sm text-slate-300">{interp.question}</legend>
               {interp.options.map((option) => (
                 <button
                   key={option.id}
@@ -530,17 +529,18 @@ export function PanneauExamen({
             {combosMesure.map((combo) => {
               const cle = cleConditions(combo);
               const mesureOk = dejaConsignes.has(cle) || mesureValide(mesures[cle] ?? '');
-              const interpOk =
-                dejaConsignes.has(cle) ||
-                !aInterpretationRequise(combo) ||
-                interpretationsCompletesPour(combo);
-              const complet = dejaConsignes.has(cle) || (mesureOk && interpOk);
+              const complet = dejaConsignes.has(cle) || mesureOk;
               return (
                 <li key={cle}>
                   {libelleConditionsMesure(combo)} : {complet ? 'complet ✓' : 'en cours…'}
                 </li>
               );
             })}
+            {examenEnCours === 'coverPres' && (
+              <li>
+                Alternance spontanée : {alternanceComplete ? 'complet ✓' : 'en cours…'}
+              </li>
+            )}
           </ul>
         )}
       </div>
