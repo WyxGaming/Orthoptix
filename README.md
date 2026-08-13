@@ -34,6 +34,13 @@ sortie `dist`).
 
 Chaque push sur `main` / `master` redéploie automatiquement.
 
+**Site à jour (GitHub Pages)** : https://wyxgaming.github.io/Orthoptix/  
+(déploiement automatique via GitHub Actions à chaque push sur `master`)
+
+**Vercel** : si vous utilisez https://orthoptix.vercel.app, vérifiez dans le
+tableau de bord Vercel que le projet est bien lié au dépôt GitHub et à la branche
+`master`, puis lancez un redéploiement manuel si besoin.
+
 ### Via la CLI
 
 ```bash
