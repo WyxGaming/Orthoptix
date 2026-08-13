@@ -195,28 +195,6 @@ export const pseudostrabismeEpicanthus: CasClinique = {
       poids: 8,
       resultat:
         "Occlusion brève de l'OD puis de l'OG : Mei tourne la tête des deux côtés, mouvements comparables. Aucun mouvement oculaire visible pendant l'occlusion.",
-      interpretation: {
-        question: "Comment interpréter cette réaction à l'occlusion ?",
-        options: [
-          {
-            id: 'symetrique',
-            libelle: 'Mouvements de tête symétriques, sans mouvement oculaire visible',
-            correct: true,
-          },
-          {
-            id: 'pref-od',
-            libelle: "Préférence fixatrice de l'OD",
-            correct: false,
-          },
-          {
-            id: 'restitution',
-            libelle: 'Mouvement oculaire de restitution convergent',
-            correct: false,
-          },
-        ],
-        explication:
-          "Ce test observe le comportement face à une occlusion brève. Les mouvements de tête sont comparables des deux côtés ; aucun mouvement oculaire n'est visible pendant l'occlusion.",
-      },
     },
     hirschberg: {
       poids: 8,
