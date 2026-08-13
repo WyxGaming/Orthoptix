@@ -61,11 +61,11 @@ function bilanAngelicaParfait() {
   realiser('lang');
   realiserComportementVisuel();
   realiser('reactionOcclusion');
-  realiser('hirschberg', 0);
+  realiser('hirschberg', 8);
   validerSynthese({
     diagnostic: 'orthotropie',
     'signes-cles':
-      'Suivi lumiere objet symetrique, reaction occlusion symetrique, reflets centres orthotropie',
+      'Suivi lumiere objet symetrique, reaction occlusion symetrique, reflets temporalises kappa positif',
     conduite: 'rassurance',
     chirurgie: 'non',
   });
@@ -76,7 +76,7 @@ describe('pseudostrabisme-epicanthus', () => {
     useSession.getState().demarrer(pseudostrabismeEpicanthus, 'evaluation');
   });
 
-  it('a des reflets centres en position primaire (orthotropie)', () => {
+  it('mimique une fausse exotropie au Hirschberg par angle kappa positif', () => {
     const etat = {
       gaze: { azimuthDeg: 0, elevationDeg: 0 },
       distanceFixationCm: 33,
@@ -87,7 +87,7 @@ describe('pseudostrabisme-epicanthus', () => {
     };
     const o = etatOculaire(pseudostrabismeEpicanthus.oculaire, etat);
     expect(o.OG.deviationLampeDp.horizontal).toBeCloseTo(0, 6);
-    expect(Math.abs(prismFromReflexMm(-o.OG.reflet.xMm))).toBeLessThan(2);
+    expect(Math.abs(prismFromReflexMm(-o.OG.reflet.xMm))).toBeCloseTo(8, 1);
   });
 
   it('bonus anamnese si les questions essentielles sont dans le bon ordre', () => {
@@ -103,7 +103,7 @@ describe('pseudostrabisme-epicanthus', () => {
     realiser('lang');
     realiserComportementVisuel();
     realiser('reactionOcclusion');
-    realiser('hirschberg', 0);
+    realiser('hirschberg', 8);
     const bonus = session()
       .resultat()
       .lignes.find((l) => l.libelle.toLowerCase().includes('conduite du bilan'));
@@ -152,7 +152,7 @@ describe('pseudostrabisme-epicanthus', () => {
     session().validerSynthese({
       diagnostic: 'orthotropie',
       'signes-cles':
-        'Suivi lumiere symetrique, reaction occlusion symetrique, reflets centres',
+        'Suivi lumiere symetrique, reaction occlusion symetrique, reflets temporalises angle kappa',
       conduite: 'rassurance',
       chirurgie: 'non',
     });

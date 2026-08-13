@@ -3,9 +3,9 @@ import type { CasClinique } from '../engine/types';
 /**
  * Cas 3 : inquiétude parentale chez un nourrisson de 5 mois.
  *
- * Piège pédagogique : les parents sont convaincus d'un strabisme précoce,
- * alors que le bilan objectif (comportement visuel, reflets) est normal.
- * Le cover test n'est pas réalisable à 5 mois.
+ * Piège pédagogique : les parents suspectent une exotropie, les reflets au
+ * Hirschberg peuvent sembler temporalisés (angle kappa positif), mais le
+ * bilan fonctionnel est normal. Le cover test n'est pas réalisable à 5 mois.
  */
 export const pseudostrabismeEpicanthus: CasClinique = {
   id: 'pseudostrabisme-epicanthus',
@@ -17,7 +17,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
     ageLibelle: '5 mois',
     sexe: 'F',
     motif:
-      "Les parents sont convaincus d'un strabisme convergent depuis la naissance et demandent un avis avant qu'il ne soit « trop tard ».",
+      "Les parents ont l'impression que ses yeux divergent, surtout quand elle est fatiguée. Le pédiatre les a un peu rassurés, mais ils veulent un avis avant qu'il ne soit « trop tard ».",
   },
 
   oculaire: {
@@ -26,7 +26,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
     fixation: { mode: 'alternante' },
     upshoot: { OD: 0, OG: 0 },
     dvd: 0,
-    kappa: { OD: 0, OG: 0 },
+    kappa: { OD: 8, OG: 8 },
     correction: { OD: { sphere: 1.5 }, OG: { sphere: 1.5 } },
     acuite: { OD: 'fixation OK', OG: 'fixation OK' },
   },
@@ -40,7 +40,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
       rubrique: 'anamnese',
       libelle: "Qu'est-ce qui vous amène à consulter aujourd'hui ? (question aux parents)",
       reponse:
-        "On est sûrs qu'elle louche. Le pédiatre nous a un peu rassurés, mais on veut un avis spécialisé avant qu'il ne soit trop tard — on a lu qu'il fallait agir tôt.",
+        "On a l'impression que ses yeux partent sur les côtés, qu'ils ne regardent pas droit. Le pédiatre nous a dit d'attendre, mais on s'inquiète.",
       poids: 4,
       commentaire:
         "Les parents sont convaincus de ce qu'ils voient : ne pas prendre leur récit pour une confirmation clinique.",
@@ -48,42 +48,42 @@ export const pseudostrabismeEpicanthus: CasClinique = {
     {
       id: 'depuis-quand',
       rubrique: 'anamnese',
-      libelle: 'Depuis quand ses yeux vous semblent-ils croisés ? (parents)',
+      libelle: 'Depuis quand ses yeux vous semblent-ils diverger ? (parents)',
       reponse:
-        "Dès les premières semaines de vie. Comme les photos de strabisme précoce qu'on trouve en ligne — ça ne s'est jamais corrigé selon nous.",
+        "Dès les premières semaines. Comme les photos d'exotropie qu'on trouve en ligne — pour nous ça ne s'est jamais corrigé.",
       poids: 5,
       commentaire:
-        "Un début très précoce dans le récit parental oriente vers une E't — piège anamnestique fréquent.",
+        "Un début très précoce dans le récit parental oriente vers une X't — piège anamnestique fréquent.",
     },
     {
       id: 'constance',
       rubrique: 'anamnese',
       libelle: 'La déviation vous paraît-elle permanente ? (parents)',
       reponse:
-        "Oui, pour nous c'est permanent. On ne l'a presque jamais vue avec les deux yeux parfaitement droits en face.",
+        "Plutôt intermittente : parfois frappant, parfois on se demande si on exagère. Mais quand c'est visible, ça nous inquiète beaucoup.",
       poids: 4,
       commentaire:
-        "Le caractère « permanent » dans le récit parental oriente vers une tropie — à confronter au comportement visuel et aux reflets.",
+        "Un récit intermittent peut faire penser à une X't — à confronter au comportement visuel et aux reflets.",
     },
     {
       id: 'alternance',
       rubrique: 'anamnese',
       libelle: "Est-ce toujours le même œil, ou les deux ? (parents)",
       reponse:
-        "Parfois l'un, parfois l'autre, parfois les deux en même temps… On ne sait plus très bien. Mais ça louche, c'est sûr.",
+        "Les deux yeux nous semblent concernés à un moment ou à un autre. On ne sait plus très bien, mais ça diverge, c'est sûr.",
       poids: 4,
       commentaire:
-        "Un récit fluctuant ou bilatéral peut faire penser à une alternance — encore un piège anamnestique fréquent.",
+        "Un récit bilatéral ou fluctuant peut faire penser à une alternance — piège anamnestique fréquent.",
     },
     {
       id: 'photos-regard',
       rubrique: 'anamnese',
       libelle: "Quand l'aspect est-il le plus frappant ? (parents)",
       reponse:
-        "Sur les photos surtout, et quand elle regarde sur le côté. De face, de temps en temps, on se demande si on ne s'imagine pas.",
+        "Sur les photos surtout, quand elle est fatiguée ou qu'elle regarde au loin. De face, parfois on doute.",
       poids: 5,
       commentaire:
-        "Photos et regard latéral : l'impression peut être accentuée sans qu'il y ait de tropie objectivable.",
+        "Photos et fatigue : l'impression peut être accentuée sans qu'il y ait de tropie objectivable.",
     },
     {
       id: 'developpement',
@@ -198,30 +198,31 @@ export const pseudostrabismeEpicanthus: CasClinique = {
     },
     hirschberg: {
       poids: 8,
-      attendu: { min: 0, max: 2, unite: 'DP' },
+      attendu: { min: 6, max: 10, unite: 'DP' },
       resultat:
-        'Position primaire : reflets cornéens centrés des deux côtés.',
+        'Position primaire : reflets cornéens temporalisés des deux côtés, de façon symétrique.',
       interpretation: {
         question: 'Comment interpréter ces reflets ?',
         options: [
           {
-            id: 'reflets-centres',
-            libelle: 'Reflets centrés en position primaire',
+            id: 'kappa-positif',
+            libelle:
+              'Reflets temporalisés symétriques, à confronter au comportement visuel (angle kappa ?)',
             correct: true,
           },
           {
-            id: 'eso-certaine',
-            libelle: 'Esotropie objectivée au Hirschberg',
+            id: 'exo-certaine',
+            libelle: 'Exotropie objectivée au Hirschberg',
             correct: false,
           },
           {
-            id: 'kappa-seul',
-            libelle: 'Reflets temporalisés en position primaire',
+            id: 'reflets-centres',
+            libelle: 'Reflets centrés en position primaire',
             correct: false,
           },
         ],
         explication:
-          "En position primaire, les reflets sont centrés.",
+          "Des reflets temporalisés peuvent mimiquer une exotropie ; ici le comportement visuel est normal : penser à un angle kappa positif, pas à une vraie X't.",
       },
     },
     lang: {
@@ -325,14 +326,14 @@ export const pseudostrabismeEpicanthus: CasClinique = {
       poids: 0,
       nonContributifSiPresente: true,
       malusSiPresente: -1,
-      resultat: 'Reflets centrés en position primaire au Hirschberg.',
+      resultat: 'Reflets temporalisés en position primaire au Hirschberg.',
       justificationMalus: "Reflets déjà explorés au Hirschberg.",
     },
     krimskyLoin: {
       poids: 0,
       nonContributifSiPresente: true,
       malusSiPresente: -1,
-      resultat: 'Reflets centrés en position primaire.',
+      resultat: 'Reflets temporalisés en position primaire.',
       justificationMalus: 'Idem Krimsky VP.',
     },
     tno: {
@@ -420,7 +421,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
           },
         ],
         explication:
-          "Comportement visuel normal, réaction à l'occlusion symétrique, reflets centrés en PP : pas de strabisme. Le récit parental ne suffit pas.",
+          "Comportement visuel normal, réaction à l'occlusion symétrique : pas de strabisme malgré des reflets temporalisés (angle kappa positif). Le récit parental ne suffit pas.",
       },
       {
         id: 'signes-cles',
@@ -439,13 +440,13 @@ export const pseudostrabismeEpicanthus: CasClinique = {
           },
           {
             id: 'reflets',
-            variantes: ['reflet', 'hirschberg', 'centr', 'orthotrop', 'primaire'],
+            variantes: ['reflet', 'hirschberg', 'temporal', 'kappa', 'lambda', 'orthotrop', 'primaire'],
           },
         ],
         reponseAttendue:
-          "Suivi lumière/objet normal et symétrique, réaction à l'occlusion symétrique sans rattrapage, reflets centrés en PP.",
+          "Suivi lumière/objet normal et symétrique, réaction à l'occlusion symétrique sans rattrapage, reflets temporalisés expliqués par un angle kappa positif.",
         explication:
-          "Le diagnostic repose sur le comportement visuel et les reflets. L'examen morphologique ne retrouve pas de signe expliquant une fausse impression.",
+          "Le comportement visuel et la réaction à l'occlusion priment sur l'impression au Hirschberg : un angle kappa positif peut mimiquer une exotropie.",
       },
       {
         id: 'conduite',
@@ -460,7 +461,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
           },
           {
             id: 'chirurgie',
-            libelle: 'Chirurgie des droits médiaux en urgence',
+            libelle: 'Chirurgie des droits latéraux en urgence',
             correct: false,
           },
           {
@@ -484,16 +485,16 @@ export const pseudostrabismeEpicanthus: CasClinique = {
         poids: 2,
         correct: false,
         explication:
-          "Non : orthotropie, pas de tropie objectivable. Chirurgie strabologique non indiquée.",
+          "Non : orthotropie avec angle kappa positif, pas de tropie objectivable. Chirurgie strabologique non indiquée.",
       },
     ],
   },
 
   compteRenduExpert: [
-    "Angelica, 5 mois, adressée par le pédiatre. Parents convaincus d'un strabisme convergent depuis la naissance — récit orientant vers une E't, à ne pas prendre pour une preuve. Pas d'ATCD familiaux de strabisme. À l'examen : alignement oculaire normal, pas de signe morphologique pathologique.",
+    "Angelica, 5 mois, adressée par le pédiatre. Parents inquiets d'une exotropie depuis les premières semaines — récit orientant vers une X't, à ne pas prendre pour une preuve. Pas d'ATCD familiaux de strabisme. À l'examen : alignement oculaire normal, angle kappa positif bilatéral.",
     "Étude du comportement visuel : suivi lumière monoculaire puis binoculaire, suivi objet monoculaire puis binoculaire — symétrique, sans préférence pathologique.",
     "Réaction à l'occlusion : mouvements de tête symétriques OD/OG, sans rattrapage oculaire visible.",
-    "Reflets : centrés en position primaire.",
+    "Reflets : temporalisés en position primaire, symétriques — fausse impression exotropique (angle kappa positif).",
     "Lang : regard fugace, sans fixation prolongée ni recherche du relief. Cover test non réalisable (coopération).",
     "Réfraction : +1.50 D bilatéral, physiologique. Conclusion : orthotropie, pas de strabisme. Rassurance parentale, surveillance.",
   ],
