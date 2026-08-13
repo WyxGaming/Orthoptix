@@ -98,8 +98,6 @@ function useTextureMireFixation() {
     if (!ctx) return null;
 
     const c = taille / 2;
-    ctx.fillStyle = '#120e08';
-    ctx.fillRect(0, 0, taille, taille);
 
     const anneaux: [number, number, number][] = [
       [98, 2.5, 0.22],
