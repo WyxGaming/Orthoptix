@@ -15,13 +15,7 @@ const DECALAGE_FIN: [number, number, number] = [0, -0.35, 0.45];
  * Monture glTF « Lunettes a montures marronne » (Sketchfab, CC-BY-4.0).
  * Calée sur les centres orbitaires du patient.
  */
-export function LunettesPatient({
-  orbites,
-  visible = true,
-}: {
-  orbites: PositionsOrbites;
-  visible?: boolean;
-}) {
+export function LunettesPatient({ orbites }: { orbites: PositionsOrbites }) {
   const { scene } = useGLTF(MODELE_URL);
   const clone = useMemo(() => scene.clone(true), [scene]);
 
@@ -57,8 +51,6 @@ export function LunettesPatient({
       milieuZ - centreEchelle.z + DECALAGE_FIN[2],
     );
   }, [clone, orbites]);
-
-  if (!visible) return null;
 
   return <primitive object={clone} />;
 }

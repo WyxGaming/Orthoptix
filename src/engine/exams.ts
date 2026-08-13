@@ -24,7 +24,7 @@ export const CATALOGUE_EXAMENS: Record<ExamenId, DefinitionExamen> = {
     nom: 'Test de Lang',
     rubrique: 'sensoriel',
     description:
-      'Test stereoscopique sans lunettes, presente a 40 cm. Depistage rapide de la vision du relief.',
+      'Test stereoscopique avec correction optique, presente a 40 cm. Depistage rapide de la vision du relief.',
     interaction: 'presentation',
   },
   tno: {
