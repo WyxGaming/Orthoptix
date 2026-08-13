@@ -1,5 +1,7 @@
 import { CATALOGUE_EXAMENS } from './exams';
 import { examenResolu, examensDissociantsAvant, libelleConditions } from './examen-resolver';
+import type { EtapeComportementVisuelId } from './comportement-visuel';
+import { ordreComportementVisuelRespecte } from './comportement-visuel';
 import type {
   ActionJournal,
   CasClinique,
@@ -120,6 +122,56 @@ function indexPassage(journal: ActionJournal[], attendu: RealisationAttendue): n
       a.id === attendu.examenId &&
       conditionsCorrespond(a.conditions ?? { correction: 'asc' }, attendu.conditions),
   );
+}
+
+const POINTS_CV_EPREUVES = 4;
+const POINTS_CV_ORDRE = 4;
+
+function scoreComportementVisuel(
+  examen: NonNullable<CasClinique['examens'][ExamenId]>,
+  passage: Extract<ActionJournal, { type: 'examen' }> | undefined,
+  definition: (typeof CATALOGUE_EXAMENS)[ExamenId],
+  lignes: LigneScore[],
+) {
+  const attendu = examen.etapesComportementVisuelAttendues ?? [];
+  const etapes = passage?.etapesComportementVisuel ?? [];
+  const complet = attendu.length > 0 && etapes.length === attendu.length;
+  const ordreOk = ordreComportementVisuelRespecte(etapes, attendu);
+
+  lignes.push({
+    libelle: definition.nom,
+    points: complet ? POINTS_CV_EPREUVES : 0,
+    max: POINTS_CV_EPREUVES,
+    commentaire: complet
+      ? undefined
+      : 'Les quatre épreuves doivent être sélectionnées et réalisées.',
+    nature: complet ? 'acquis' : 'manque',
+  });
+
+  lignes.push({
+    libelle: `${definition.nom} — ordre des épreuves`,
+    points: ordreOk ? POINTS_CV_ORDRE : 0,
+    max: POINTS_CV_ORDRE,
+    commentaire: ordreOk
+      ? undefined
+      : 'Ordre attendu : lumière monoculaire → lumière binoculaire → objet monoculaire → objet binoculaire.',
+    nature: ordreOk ? 'acquis' : 'manque',
+  });
+
+  for (const interp of interpretationsExamen(examen)) {
+    const choix =
+      passage?.interpretationIds?.[interp.id] ??
+      (interpretationsExamen(examen).length === 1 ? passage?.interpretationId : undefined);
+    const bonne = interp.options.find((o) => o.correct);
+    const juste = choix !== undefined && choix === bonne?.id;
+    lignes.push({
+      libelle: `${definition.nom} — ${interp.question}`,
+      points: juste ? POINTS_INTERPRETATION_JUSTE : 0,
+      max: POINTS_INTERPRETATION_JUSTE,
+      commentaire: juste ? undefined : interp.explication,
+      nature: juste ? 'acquis' : 'manque',
+    });
+  }
 }
 
 function scoreRealisationsAttendues(
@@ -284,6 +336,12 @@ export function calculerScore(
     if (idsRealisationsAttendues.has(id)) continue;
     const definition = CATALOGUE_EXAMENS[id];
     const passage = realises.find((a) => a.id === id);
+
+    if (id === 'comportementVisuel' && examen.etapesComportementVisuelAttendues?.length) {
+      scoreComportementVisuel(examen, passage, definition, lignes);
+      dejaCompte.add(id);
+      continue;
+    }
 
     if (examen.poids > 0) {
       if (passage || !examen.optionnel) {

@@ -32,8 +32,9 @@ export const pseudostrabismeEpicanthus: CasClinique = {
   },
 
   messageExamens:
-    "Mei a 5 mois : le bilan repose sur l'étude du comportement visuel et des reflets. Le cover test prolongé est en général impossible ; le TNO ne s'interprète pas à cet âge.",
+    "Mei a 5 mois : commencer par le Lang, puis le comportement visuel (suivi lumière/objet) et la réaction à l'occlusion dans la rubrique Réfraction et acuité. Le cover test prolongé est impossible.",
 
+  examensMasques: ['acuite'],
   questions: [
     {
       id: 'motif',
@@ -152,10 +153,16 @@ export const pseudostrabismeEpicanthus: CasClinique = {
   ],
 
   examens: {
-    acuite: {
-      poids: 8,
+    comportementVisuel: {
+      poids: 0,
+      etapesComportementVisuelAttendues: [
+        'lumiereMono',
+        'lumiereBino',
+        'objetMono',
+        'objetBino',
+      ],
       resultat:
-        "Étude du comportement visuel : suivi lumière réalisé monoculaire (OD puis OG) puis binoculaire — poursuite fluide et symétrique. Suivi objet (cloche, visage du praticien) : OK des deux côtés, sans préférence fixatrice manifeste.",
+        "Suivi lumière monoculaire (OD puis OG) puis binoculaire : poursuite fluide et symétrique. Suivi objet (cloche, visage) monoculaire puis binoculaire : OK des deux côtés, sans préférence fixatrice manifeste.",
       interpretation: {
         question: "Que concluez-vous de cette étude du comportement visuel ?",
         options: [
@@ -177,7 +184,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
           },
         ],
         explication:
-          "À 5 mois, le suivi lumière et le suivi objet remplacent l'acuité chiffrée. Ici tout est symétrique et normal.",
+          "À 5 mois, le suivi lumière puis objet, en monoculaire puis binoculaire, remplace l'acuité chiffrée. Ici tout est symétrique et normal.",
       },
     },
     reactionOcclusion: {
@@ -392,10 +399,10 @@ export const pseudostrabismeEpicanthus: CasClinique = {
     },
   },
 
-  ordreAttendu: ['acuite', 'reactionOcclusion', 'hirschberg', 'lang'],
+  ordreAttendu: ['lang', 'comportementVisuel', 'reactionOcclusion', 'hirschberg'],
 
   commentaireConduiteBilan:
-    "Commencer par l'étude du comportement visuel (suivi lumière/objet), puis la réaction à l'occlusion, les reflets, et éventuellement le Lang ; ne pas insister sur le cover test.",
+    "Lang en premier, puis comportement visuel (lumière mono → bino, objet mono → bino), réaction à l'occlusion, reflets ; ne pas insister sur le cover test.",
 
   ordreAnamneseAttendu: [
     'motif',
@@ -511,7 +518,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
 
   compteRenduExpert: [
     "Mei, 5 mois, adressée par le pédiatre. Parents convaincus d'un strabisme convergent depuis la naissance — récit orientant vers une E't, à ne pas prendre pour une preuve. Pas d'ATCD familiaux de strabisme. À l'examen : plis palpébraux médiaux (épicanthus), pont nasal large.",
-    "Étude du comportement visuel : suivi lumière monoculaire puis binoculaire OK ; suivi objet symétrique, sans préférence pathologique.",
+    "Étude du comportement visuel : suivi lumière monoculaire puis binoculaire, suivi objet monoculaire puis binoculaire — symétrique, sans préférence pathologique.",
     "Réaction à l'occlusion : mouvements de tête symétriques OD/OG, sans rattrapage oculaire visible.",
     "Reflets : centrés en position primaire ; fausse impression convergente en regard latéral (épicanthus).",
     "Lang : regard fugace, compatible avec l'âge. Cover test non réalisable (coopération).",

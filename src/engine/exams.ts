@@ -12,6 +12,14 @@ export const CATALOGUE_EXAMENS: Record<ExamenId, DefinitionExamen> = {
     description: "Mesure de l'acuité de loin et de près, œil par œil, avec la correction portée.",
     interaction: 'presentation',
   },
+  comportementVisuel: {
+    id: 'comportementVisuel',
+    nom: 'Comportement visuel',
+    rubrique: 'refraction',
+    description:
+      'Étude du comportement visuel du nourrisson : suivi lumière et suivi objet, en monoculaire puis binoculaire.',
+    interaction: 'comportementVisuel',
+  },
   refraction: {
     id: 'refraction',
     nom: 'Réfraction / correction portée',
@@ -119,7 +127,7 @@ export const CATALOGUE_EXAMENS: Record<ExamenId, DefinitionExamen> = {
   reactionOcclusion: {
     id: 'reactionOcclusion',
     nom: "Réaction à l'occlusion",
-    rubrique: 'sensoriel',
+    rubrique: 'refraction',
     description:
       "Occlusion brève de chaque œil : observation du comportement (mouvements de tête, recherche de l'occlusion, préférence fixatrice).",
     interaction: 'presentation',

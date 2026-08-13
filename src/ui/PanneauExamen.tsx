@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react';
 import { EYES, type BasePrisme, type Eye } from '../domain/ocular-model';
+import {
+  ETAPES_COMPORTEMENT_VISUEL,
+  ORDRE_ETAPES_COMPORTEMENT_VISUEL,
+  type EtapeComportementVisuelId,
+} from '../engine/comportement-visuel';
 import { CATALOGUE_EXAMENS } from '../engine/exams';
 import {
   cleConditions,
@@ -37,6 +42,82 @@ const BASES: { valeur: BasePrisme; libelle: string }[] = [
   { valeur: 'superieure', libelle: 'Base supérieure' },
   { valeur: 'inferieure', libelle: 'Base inférieure' },
 ];
+
+function ComportementVisuel({
+  sequence,
+  onAjouter,
+  onRetirerDernier,
+  onReinitialiser,
+  resultatRevele,
+  onReveler,
+  resultat,
+}: {
+  sequence: EtapeComportementVisuelId[];
+  onAjouter: (id: EtapeComportementVisuelId) => void;
+  onRetirerDernier: () => void;
+  onReinitialiser: () => void;
+  resultatRevele: boolean;
+  onReveler: () => void;
+  resultat?: string;
+}) {
+  const complet = sequence.length === ORDRE_ETAPES_COMPORTEMENT_VISUEL.length;
+
+  return (
+    <div className="space-y-3">
+      <p className="text-sm font-medium text-slate-200">Que souhaitez-vous faire ?</p>
+      <p className="text-xs text-slate-500">
+        Cliquez les épreuves dans l ordre où vous les réalisez (lumière monoculaire, puis
+        binoculaire, objet monoculaire, puis binoculaire).
+      </p>
+      <div className="flex flex-wrap gap-1.5">
+        {ORDRE_ETAPES_COMPORTEMENT_VISUEL.map((id) => {
+          const dejaChoisi = sequence.includes(id);
+          return (
+            <Bouton
+              key={id}
+              disabled={dejaChoisi || resultatRevele}
+              onClick={() => onAjouter(id)}
+            >
+              {ETAPES_COMPORTEMENT_VISUEL[id].libelle}
+            </Bouton>
+          );
+        })}
+      </div>
+      {sequence.length > 0 && (
+        <div className="rounded-md border border-slate-800 bg-slate-950/40 p-3">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
+            Séquence choisie
+          </p>
+          <ol className="list-decimal space-y-1 pl-4 text-sm text-slate-200">
+            {sequence.map((id) => (
+              <li key={id}>{ETAPES_COMPORTEMENT_VISUEL[id].libelle}</li>
+            ))}
+          </ol>
+          {!resultatRevele && (
+            <div className="mt-2 flex gap-2">
+              <Bouton ton="discret" onClick={onRetirerDernier} disabled={sequence.length === 0}>
+                Retirer la dernière
+              </Bouton>
+              <Bouton ton="discret" onClick={onReinitialiser}>
+                Recommencer
+              </Bouton>
+            </div>
+          )}
+        </div>
+      )}
+      {complet && !resultatRevele && (
+        <Bouton ton="principal" onClick={onReveler}>
+          Réaliser ces épreuves
+        </Bouton>
+      )}
+      {resultatRevele && resultat && (
+        <p className="rounded-md border border-slate-700 bg-slate-950/60 p-3 text-sm text-slate-200">
+          {resultat}
+        </p>
+      )}
+    </div>
+  );
+}
 
 function SaisieMesuresConditions({
   combos,
@@ -241,6 +322,7 @@ export function PanneauExamen({
   const [mesures, setMesures] = useState<Record<string, string>>({});
   const [interpretationsChoix, setInterpretationsChoix] = useState<Record<string, string>>({});
   const [resultatRevele, setResultatRevele] = useState(false);
+  const [sequenceComportement, setSequenceComportement] = useState<EtapeComportementVisuelId[]>([]);
 
   useEffect(() => {
     if (!examenEnCours) return;
@@ -268,6 +350,7 @@ export function PanneauExamen({
     setMesures(prefill);
     setInterpretationsChoix({});
     setResultatRevele(false);
+    setSequenceComportement([]);
   }, [examenEnCours, cas]);
 
   if (!examenEnCours) {
@@ -342,16 +425,26 @@ export function PanneauExamen({
     interpretationsConditionnelles.length === 0 ||
     interpretationsConditionnelles.every((interp) => Boolean(interpretationsChoix[interp.id]));
 
+  const estComportementVisuel = definition.interaction === 'comportementVisuel';
+
   const peutConsigner =
     !examenNonContributif &&
-    (definition.interaction !== 'presentation' || resultatRevele) &&
-    (demandeMesuresMultiples
-      ? (mesuresMultiplesCompletes && alternanceComplete) ||
-        (dejaConsignes.size === combosMesure.length && combosMesure.length > 0)
-      : interpretationsCompletes && (!demandeMesure || mesureValide(mesure)));
+    (estComportementVisuel
+      ? resultatRevele && interpretationsCompletes
+      : (definition.interaction !== 'presentation' || resultatRevele) &&
+        (demandeMesuresMultiples
+          ? (mesuresMultiplesCompletes && alternanceComplete) ||
+            (dejaConsignes.size === combosMesure.length && combosMesure.length > 0)
+          : interpretationsCompletes && (!demandeMesure || mesureValide(mesure))));
 
   const consigner = () => {
-    if (demandeMesuresMultiples && optionsExamen) {
+    if (estComportementVisuel) {
+      validerExamen({
+        etapesComportementVisuel: sequenceComportement,
+        interpretationIds:
+          interpretationsConditionnelles.length > 0 ? interpretationsChoix : undefined,
+      });
+    } else if (demandeMesuresMultiples && optionsExamen) {
       const passages = combosMesure
         .filter((combo) => !dejaConsignes.has(cleConditions(combo)))
         .map((conditions) => {
@@ -389,6 +482,7 @@ export function PanneauExamen({
     setMesures({});
     setInterpretationsChoix({});
     setResultatRevele(false);
+    setSequenceComportement([]);
   };
 
   const choisirInterpretation = (interpId: string, optionId: string) => {
@@ -429,6 +523,18 @@ export function PanneauExamen({
         {definition.interaction === 'motilite' && <CommandesMotilite />}
         {definition.interaction === 'occlusion' && <CommandesOcclusion />}
         {definition.prismes && <CommandesPrismes />}
+
+        {estComportementVisuel && (
+          <ComportementVisuel
+            sequence={sequenceComportement}
+            onAjouter={(id) => setSequenceComportement((prev) => [...prev, id])}
+            onRetirerDernier={() => setSequenceComportement((prev) => prev.slice(0, -1))}
+            onReinitialiser={() => setSequenceComportement([])}
+            resultatRevele={resultatRevele}
+            onReveler={() => setResultatRevele(true)}
+            resultat={examenEffectif?.resultat}
+          />
+        )}
 
         {definition.interaction === 'presentation' && (
           <div className="space-y-2">
@@ -476,7 +582,9 @@ export function PanneauExamen({
         )}
 
         {interpretationsConditionnelles.length > 0 &&
-          (definition.interaction !== 'presentation' || resultatRevele) &&
+          (estComportementVisuel
+            ? resultatRevele
+            : definition.interaction !== 'presentation' || resultatRevele) &&
           interpretationsConditionnelles.map((interp) => (
             <fieldset key={interp.id} className="space-y-1.5">
               <legend className="mb-1 text-sm text-slate-300">{interp.question}</legend>

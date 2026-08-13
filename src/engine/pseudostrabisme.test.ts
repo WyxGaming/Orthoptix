@@ -1,9 +1,11 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { pseudostrabismeEpicanthus } from '../cases/pseudostrabisme-epicanthus';
+import { ORDRE_ETAPES_COMPORTEMENT_VISUEL } from '../engine/comportement-visuel';
 import { etatOculaire } from '../domain/ocular-model';
 import { prismFromReflexMm } from '../domain/prism';
 import { useSession } from './session';
 import type { ExamenId } from './types';
+import type { EtapeComportementVisuelId } from './comportement-visuel';
 import { interpretationsExamen } from './types';
 
 const session = () => useSession.getState();
@@ -16,6 +18,8 @@ const ORDRE_ANAMNESE_MEI = [
   'photos-regard',
   'developpement',
 ] as const;
+
+const ETAPES_CV: EtapeComportementVisuelId[] = [...ORDRE_ETAPES_COMPORTEMENT_VISUEL];
 
 function poserAnamneseEssentielle() {
   for (const id of ORDRE_ANAMNESE_MEI) session().poserQuestion(id);
@@ -41,13 +45,23 @@ function realiser(id: ExamenId, mesure?: number) {
   });
 }
 
+function realiserComportementVisuel(
+  etapes: EtapeComportementVisuelId[] = ETAPES_CV,
+) {
+  session().lancerExamen('comportementVisuel');
+  session().validerExamen({
+    etapesComportementVisuel: etapes,
+    interpretationIds: { unique: 'fixation-normale' },
+  });
+}
+
 function bilanMeiParfait() {
   const { validerSynthese } = session();
   poserAnamneseEssentielle();
-  realiser('acuite');
+  realiser('lang');
+  realiserComportementVisuel();
   realiser('reactionOcclusion');
   realiser('hirschberg', 0);
-  realiser('lang');
   validerSynthese({
     diagnostic: 'pseudostrabisme',
     'signes-cles':
@@ -84,16 +98,25 @@ describe('pseudostrabisme-epicanthus', () => {
     expect(bonus?.points).toBe(5);
   });
 
-  it('bonus conduite du bilan si comportement visuel en tete', () => {
+  it('bonus conduite du bilan si lang puis comportement visuel', () => {
     poserAnamneseEssentielle();
-    realiser('acuite');
+    realiser('lang');
+    realiserComportementVisuel();
     realiser('reactionOcclusion');
     realiser('hirschberg', 0);
-    realiser('lang');
     const bonus = session()
       .resultat()
       .lignes.find((l) => l.libelle.toLowerCase().includes('conduite du bilan'));
     expect(bonus?.points).toBe(5);
+  });
+
+  it('penalise un mauvais ordre de comportement visuel', () => {
+    poserAnamneseEssentielle();
+    realiserComportementVisuel(['lumiereBino', 'lumiereMono', 'objetBino', 'objetMono']);
+    const ordre = session()
+      .resultat()
+      .lignes.find((l) => l.libelle.includes('ordre des épreuves'));
+    expect(ordre?.points).toBe(0);
   });
 
   it('malus si cover test insiste malgre la cooperation limitee', () => {
@@ -116,19 +139,17 @@ describe('pseudostrabisme-epicanthus', () => {
 
   it('exige le terme epicanthus dans la synthese ouverte', () => {
     poserAnamneseEssentielle();
-    realiser('acuite');
-    realiser('reactionOcclusion');
-    realiser('hirschberg', 0);
+    realiserComportementVisuel();
     session().validerSynthese({
       diagnostic: 'pseudostrabisme',
       'signes-cles':
-        'Suivi lumiere symetrique, reaction occlusion symetrique, reflets centres, plis paupieres regard lateral',
+        'Suivi lumiere symetrique, reaction occlusion symetrique, reflets centres, plis paupieres',
       conduite: 'rassurance',
       chirurgie: 'non',
     });
     const signes = session()
       .resultat()
-      .lignes.find((l) => l.libelle.includes('signes-cles') || l.libelle.includes('objectifs'));
+      .lignes.find((l) => l.libelle.includes('objectifs'));
     expect(signes?.points).toBeLessThan(4);
   });
 

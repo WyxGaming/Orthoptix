@@ -1,4 +1,5 @@
 import type { ParametresOculaires } from '../domain/ocular-model';
+import type { EtapeComportementVisuelId } from './comportement-visuel';
 
 export type Rubrique =
   | 'anamnese'
@@ -11,6 +12,7 @@ export type Rubrique =
 
 export type ExamenId =
   | 'acuite'
+  | 'comportementVisuel'
   | 'refraction'
   | 'lang'
   | 'tno'
@@ -33,7 +35,12 @@ export type ExamenId =
  * Un examen de type presentation n'a pas d'interaction : on montre un test au patient
  * et on recueille sa reponse.
  */
-export type ModeInteraction = 'presentation' | 'reflets' | 'motilite' | 'occlusion';
+export type ModeInteraction =
+  | 'presentation'
+  | 'reflets'
+  | 'motilite'
+  | 'occlusion'
+  | 'comportementVisuel';
 
 export type DefinitionExamen = {
   id: ExamenId;
@@ -154,6 +161,8 @@ export type ExamenCas = {
   nonContributifSiPresente?: boolean;
   /** Points retires si l'examen non contributif est presente. */
   malusSiPresente?: number;
+  /** Ordre strict des epreuves pour l examen comportement visuel. */
+  etapesComportementVisuelAttendues?: EtapeComportementVisuelId[];
 };
 
 /** Conditions choisies par l'étudiant au lancement d'un examen (ASC/SC, loupes +3). */
@@ -197,6 +206,7 @@ export type ActionJournal =
       mesure?: number;
       interpretationId?: string;
       interpretationIds?: Record<string, string>;
+      etapesComportementVisuel?: EtapeComportementVisuelId[];
     };
 
 export type CasClinique = {
@@ -237,6 +247,8 @@ export type CasClinique = {
    * de l interrogatoire. Seules ces questions comptent ; les autres peuvent s intercaler.
    */
   ordreAnamneseAttendu?: string[];
+  /** Examens absents de l etagere pour ce cas (remplaces par d autres epreuves). */
+  examensMasques?: ExamenId[];
   /** Message affiche sous l etagere d examens (cooperation, conduite attendue…). */
   messageExamens?: string;
   synthese: SyntheseCas;

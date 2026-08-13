@@ -44,7 +44,9 @@ function EtagereExamens() {
   return (
     <div className="space-y-4">
       {ORDRE_RUBRIQUES.map((rubrique) => {
-        const examens = Object.values(CATALOGUE_EXAMENS).filter((e) => e.rubrique === rubrique);
+        const examens = Object.values(CATALOGUE_EXAMENS).filter(
+          (e) => e.rubrique === rubrique && !cas.examensMasques?.includes(e.id),
+        );
         return (
           <div key={rubrique}>
             <h3 className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
