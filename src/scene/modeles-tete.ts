@@ -10,6 +10,8 @@ export type ConfigModeleTete = {
   masquer?: RegExp;
   /** Orbites manuelles si le modele n'a pas de meshes « Eye ». */
   orbites?: PositionsOrbites;
+  /** Ajustement fin des orbites extraites automatiquement [x, y, z] en cm. */
+  decalageOrbites?: [number, number, number];
   credit?: { titre: string; auteur: string; url: string; licence: string };
 };
 
@@ -34,7 +36,8 @@ export const MODELES_TETE: Record<string, ConfigModeleTete> = {
     hauteurVisageCm: 22,
     decalageFin: [0, 0.6, 1.2],
     masquer: /^(Lamp|Sphere)/i,
-    // Orbites extraites automatiquement (Sphere_0 + mesh visage) dans TetePatient.
+    decalageOrbites: [0, 3, -1.5],
+    // Orbites extraites automatiquement dans TetePatient, puis decalageOrbites.
     credit: {
       titre: 'April',
       auteur: 'RubenBuchholz644c9d600cf24bcb',

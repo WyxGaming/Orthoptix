@@ -185,6 +185,17 @@ function extraireOrbitesSphere(racine: THREE.Object3D): PositionsOrbites | null 
   };
 }
 
+function appliquerDecalageOrbites(
+  orbites: PositionsOrbites,
+  [dx, dy, dz]: [number, number, number],
+): PositionsOrbites {
+  return {
+    OD: [orbites.OD[0] + dx, orbites.OD[1] + dy, orbites.OD[2] + dz],
+    OG: [orbites.OG[0] + dx, orbites.OG[1] + dy, orbites.OG[2] + dz],
+    rayon: orbites.rayon,
+  };
+}
+
 function TeteMesh({
   config,
   onOrbites,
@@ -225,12 +236,15 @@ function TeteMesh({
     );
     clone.updateMatrixWorld(true);
 
-    const orbites =
+    const orbitesBrutes =
       config.orbites ??
       extraireOrbites(clone) ??
       extraireOrbitesVisage(clone) ??
       extraireOrbitesSphere(clone) ??
       ORBITES_DEFAUT;
+    const orbites = config.decalageOrbites
+      ? appliquerDecalageOrbites(orbitesBrutes, config.decalageOrbites)
+      : orbitesBrutes;
     onOrbites?.(orbites);
 
     clone.traverse((obj) => {
