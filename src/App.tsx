@@ -49,7 +49,7 @@ function Bilan() {
               shadows={false}
               gl={{ antialias: true, alpha: false }}
             >
-              <color attach="background" args={['#070b12']} />
+              <color attach="background" args={['#272757']} />
               <PatientScene zoomReflets={zoom} />
             </Canvas>
           </div>
