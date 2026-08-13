@@ -153,9 +153,9 @@ export const pseudostrabismeEpicanthus: CasClinique = {
   examens: {
     acuite: {
       poids: -2,
-      resultat: "Acuité visuelle chiffrée non réalisable à 5 mois.",
+      resultat: 'Acuité visuelle chiffrée non réalisable.',
       justificationMalus:
-        "L'acuité visuelle n'est pas possible à cet âge : le bilan repose sur le comportement visuel.",
+        "L'acuité visuelle chiffrée n'est pas réalisable à 5 mois.",
     },
     comportementVisuel: {
       poids: 0,
@@ -194,113 +194,109 @@ export const pseudostrabismeEpicanthus: CasClinique = {
     reactionOcclusion: {
       poids: 8,
       resultat:
-        "Réaction à l'occlusion : occlusion brève de l'OD puis de l'OG — Mei tourne la tête symétriquement des deux côtés pour éviter le cache, sans préférence nette ni mouvement oculaire de rattrapage visible. Comportement identique OD et OG.",
+        "Occlusion brève de l'OD puis de l'OG : Mei tourne la tête des deux côtés, mouvements comparables. Aucun mouvement oculaire visible pendant l'occlusion.",
       interpretation: {
         question: "Comment interpréter cette réaction à l'occlusion ?",
         options: [
           {
             id: 'symetrique',
-            libelle:
-              "Réaction symétrique, sans signe de préférence fixatrice pathologique ; ne confirme pas une esotropie",
+            libelle: 'Mouvements de tête symétriques, sans mouvement oculaire visible',
             correct: true,
           },
           {
             id: 'pref-od',
-            libelle: "Préférence fixatrice de l'OD, strabisme avec fixateur stable",
+            libelle: "Préférence fixatrice de l'OD",
             correct: false,
           },
           {
             id: 'restitution',
-            libelle: "Mouvement de restitution convergent objectivant une esotropie",
+            libelle: 'Mouvement oculaire de restitution convergent',
             correct: false,
           },
         ],
         explication:
-          "Ce test n'est pas un cover test : on observe le comportement face à l'occlusion. Ici, symétrie et absence de rattrapage oculaire ne plaident pas pour une tropie.",
+          "Ce test observe le comportement face à une occlusion brève. Les mouvements de tête sont comparables des deux côtés ; aucun mouvement oculaire n'est visible pendant l'occlusion.",
       },
     },
     hirschberg: {
       poids: 8,
       attendu: { min: 0, max: 2, unite: 'DP' },
       resultat:
-        "Position primaire : reflets cornéens centrés des deux côtés. En regard latéral, l'épicanthus masque le sclère interne et donne esthétiquement l'impression d'une esotropie majorée — sans déport objective du reflet en position primaire.",
+        "Position primaire : reflets cornéens centrés des deux côtés. En regard latéral, le sclère interne est peu visible.",
       interpretation: {
         question: 'Comment interpréter ces reflets ?',
         options: [
           {
             id: 'reflets-centres',
-            libelle:
-              "Reflets centrés en position primaire : pas de tropie objective ; l'illusion en regard latéral relève de l'épicanthus",
+            libelle: 'Reflets centrés en position primaire',
             correct: true,
           },
           {
             id: 'eso-certaine',
-            libelle: 'Esotropie certaine objectivée au Hirschberg',
+            libelle: 'Esotropie objectivée au Hirschberg',
             correct: false,
           },
           {
             id: 'kappa-seul',
-            libelle: "Fausse esotropie par angle kappa positif en position primaire",
+            libelle: 'Reflets temporalisés en position primaire',
             correct: false,
           },
         ],
         explication:
-          "En PP les reflets sont centrés. L'impression convergente en latéral est morphologique (épicanthus, pont nasal), pas une déviation mesurée.",
+          "En position primaire, les reflets sont centrés. En regard latéral, le sclère interne est peu visible.",
       },
     },
     lang: {
       poids: 2,
       resultat:
-        "Test de Lang présenté : Mei porte un bref regard fugace sur les figures, sans fixation prolongée ni recherche du relief. Réaction compatible avec l'âge (5 mois : début de la mise en place de la vision binoculaire).",
+        'Test de Lang présenté : regard fugace porté sur les figures, sans fixation prolongée ni recherche du relief.',
       interpretation: {
         question: 'Comment interpréter cette réaction au Lang ?',
         options: [
           {
-            id: 'age-normal',
-            libelle:
-              "Réaction attendue à 5 mois : vision binoculaire en cours d'installation, sans signification pathologique isolée",
+            id: 'fixation-fugace',
+            libelle: 'Regard fugace, sans recherche du relief',
             correct: true,
           },
           {
             id: 'pas-stereo',
-            libelle: 'Absence définitive de vision stéréoscopique prouvant un strabisme',
+            libelle: 'Absence de vision stéréoscopique',
             correct: false,
           },
           {
             id: 'stereo-presente',
-            libelle: 'Stéréoscopie manifeste confirmée',
+            libelle: 'Figures en relief identifiées et décrites',
             correct: false,
           },
         ],
         explication:
-          "Le Lang peut être tenté sans pénalité : à 5 mois, une fixation fugace est normale et ne tranche pas pour ou contre un strabisme.",
+          "Le Lang peut être tenté sans pénalité. Ici : regard fugace, sans fixation prolongée ni recherche du relief.",
       },
     },
     refraction: {
       poids: 2,
-      resultat:
-        'Réfraction sous cycloplégie : +1.50 D sphérique aux deux yeux. Hypermétropie physiologique du nourrisson, sans correction indiquée.',
+      resultat: 'Réfraction sous cycloplégie : +1.50 D sphérique aux deux yeux.',
       interpretation: {
         question: 'Comment interpréter cette réfraction ?',
         options: [
           {
-            id: 'physiologique',
-            libelle: 'Hypermétropie physiologique, sans lien avec le pseudo-strabisme',
+            id: 'hypermétropie-legere',
+            libelle: 'Hypermétropie légère bilatérale',
             correct: true,
           },
           {
             id: 'accommodative',
-            libelle: 'Esotropie accommodative nécessitant des verres',
+            libelle: 'Hypermétropie nécessitant une correction immédiate',
             correct: false,
           },
           {
             id: 'sans-interet',
-            libelle: 'Sans intérêt à 5 mois',
+            libelle: 'Réfraction non mesurable à cet âge',
             correct: false,
           },
         ],
         explication:
-          "L'hypermétropie modérée est normale et n'explique pas l'aspect « croisé » perçu par les parents.",
+          "Réfraction sous cycloplégie : hypermétropie légère bilatérale (+1.50 D).",
       },
     },
 
@@ -329,37 +325,36 @@ export const pseudostrabismeEpicanthus: CasClinique = {
         question: 'Que concluez-vous de la motilité ?',
         options: [
           {
-            id: 'normale',
-            libelle: 'Motilité normale',
+            id: 'sans-limitation',
+            libelle: 'Poursuite complète, sans limitation',
             correct: true,
           },
           {
             id: 'paralysie',
-            libelle: 'Paralysie oculomotrice',
+            libelle: 'Limitation d\'abduction',
             correct: false,
           },
           {
             id: 'upshoot',
-            libelle: 'Hyperaction des obliques inférieurs',
+            libelle: 'Surélévation en adduction',
             correct: false,
           },
         ],
-        explication: 'Motilité libre : compatible avec une orthotropie, éloigne un strabisme précoce.',
+        explication: 'Poursuite complète en neuf positions, sans limitation ni surélévation en adduction.',
       },
     },
     krimsky: {
       poids: 0,
       nonContributifSiPresente: true,
       malusSiPresente: -1,
-      resultat:
-        "Reflets déjà centrés au Hirschberg : le Krimsky n'apporte pas d'information supplémentaire.",
-      justificationMalus: "Reflets centrés en PP : pas d'indication au Krimsky.",
+      resultat: 'Reflets centrés en position primaire au Hirschberg.',
+      justificationMalus: "Reflets déjà explorés au Hirschberg.",
     },
     krimskyLoin: {
       poids: 0,
       nonContributifSiPresente: true,
       malusSiPresente: -1,
-      resultat: 'Sans intérêt devant des reflets centrés en position primaire.',
+      resultat: 'Reflets centrés en position primaire.',
       justificationMalus: 'Idem Krimsky VP.',
     },
     tno: {
@@ -525,7 +520,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
     "Étude du comportement visuel : suivi lumière monoculaire puis binoculaire, suivi objet monoculaire puis binoculaire — symétrique, sans préférence pathologique.",
     "Réaction à l'occlusion : mouvements de tête symétriques OD/OG, sans rattrapage oculaire visible.",
     "Reflets : centrés en position primaire ; fausse impression convergente en regard latéral (épicanthus).",
-    "Lang : regard fugace, compatible avec l'âge. Cover test non réalisable (coopération).",
+    "Lang : regard fugace, sans fixation prolongée ni recherche du relief. Cover test non réalisable (coopération).",
     "Réfraction : +1.50 D bilatéral, physiologique. Conclusion : pseudo-strabisme. Rassurance parentale, surveillance.",
   ],
 };
