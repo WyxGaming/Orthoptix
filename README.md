@@ -116,7 +116,7 @@ Un cas déclare cinq choses :
 - **`questions`** : la banque de questions d'anamnèse et d'antécédents, avec la réponse du
   patient et un poids. Un poids positif marque une question essentielle, un poids nul une
   question neutre, un poids négatif une question hors sujet. L'ordre de déclaration n'a pas
-  d'importance : la liste est mélangée de façon déterministe pour ne pas trahir les réponses.
+  d'importance : la liste est mélangée aléatoirement à chaque nouveau bilan.
 - **`examens`** : pour chaque examen du catalogue, le compte rendu obtenu, la fourchette de
   mesure acceptée, la question d'interprétation, et le poids. Un poids négatif accompagné de
   `justificationMalus` sert à pénaliser un examen non contributif **en expliquant pourquoi**.
