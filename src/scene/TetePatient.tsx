@@ -2,19 +2,8 @@ import { useGLTF } from '@react-three/drei';
 import { useLayoutEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import { RAYON_GLOBE } from './geometrie';
+import type { ConfigModeleTete } from './modeles-tete';
 import { ORBITES_DEFAUT, type PositionsOrbites } from './orbites';
-
-/**
- * GLB convertie en metallic-roughness : Three.js ne charge plus
- * KHR_materials_pbrSpecularGlossiness (format d'origine Sketchfab).
- */
-const MODELE_URL = '/models/angelica/lea.glb';
-
-/** Hauteur cible du visage en centimetres (menton → vertex). */
-const HAUTEUR_VISAGE_CM = 22;
-
-/** Decalage fin apres centrage : ajuste menton / cheveux, pas les orbites. */
-const DECALAGE_FIN: [number, number, number] = [0, 1.2, 1.8];
 
 const estOeilModele = (nom: string) => /eye/i.test(nom) && !/eyelash/i.test(nom);
 
@@ -27,7 +16,6 @@ function centroide(groupe: THREE.Vector3[]): THREE.Vector3 {
 function rayonEnveloppe(groupe: THREE.Vector3[], centre: THREE.Vector3): number {
   let max = 0;
   for (const p of groupe) max = Math.max(max, p.distanceTo(centre));
-  // Moitie de l'enveloppe, puis +25 % puis +15 % : lisibles dans l'orbite.
   return max * 0.275 * 1.25 * 1.15;
 }
 
@@ -69,11 +57,9 @@ function extraireOrbites(racine: THREE.Object3D): PositionsOrbites | null {
     RAYON_GLOBE,
   );
 
-  // Dans notre scene, -X = OD (droite patient), +X = OG.
-  // Recul sur Z pour enfoncer les globes dans l'orbite du mesh.
   const reculZ = 0.55;
-  const hausseY = 0.3; // 3 mm
-  const ecartX = 0.1; // 1 mm par oeil → +2 mm d'ecart pupillaire
+  const hausseY = 0.3;
+  const ecartX = 0.1;
   return {
     OD: [centreOD.x - ecartX, centreOD.y + hausseY, centreOD.z - reculZ],
     OG: [centreOG.x + ecartX, centreOG.y + hausseY, centreOG.z - reculZ],
@@ -81,17 +67,17 @@ function extraireOrbites(racine: THREE.Object3D): PositionsOrbites | null {
   };
 }
 
-/**
- * Tete glTF « Angelica » (Sketchfab, CC-BY-4.0). Les yeux du modele sont masques pour
- * laisser place au moteur oculomoteur ; leurs centres sont renvoyes via onOrbites.
- */
-export function TetePatient({
+function TeteMesh({
+  config,
   onOrbites,
 }: {
+  config: ConfigModeleTete;
   onOrbites?: (orbites: PositionsOrbites) => void;
 }) {
-  const { scene } = useGLTF(MODELE_URL);
+  const { scene } = useGLTF(config.url);
   const clone = useMemo(() => scene.clone(true), [scene]);
+  const hauteur = config.hauteurVisageCm ?? 22;
+  const decalage = config.decalageFin ?? [0, 0, 0];
 
   useLayoutEffect(() => {
     clone.position.set(0, 0, 0);
@@ -103,23 +89,28 @@ export function TetePatient({
     const centre = boite.getCenter(new THREE.Vector3());
     if (taille.y < 1e-3) {
       console.error('[TetePatient] boite englobante vide — modele non place');
-      onOrbites?.(ORBITES_DEFAUT);
+      onOrbites?.(config.orbites ?? ORBITES_DEFAUT);
       return;
     }
 
-    const facteur = HAUTEUR_VISAGE_CM / taille.y;
+    const facteur = hauteur / taille.y;
     clone.scale.setScalar(facteur);
     clone.position.set(
-      -centre.x * facteur + DECALAGE_FIN[0],
-      -centre.y * facteur + DECALAGE_FIN[1],
-      -centre.z * facteur + DECALAGE_FIN[2],
+      -centre.x * facteur + decalage[0],
+      -centre.y * facteur + decalage[1],
+      -centre.z * facteur + decalage[2],
     );
     clone.updateMatrixWorld(true);
 
-    const orbites = extraireOrbites(clone) ?? ORBITES_DEFAUT;
+    const orbites = config.orbites ?? extraireOrbites(clone) ?? ORBITES_DEFAUT;
     onOrbites?.(orbites);
 
     clone.traverse((obj) => {
+      if (config.masquer?.test(obj.name)) {
+        obj.visible = false;
+        return;
+      }
+
       if (!(obj instanceof THREE.Mesh)) return;
 
       if (estOeilModele(obj.name)) {
@@ -137,9 +128,25 @@ export function TetePatient({
         standard.needsUpdate = true;
       }
     });
-  }, [clone, onOrbites]);
+  }, [clone, config, decalage, hauteur, onOrbites]);
 
   return <primitive object={clone} />;
 }
 
-useGLTF.preload(MODELE_URL);
+/**
+ * Tete glTF calée sur la scene. Les yeux du mesh sont masques pour le moteur oculomoteur ;
+ * leurs centres sont extraits automatiquement ou pris dans la config du cas.
+ */
+export function TetePatient({
+  config,
+  onOrbites,
+}: {
+  config: ConfigModeleTete;
+  onOrbites?: (orbites: PositionsOrbites) => void;
+}) {
+  return <TeteMesh config={config} onOrbites={onOrbites} />;
+}
+
+export function preloadModelesTete(urls: string[]): void {
+  for (const url of urls) useGLTF.preload(url);
+}

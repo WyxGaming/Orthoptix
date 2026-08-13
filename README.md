@@ -16,8 +16,12 @@ npm run build    # vérification des types puis build de production
 
 Prérequis : Node.js 20 ou plus.
 
-Le visage 3D utilise le modèle [Angelica](https://sketchfab.com/3d-models/angelica-27f75fa94c384000bb6a79a3000f8e80)
-par [NikZava284](https://sketchfab.com/NikZava284) (CC-BY-4.0), placé dans `public/models/angelica/`.
+Le visage 3D varie selon le cas clinique :
+- **Léa** — [Angelica](https://sketchfab.com/3d-models/angelica-27f75fa94c384000bb6a79a3000f8e80) par [NikZava284](https://sketchfab.com/NikZava284) (CC-BY-4.0), `public/models/angelica/lea.glb`
+- **Maxime** — [April](https://sketchfab.com/3d-models/april-4027a613edc14aacb3751c878a08d46e) par [RubenBuchholz644c9d600cf24bcb](https://sketchfab.com/RubenBuchholz644c9d600cf24bcb) (CC-BY-4.0), `public/models/april/maxime.glb`
+
+Pour régénérer `maxime.glb` à partir du GLTF Sketchfab : `npm run prepare:april-model` (place `scene-source.gltf` et `scene.bin` dans `public/models/april/`).
+
 Les globes oculaires cliniques (reflets, cover, prismes) restent générés par le moteur Orthoptix.
 
 ## Déployer sur Vercel

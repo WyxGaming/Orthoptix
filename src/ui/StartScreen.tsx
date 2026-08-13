@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { CAS_DISPONIBLES, casCliniquePrepare } from '../cases';
 import { useAdminSession } from '../engine/adminSession';
 import { useSession, type Mode } from '../engine/session';
+import { configModeleTete } from '../scene/modeles-tete';
 import { ModalConnexionAdmin } from './AdminPanel';
 import { Bouton, Carte } from './composants';
 
@@ -14,6 +15,7 @@ export function StartScreen() {
   const [modalAdmin, setModalAdmin] = useState(false);
   const casBase = CAS_DISPONIBLES.find((c) => c.id === casId)!;
   const cas = casCliniquePrepare(casBase);
+  const credit3d = configModeleTete(casId).credit;
   const questionsAdmin = cas.questions.length - casBase.questions.length;
 
   const accederAdmin = () => {
@@ -119,36 +121,38 @@ export function StartScreen() {
         }}
       />
 
-      <p className="text-[11px] leading-relaxed text-slate-600">
-        Modèle 3D basé sur{' '}
-        <a
-          className="text-slate-500 underline decoration-slate-700 hover:text-slate-400"
-          href="https://sketchfab.com/3d-models/angelica-27f75fa94c384000bb6a79a3000f8e80"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Angelica
-        </a>{' '}
-        par{' '}
-        <a
-          className="text-slate-500 underline decoration-slate-700 hover:text-slate-400"
-          href="https://sketchfab.com/NikZava284"
-          target="_blank"
-          rel="noreferrer"
-        >
-          NikZava284
-        </a>
-        , sous licence{' '}
-        <a
-          className="text-slate-500 underline decoration-slate-700 hover:text-slate-400"
-          href="https://creativecommons.org/licenses/by/4.0/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          CC-BY-4.0
-        </a>
-        . Monture 3D fournie séparément.
-      </p>
+      {credit3d && (
+        <p className="text-[11px] leading-relaxed text-slate-600">
+          Modèle 3D basé sur{' '}
+          <a
+            className="text-slate-500 underline decoration-slate-700 hover:text-slate-400"
+            href={credit3d.url}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {credit3d.titre}
+          </a>{' '}
+          par{' '}
+          <a
+            className="text-slate-500 underline decoration-slate-700 hover:text-slate-400"
+            href={`https://sketchfab.com/${credit3d.auteur}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {credit3d.auteur}
+          </a>
+          , sous licence{' '}
+          <a
+            className="text-slate-500 underline decoration-slate-700 hover:text-slate-400"
+            href="https://creativecommons.org/licenses/by/4.0/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {credit3d.licence}
+          </a>
+          . Monture 3D fournie séparément.
+        </p>
+      )}
     </div>
   );
 }

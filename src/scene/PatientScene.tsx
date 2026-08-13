@@ -16,6 +16,7 @@ import {
 } from './geometrie';
 import { ORBITES_DEFAUT, type PositionsOrbites } from './orbites';
 import { LunettesPatient } from './LunettesPatient';
+import { configModeleTete } from './modeles-tete';
 import { TetePatient } from './TetePatient';
 
 /** Cote temporal de l'oeil, exprime en X : la droite du patient est en -X. */
@@ -213,6 +214,7 @@ export function PatientScene({ zoomReflets }: { zoomReflets: boolean }) {
   const conditionsExamen = useSession((s) => s.conditionsExamen);
   const examenEnCours = useSession((s) => s.examenEnCours);
   const cas = useSession((s) => s.cas);
+  const configTete = configModeleTete(cas.id);
   const retenirOrbites = useCallback((positions: PositionsOrbites) => {
     setOrbites(positions);
   }, []);
@@ -228,7 +230,7 @@ export function PatientScene({ zoomReflets }: { zoomReflets: boolean }) {
       <directionalLight position={[-6, 8, 12]} intensity={1.15} />
       <directionalLight position={[8, -4, 10]} intensity={0.4} />
       <Suspense fallback={null}>
-        <TetePatient onOrbites={retenirOrbites} />
+        <TetePatient config={configTete} onOrbites={retenirOrbites} />
       </Suspense>
       <Suspense fallback={null}>
         {montreLunettes && <LunettesPatient orbites={orbites} />}

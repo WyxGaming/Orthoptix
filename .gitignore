@@ -12,3 +12,7 @@ dist/
 public/models/angelica/scene.gltf
 public/models/angelica/scene.bin
 public/models/angelica/textures/
+public/models/april/scene-source.gltf
+public/models/april/scene.gltf
+public/models/april/scene.bin
+public/models/april/textures/
