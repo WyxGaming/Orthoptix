@@ -1,18 +1,18 @@
 import type { CasClinique } from '../engine/types';
 
 /**
- * Cas 3 : pseudo-strabisme chez un nourrisson asiatique avec épicanthus.
+ * Cas 3 : inquiétude parentale chez un nourrisson de 5 mois.
  *
- * Piège pédagogique : l'anamnèse parentale oriente vers un strabisme précoce,
- * alors que le bilan repose sur le comportement visuel et les reflets (centrés en PP).
+ * Piège pédagogique : les parents sont convaincus d'un strabisme précoce,
+ * alors que le bilan objectif (comportement visuel, reflets) est normal.
  * Le cover test n'est pas réalisable à 5 mois.
  */
 export const pseudostrabismeEpicanthus: CasClinique = {
   id: 'pseudostrabisme-epicanthus',
-  titre: 'Mei, 5 mois, adressée par son pédiatre pour un avis orthoptique',
-  resume: 'Mei, 5 mois, adressée par son pédiatre pour un avis orthoptique.',
+  titre: 'Angelica, 5 mois, adressée par son pédiatre pour un avis orthoptique',
+  resume: 'Angelica, 5 mois, adressée par son pédiatre pour un avis orthoptique.',
   patient: {
-    prenom: 'Mei',
+    prenom: 'Angelica',
     age: 0,
     ageLibelle: '5 mois',
     sexe: 'F',
@@ -32,7 +32,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
   },
 
   messageExamens:
-    "Mei a 5 mois : commencer par le Lang, puis le comportement visuel (suivi lumière/objet) et la réaction à l'occlusion dans la rubrique Réfraction et acuité. Le cover test prolongé est impossible.",
+    "Angelica a 5 mois : commencer par le Lang, puis le comportement visuel (suivi lumière/objet) et la réaction à l'occlusion dans la rubrique Réfraction et acuité. Le cover test prolongé est impossible.",
 
   questions: [
     {
@@ -53,7 +53,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
         "Dès les premières semaines de vie. Comme les photos de strabisme précoce qu'on trouve en ligne — ça ne s'est jamais corrigé selon nous.",
       poids: 5,
       commentaire:
-        "Un début très précoce et l'absence de correction perçue par les parents font penser à une E't — piège classique du pseudo-strabisme.",
+        "Un début très précoce dans le récit parental oriente vers une E't — piège anamnestique fréquent.",
     },
     {
       id: 'constance',
@@ -83,7 +83,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
         "Sur les photos surtout, et quand elle regarde sur le côté. De face, de temps en temps, on se demande si on ne s'imagine pas.",
       poids: 5,
       commentaire:
-        "Photos et regard latéral : l'illusion s'accentue en latéral — argument objectif une fois l'épicanthus identifié à l'examen.",
+        "Photos et regard latéral : l'impression peut être accentuée sans qu'il y ait de tropie objectivable.",
     },
     {
       id: 'developpement',
@@ -194,13 +194,13 @@ export const pseudostrabismeEpicanthus: CasClinique = {
     reactionOcclusion: {
       poids: 8,
       resultat:
-        "Occlusion brève de l'OD puis de l'OG : Mei tourne la tête des deux côtés, mouvements comparables. Aucun mouvement oculaire visible pendant l'occlusion.",
+        "Occlusion brève de l'OD puis de l'OG : Angelica tourne la tête des deux côtés, mouvements comparables. Aucun mouvement oculaire visible pendant l'occlusion.",
     },
     hirschberg: {
       poids: 8,
       attendu: { min: 0, max: 2, unite: 'DP' },
       resultat:
-        "Position primaire : reflets cornéens centrés des deux côtés. En regard latéral, le sclère interne est peu visible.",
+        'Position primaire : reflets cornéens centrés des deux côtés.',
       interpretation: {
         question: 'Comment interpréter ces reflets ?',
         options: [
@@ -221,7 +221,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
           },
         ],
         explication:
-          "En position primaire, les reflets sont centrés. En regard latéral, le sclère interne est peu visible.",
+          "En position primaire, les reflets sont centrés.",
       },
     },
     lang: {
@@ -283,7 +283,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
       nonContributifSiPresente: true,
       malusSiPresente: -2,
       resultat:
-        "Cover test non réalisable : Mei se débat, pleure et refuse l'occlusion. Aucune mesure d'angle par dissociation prolongée.",
+        "Cover test non réalisable : Angelica se débat, pleure et refuse l'occlusion. Aucune mesure d'angle par dissociation prolongée.",
       justificationMalus:
         "À 5 mois le cover test est souvent impossible ; insister n'apporte pas de mesure fiable et perturbe l'enfant.",
     },
@@ -399,8 +399,8 @@ export const pseudostrabismeEpicanthus: CasClinique = {
         poids: 5,
         options: [
           {
-            id: 'pseudostrabisme',
-            libelle: "Pseudo-strabisme sur épicanthus (pseudostrabismus)",
+            id: 'orthotropie',
+            libelle: 'Orthotropie — pas de strabisme',
             correct: true,
           },
           {
@@ -420,14 +420,14 @@ export const pseudostrabismeEpicanthus: CasClinique = {
           },
         ],
         explication:
-          "Comportement visuel normal, réaction à l'occlusion symétrique, reflets centrés en PP, épicanthus : pseudo-strabisme. Le récit parental ne suffit pas.",
+          "Comportement visuel normal, réaction à l'occlusion symétrique, reflets centrés en PP : pas de strabisme. Le récit parental ne suffit pas.",
       },
       {
         id: 'signes-cles',
         type: 'ouverte',
-        question: 'Quels éléments objectifs vous ont orientés ? (nommez le signe morphologique)',
+        question: 'Quels éléments objectifs vous ont orientés ?',
         poids: 4,
-        seuil: 4,
+        seuil: 3,
         criteres: [
           {
             id: 'comportement',
@@ -441,15 +441,11 @@ export const pseudostrabismeEpicanthus: CasClinique = {
             id: 'reflets',
             variantes: ['reflet', 'hirschberg', 'centr', 'orthotrop', 'primaire'],
           },
-          {
-            id: 'epicanthus',
-            variantes: ['epicanthus', 'épicanthus'],
-          },
         ],
         reponseAttendue:
-          "Suivi lumière/objet normal et symétrique, réaction à l'occlusion symétrique sans rattrapage, reflets centrés en PP, épicanthus avec illusion en regard latéral.",
+          "Suivi lumière/objet normal et symétrique, réaction à l'occlusion symétrique sans rattrapage, reflets centrés en PP.",
         explication:
-          "Le diagnostic repose sur le comportement visuel et les reflets. Le terme « épicanthus » doit figurer en synthèse : les parents ne le remarquent pas, c'est au praticien de l'identifier à l'examen et de le nommer.",
+          "Le diagnostic repose sur le comportement visuel et les reflets. L'examen morphologique ne retrouve pas de signe expliquant une fausse impression.",
       },
       {
         id: 'conduite',
@@ -459,7 +455,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
         options: [
           {
             id: 'rassurance',
-            libelle: 'Rassurer les parents, pas de chirurgie ni de lunettes ; surveillance à la croissance du pont nasal',
+            libelle: 'Rassurer les parents, pas de chirurgie ni de lunettes ; surveillance habituelle',
             correct: true,
           },
           {
@@ -479,26 +475,26 @@ export const pseudostrabismeEpicanthus: CasClinique = {
           },
         ],
         explication:
-          "Pas de strabisme réel : réassurance et surveillance. L'aspect s'améliore souvent avec la croissance du pont nasal.",
+          "Pas de strabisme : réassurance et surveillance habituelle.",
       },
       {
         id: 'chirurgie',
         type: 'ouiNon',
-        question: 'Faut-il opérer Mei ?',
+        question: 'Faut-il opérer Angelica ?',
         poids: 2,
         correct: false,
         explication:
-          "Non : pseudo-strabisme sans tropie objectivable. Chirurgie strabologique non indiquée.",
+          "Non : orthotropie, pas de tropie objectivable. Chirurgie strabologique non indiquée.",
       },
     ],
   },
 
   compteRenduExpert: [
-    "Mei, 5 mois, adressée par le pédiatre. Parents convaincus d'un strabisme convergent depuis la naissance — récit orientant vers une E't, à ne pas prendre pour une preuve. Pas d'ATCD familiaux de strabisme. À l'examen : plis palpébraux médiaux (épicanthus), pont nasal large.",
+    "Angelica, 5 mois, adressée par le pédiatre. Parents convaincus d'un strabisme convergent depuis la naissance — récit orientant vers une E't, à ne pas prendre pour une preuve. Pas d'ATCD familiaux de strabisme. À l'examen : alignement oculaire normal, pas de signe morphologique pathologique.",
     "Étude du comportement visuel : suivi lumière monoculaire puis binoculaire, suivi objet monoculaire puis binoculaire — symétrique, sans préférence pathologique.",
     "Réaction à l'occlusion : mouvements de tête symétriques OD/OG, sans rattrapage oculaire visible.",
-    "Reflets : centrés en position primaire ; fausse impression convergente en regard latéral (épicanthus).",
+    "Reflets : centrés en position primaire.",
     "Lang : regard fugace, sans fixation prolongée ni recherche du relief. Cover test non réalisable (coopération).",
-    "Réfraction : +1.50 D bilatéral, physiologique. Conclusion : pseudo-strabisme. Rassurance parentale, surveillance.",
+    "Réfraction : +1.50 D bilatéral, physiologique. Conclusion : orthotropie, pas de strabisme. Rassurance parentale, surveillance.",
   ],
 };

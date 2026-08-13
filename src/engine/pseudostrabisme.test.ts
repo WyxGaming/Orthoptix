@@ -10,7 +10,7 @@ import { interpretationsExamen } from './types';
 
 const session = () => useSession.getState();
 
-const ORDRE_ANAMNESE_MEI = [
+const ORDRE_ANAMNESE_ANGELICA = [
   'motif',
   'depuis-quand',
   'constance',
@@ -22,7 +22,7 @@ const ORDRE_ANAMNESE_MEI = [
 const ETAPES_CV: EtapeComportementVisuelId[] = [...ORDRE_ETAPES_COMPORTEMENT_VISUEL];
 
 function poserAnamneseEssentielle() {
-  for (const id of ORDRE_ANAMNESE_MEI) session().poserQuestion(id);
+  for (const id of ORDRE_ANAMNESE_ANGELICA) session().poserQuestion(id);
   for (const q of session().cas.questions) {
     if (q.rubrique === 'antecedents' && q.poids > 0) session().poserQuestion(q.id);
   }
@@ -55,7 +55,7 @@ function realiserComportementVisuel(
   });
 }
 
-function bilanMeiParfait() {
+function bilanAngelicaParfait() {
   const { validerSynthese } = session();
   poserAnamneseEssentielle();
   realiser('lang');
@@ -63,9 +63,9 @@ function bilanMeiParfait() {
   realiser('reactionOcclusion');
   realiser('hirschberg', 0);
   validerSynthese({
-    diagnostic: 'pseudostrabisme',
+    diagnostic: 'orthotropie',
     'signes-cles':
-      'Suivi lumiere objet symetrique, reaction occlusion symetrique, reflets centres epicanthus regard lateral',
+      'Suivi lumiere objet symetrique, reaction occlusion symetrique, reflets centres orthotropie',
     conduite: 'rassurance',
     chirurgie: 'non',
   });
@@ -146,24 +146,24 @@ describe('pseudostrabisme-epicanthus', () => {
     expect(lang?.nature).not.toBe('malus');
   });
 
-  it('exige le terme epicanthus dans la synthese ouverte', () => {
+  it('valide la synthese ouverte sur les signes objectifs du bilan', () => {
     poserAnamneseEssentielle();
     realiserComportementVisuel();
     session().validerSynthese({
-      diagnostic: 'pseudostrabisme',
+      diagnostic: 'orthotropie',
       'signes-cles':
-        'Suivi lumiere symetrique, reaction occlusion symetrique, reflets centres, plis paupieres',
+        'Suivi lumiere symetrique, reaction occlusion symetrique, reflets centres',
       conduite: 'rassurance',
       chirurgie: 'non',
     });
     const signes = session()
       .resultat()
       .lignes.find((l) => l.libelle.includes('objectifs'));
-    expect(signes?.points).toBeLessThan(4);
+    expect(signes?.points).toBeGreaterThanOrEqual(3);
   });
 
   it('score eleve pour un bilan complet et correct', () => {
-    bilanMeiParfait();
+    bilanAngelicaParfait();
     const { total, max, pourcentage } = session().resultat();
     expect(total).toBeGreaterThan(max * 0.75);
     expect(pourcentage).toBeGreaterThanOrEqual(75);

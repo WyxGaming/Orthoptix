@@ -48,7 +48,7 @@ export const MODELES_TETE: Record<string, ConfigModeleTete> = {
       licence: 'CC-BY-4.0',
     },
   },
-  /** Nourrisson : modele adulte reduit (~15 cm) en attendant un mesh dedie. */
+  /** Nourrisson 5 mois : visage Angelica réduit (~15 cm). */
   'pseudostrabisme-epicanthus': {
     url: '/models/angelica/lea.glb',
     hauteurVisageCm: 15,
