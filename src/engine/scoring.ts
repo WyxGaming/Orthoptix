@@ -1,6 +1,5 @@
 import { CATALOGUE_EXAMENS } from './exams';
 import { examenResolu, examensDissociantsAvant, libelleConditions } from './examen-resolver';
-import type { EtapeComportementVisuelId } from './comportement-visuel';
 import { ordreComportementVisuelRespecte } from './comportement-visuel';
 import type {
   ActionJournal,
