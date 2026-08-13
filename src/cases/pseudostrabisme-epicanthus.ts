@@ -100,10 +100,10 @@ export const pseudostrabismeEpicanthus: CasClinique = {
       rubrique: 'anamnese',
       libelle: 'Avez-vous remarqué des particularités des paupières ou du nez ? (parents)',
       reponse:
-        "Elle a des plis vers le nez au niveau des paupières. Le pédiatre a dit « épicanthus ». On ne l'avait pas relié aux yeux croisés.",
+        "Elle a les paupières un peu plissées vers le nez, comme sa mère. On ne voit presque pas le blanc de l'œil du côté du nez — on pensait que c'était normal pour elle. Personne ne nous a expliqué que ça pouvait faire « loucher ».",
       poids: 5,
       commentaire:
-        "L'épicanthus masque le sclère médial : les parents ne font pas le lien, c'est au praticien de l'intégrer.",
+        "Les parents décrivent en langage courant, sans connaître le terme « épicanthus » : c'est à l'examen que le praticien fait le lien.",
     },
     {
       id: 'correction',
@@ -470,7 +470,20 @@ export const pseudostrabismeEpicanthus: CasClinique = {
           },
           {
             id: 'epicanthus',
-            variantes: ['epicanthus', 'épicanthus', 'plis', 'paupier', 'pont nasal', 'lateral', 'latéral', 'morpholog'],
+            variantes: [
+              'epicanthus',
+              'épicanthus',
+              'plis',
+              'pliss',
+              'paupier',
+              'pont nasal',
+              'blanc',
+              'sclere',
+              'sclère',
+              'lateral',
+              'latéral',
+              'morpholog',
+            ],
           },
         ],
         reponseAttendue:
@@ -521,7 +534,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
   },
 
   compteRenduExpert: [
-    "Mei, 5 mois, adressée par le pédiatre. Parents convaincus d'un strabisme convergent depuis la naissance — récit orientant vers une E't, à ne pas prendre pour une preuve. Pas d'ATCD familiaux de strabisme. Épicanthus bilatéral.",
+    "Mei, 5 mois, adressée par le pédiatre. Parents convaincus d'un strabisme convergent depuis la naissance — récit orientant vers une E't, à ne pas prendre pour une preuve. Pas d'ATCD familiaux de strabisme. À l'examen : plis palpébraux médiaux (épicanthus), pont nasal large.",
     "Étude du comportement visuel : suivi lumière monoculaire puis binoculaire OK ; suivi objet symétrique, sans préférence pathologique.",
     "Réaction à l'occlusion : mouvements de tête symétriques OD/OG, sans rattrapage oculaire visible.",
     "Reflets : centrés en position primaire ; fausse impression convergente en regard latéral (épicanthus).",
