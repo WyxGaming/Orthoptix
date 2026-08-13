@@ -452,9 +452,9 @@ export const pseudostrabismeEpicanthus: CasClinique = {
       {
         id: 'signes-cles',
         type: 'ouverte',
-        question: 'Quels éléments objectifs vous ont orientés ?',
+        question: 'Quels éléments objectifs vous ont orientés ? (nommez le signe morphologique)',
         poids: 4,
-        seuil: 3,
+        seuil: 4,
         criteres: [
           {
             id: 'comportement',
@@ -470,26 +470,13 @@ export const pseudostrabismeEpicanthus: CasClinique = {
           },
           {
             id: 'epicanthus',
-            variantes: [
-              'epicanthus',
-              'épicanthus',
-              'plis',
-              'pliss',
-              'paupier',
-              'pont nasal',
-              'blanc',
-              'sclere',
-              'sclère',
-              'lateral',
-              'latéral',
-              'morpholog',
-            ],
+            variantes: ['epicanthus', 'épicanthus'],
           },
         ],
         reponseAttendue:
           "Suivi lumière/objet normal et symétrique, réaction à l'occlusion symétrique sans rattrapage, reflets centrés en PP, épicanthus avec illusion en regard latéral.",
         explication:
-          "Le diagnostic repose sur le comportement visuel et les reflets — pas sur le récit parental ni un cover test non réalisable.",
+          "Le diagnostic repose sur le comportement visuel et les reflets. Le terme « épicanthus » doit figurer en synthèse : les parents le décrivent en langage courant, c'est au praticien de le nommer.",
       },
       {
         id: 'conduite',

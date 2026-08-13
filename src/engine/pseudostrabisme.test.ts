@@ -115,6 +115,24 @@ describe('pseudostrabisme-epicanthus', () => {
     expect(lang?.nature).not.toBe('malus');
   });
 
+  it('exige le terme epicanthus dans la synthese ouverte', () => {
+    poserAnamneseEssentielle();
+    realiser('acuite');
+    realiser('reactionOcclusion');
+    realiser('hirschberg', 0);
+    session().validerSynthese({
+      diagnostic: 'pseudostrabisme',
+      'signes-cles':
+        'Suivi lumiere symetrique, reaction occlusion symetrique, reflets centres, plis paupieres regard lateral',
+      conduite: 'rassurance',
+      chirurgie: 'non',
+    });
+    const signes = session()
+      .resultat()
+      .lignes.find((l) => l.libelle.includes('signes-cles') || l.libelle.includes('objectifs'));
+    expect(signes?.points).toBeLessThan(4);
+  });
+
   it('score eleve pour un bilan complet et correct', () => {
     bilanMeiParfait();
     const { total, max, pourcentage } = session().resultat();
