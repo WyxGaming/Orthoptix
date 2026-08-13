@@ -96,16 +96,6 @@ export const pseudostrabismeEpicanthus: CasClinique = {
         "Comportement visuel conservé : discordance avec un vrai strabisme manifeste non neutralisé.",
     },
     {
-      id: 'morphologie',
-      rubrique: 'anamnese',
-      libelle: 'Avez-vous remarqué quelque chose de particulier au niveau des paupières ou du nez ? (parents)',
-      reponse:
-        "Non, pas vraiment. Pour nous elle a un visage normal — on ne voit rien de bizarre au niveau des paupières. C'est surtout son regard qui nous inquiète.",
-      poids: 3,
-      commentaire:
-        "Les parents normalisent la morphologie : l'épicanthus leur échappe totalement. Seul l'examen le met en évidence.",
-    },
-    {
       id: 'correction',
       rubrique: 'anamnese',
       libelle: 'Porte-t-elle des lunettes ? (parents)',
@@ -414,7 +404,6 @@ export const pseudostrabismeEpicanthus: CasClinique = {
     'alternance',
     'photos-regard',
     'developpement',
-    'morphologie',
   ],
 
   synthese: {
@@ -476,7 +465,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
         reponseAttendue:
           "Suivi lumière/objet normal et symétrique, réaction à l'occlusion symétrique sans rattrapage, reflets centrés en PP, épicanthus avec illusion en regard latéral.",
         explication:
-          "Le diagnostic repose sur le comportement visuel et les reflets. Le terme « épicanthus » doit figurer en synthèse : les parents le décrivent en langage courant, c'est au praticien de le nommer.",
+          "Le diagnostic repose sur le comportement visuel et les reflets. Le terme « épicanthus » doit figurer en synthèse : les parents ne le remarquent pas, c'est au praticien de l'identifier à l'examen et de le nommer.",
       },
       {
         id: 'conduite',

@@ -15,7 +15,6 @@ const ORDRE_ANAMNESE_MEI = [
   'alternance',
   'photos-regard',
   'developpement',
-  'morphologie',
 ] as const;
 
 function poserAnamneseEssentielle() {
