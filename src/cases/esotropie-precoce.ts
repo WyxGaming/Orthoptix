@@ -394,8 +394,7 @@ export const esotropiePrecoce: CasClinique = {
       // Utile pour la correspondance retinienne, mais non obligatoire au bareme.
       poids: 2,
       optionnel: true,
-      resultat:
-        'AO different de AS. Angle objectif concordant avec le cover test. Correspondance retinienne anormale.',
+      resultat: 'AO different de AS.',
       interpretations: [
         {
           id: 'pourquoi-synoptophore',
