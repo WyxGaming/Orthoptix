@@ -8,8 +8,8 @@ const MODELE_URL = '/models/lunettes/lunettes.glb';
 const DEMI_VERRE_CM = 1.15;
 const DECALAGE_FIN: [number, number, number] = [0, -0.35, 0.45];
 
-/** Orientation du GLB importe : 90 deg vers la droite autour de l'axe vertical. */
-const CORRECTION_Y = -Math.PI / 2;
+/** Orientation du GLB importe : 270 deg vers la droite autour de l'axe vertical. */
+const CORRECTION_Y = -Math.PI / 2 - Math.PI;
 
 function cadreOrbites(orbites: PositionsOrbites) {
   const [odX, odY, odZ] = orbites.OD;
