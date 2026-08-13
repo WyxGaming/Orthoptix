@@ -82,8 +82,6 @@ function realiser(
 function bilanMaximeParfait() {
   const { validerSynthese } = session();
   poserAnamneseEtAntecedents();
-  realiser('refraction');
-  realiser('acuite');
   realiser('lang', { correction: 'asc', loupesPlus3: true });
   realiser('tno', { correction: 'asc', loupesPlus3: true });
   realiser('motilite');
@@ -97,11 +95,6 @@ function bilanMaximeParfait() {
     { conditions: { correction: 'sc' }, mesure: 40 },
     { conditions: { correction: 'asc', loupesPlus3: true }, mesure: 0 },
   ]);
-  realiserMulti('coverPres', [
-    { conditions: { correction: 'asc' }, mesure: 15 },
-    { conditions: { correction: 'sc' }, mesure: 40 },
-    { conditions: { correction: 'asc', loupesPlus3: true }, mesure: 0 },
-  ]);
   realiserMulti('krimskyLoin', [
     { conditions: { correction: 'asc' }, mesure: 6 },
     { conditions: { correction: 'sc' }, mesure: 10 },
@@ -110,6 +103,13 @@ function bilanMaximeParfait() {
     { conditions: { correction: 'asc' }, mesure: 6 },
     { conditions: { correction: 'sc' }, mesure: 10 },
   ]);
+  realiserMulti('coverPres', [
+    { conditions: { correction: 'asc' }, mesure: 15 },
+    { conditions: { correction: 'sc' }, mesure: 40 },
+    { conditions: { correction: 'asc', loupesPlus3: true }, mesure: 0 },
+  ]);
+  realiser('acuite');
+  realiser('refraction');
   validerSynthese({
     'type-strabisme': 'accommodative',
     conduite: 'correction',

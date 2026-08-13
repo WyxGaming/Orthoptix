@@ -402,7 +402,8 @@ export function calculerScore(
     max: BONUS_CONDUITE_DU_BILAN,
     commentaire: conduite
       ? undefined
-      : 'Les épreuves dissociantes ont été conduites avant l\'évaluation sensorielle, ce qui peut rompre la binocularité avant de l\'avoir mesurée.',
+      : cas.commentaireConduiteBilan ??
+        'Les épreuves dissociantes ont été conduites avant l\'évaluation sensorielle, ce qui peut rompre la binocularité avant de l\'avoir mesurée.',
     nature: conduite ? 'bonus' : 'manque',
   });
 

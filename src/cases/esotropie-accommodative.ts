@@ -229,9 +229,9 @@ function resoudreExamenMaxime(ctx: ContexteExamen): ExamenCas | null {
 /**
  * Cas 2 : esotropie accommodative chez un jeune adulte hypermétrope.
  *
- * L etudiant choisit ASC/SC et les loupes +3 pour Lang, TNO, reflets et cover test.
- * Le Lang n est positif qu en ASC + loupes +3.
- * Le TNO n est positif qu en debut de bilan, ASC + loupes +3.
+ * Conduite attendue : Lang et TNO (ASC + loupes +3) en tête de bilan, puis motilité
+ * et mesures (reflets, cover VL/VP) ; réfraction et acuité visuelle en dernier
+ * (épreuves fortement dissociantes).
  */
 export const esotropieAccommodative: CasClinique = {
   id: 'esotropie-accommodative',
@@ -606,17 +606,20 @@ export const esotropieAccommodative: CasClinique = {
   ],
 
   ordreAttendu: [
-    'refraction',
-    'acuite',
     'lang',
     'tno',
     'motilite',
     'hirschberg',
     'krimsky',
-    'coverPres',
     'krimskyLoin',
     'coverLoin',
+    'coverPres',
+    'acuite',
+    'refraction',
   ],
+
+  commentaireConduiteBilan:
+    'Lang et TNO d abord (ASC + loupes +3), puis motilité et mesures ; cover VL avant cover VP ; acuité et réfraction en fin de bilan.',
 
   ordreAnamneseAttendu: [
     'motif',

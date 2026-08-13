@@ -27,8 +27,10 @@ export function libelleConditionsMesure(c: ConditionsExamen): string {
   return c.correction === 'asc' ? 'Avec correction (ASC)' : 'Sans correction (SC)';
 }
 
-/** Examens qui rompent la binocularité avant un TNO fiable. */
+/** Examens qui rompent la binocularité (occlusion, filtres, monocularité, cover…). */
 export const EXAMENS_DISSOCIANTS: ExamenId[] = [
+  'acuite',
+  'refraction',
   'coverPres',
   'coverLoin',
   'worth',

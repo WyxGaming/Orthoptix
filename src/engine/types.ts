@@ -222,6 +222,8 @@ export type CasClinique = {
   realisationsAttendues?: RealisationAttendue[];
   /** Ordre attendu des examens essentiels, utilise pour le bonus de conduite du bilan. */
   ordreAttendu: ExamenId[];
+  /** Message de debriefing si le bonus conduite du bilan n est pas obtenu. */
+  commentaireConduiteBilan?: string;
   /**
    * Ordre relatif attendu des questions d anamnese (ids), pour le bonus de conduite
    * de l interrogatoire. Seules ces questions comptent ; les autres peuvent s intercaler.
