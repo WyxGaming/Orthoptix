@@ -297,7 +297,15 @@ export function calculerScore(
           nature: passage ? 'acquis' : 'manque',
         });
       }
-    } else if (passage) {
+    } else if (passage && examen.nonContributifSiPresente && examen.malusSiPresente) {
+      lignes.push({
+        libelle: definition.nom,
+        points: examen.malusSiPresente,
+        max: 0,
+        commentaire: examen.justificationMalus,
+        nature: 'malus',
+      });
+    } else if (passage && examen.poids < 0) {
       lignes.push({
         libelle: definition.nom,
         points: examen.poids,
@@ -307,6 +315,8 @@ export function calculerScore(
       });
     }
     dejaCompte.add(id);
+
+    if (examen.nonContributifSiPresente) continue;
 
     if (examen.attendu && (passage || !examen.optionnel)) {
       const mesure = passage?.mesure;

@@ -280,7 +280,8 @@ export const useSession = create<SessionState>((set, get) => ({
         journal: journalCourant,
         indexJournal: journalCourant.length,
       };
-      const examen = examenResolu(cas, ctx);
+      const examenStatique = cas.examens[examenEnCours];
+      const examen = examenResolu(cas, ctx) ?? examenStatique;
 
       const action: ActionJournal = {
         type: 'examen',
@@ -292,7 +293,9 @@ export const useSession = create<SessionState>((set, get) => ({
       };
 
       if (mode === 'entrainement' && examen) {
-        if (examen.poids < 0 && examen.justificationMalus) {
+        if (examen.nonContributifSiPresente && examen.justificationMalus) {
+          messages.push({ id: ++compteurMessages, texte: examen.justificationMalus, ton: 'negatif' });
+        } else if (examen.poids < 0 && examen.justificationMalus) {
           messages.push({ id: ++compteurMessages, texte: examen.justificationMalus, ton: 'negatif' });
         }
         if (examen.attendu && passage.mesure !== undefined) {
@@ -330,14 +333,16 @@ export const useSession = create<SessionState>((set, get) => ({
         .join(' ');
 
       journalCourant = [...journalCourant, action];
-      bilanCourant = [
-        ...bilanCourant,
-        {
-          id: `e-${examenEnCours}-${journalCourant.length - 1}`,
-          titre: `${definition.nom}${libelleCond}`,
-          contenu,
-        },
-      ];
+      if (!examenStatique?.nonContributifSiPresente) {
+        bilanCourant = [
+          ...bilanCourant,
+          {
+            id: `e-${examenEnCours}-${journalCourant.length - 1}`,
+            titre: `${definition.nom}${libelleCond}`,
+            contenu,
+          },
+        ];
+      }
     }
 
     set({

@@ -218,6 +218,8 @@ describe('cas Maxime — esotropie accommodative', () => {
       .resultat()
       .lignes.find((l) => l.libelle.startsWith('Déviométrie'))!;
     expect(ligne.nature).toBe('malus');
+    expect(ligne.points).toBe(-1);
+    expect(session().bilan.some((l) => l.titre.includes('synoptophore'))).toBe(false);
 
     session().demarrer(esotropieAccommodative, 'entrainement');
     session().lancerExamen('biprisme');
@@ -226,6 +228,16 @@ describe('cas Maxime — esotropie accommodative', () => {
       .resultat()
       .lignes.find((l) => l.libelle.startsWith('Biprisme'))!;
     expect(ligne.nature).toBe('malus');
+    expect(ligne.points).toBe(-2);
+    expect(session().bilan.some((l) => l.titre.includes('Biprisme'))).toBe(false);
+  });
+
+  it('n affiche rien au barème si synoptophore et biprisme non presentes', () => {
+    poserAnamneseEtAntecedents();
+    const lignes = session()
+      .resultat()
+      .lignes.filter((l) => l.libelle.includes('synoptophore') || l.libelle.includes('Biprisme'));
+    expect(lignes).toHaveLength(0);
   });
 
   it('attribue le score maximal a un bilan mene correctement', () => {

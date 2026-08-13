@@ -146,6 +146,13 @@ export type ExamenCas = {
    * s'il est fait, la realisation et l'interpretation comptent (et doivent etre justes).
    */
   optionnel?: boolean;
+  /**
+   * Examen accessible mais inutile dans ce cas : absent du bareme tant qu'il n'est pas
+   * presente ; un malus s'applique des la presentation (ex. synoptophore, biprisme).
+   */
+  nonContributifSiPresente?: boolean;
+  /** Points retires si l'examen non contributif est presente. */
+  malusSiPresente?: number;
 };
 
 /** Conditions choisies par l'étudiant au lancement d'un examen (ASC/SC, loupes +3). */

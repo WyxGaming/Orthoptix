@@ -468,13 +468,17 @@ export const esotropieAccommodative: CasClinique = {
       justificationMalus: 'Manœuvre des cyclo-verticaux, sans indication devant une motilité normale.',
     },
     deviometrie: {
-      poids: -1,
+      poids: 0,
+      nonContributifSiPresente: true,
+      malusSiPresente: -1,
       resultat: 'Mesure difficile, sans élément décisif.',
       justificationMalus:
         'Examen non nécessaire dans ce tableau clinique : le Lang ASC + loupes +3 et le TNO précoce suffisent.',
     },
     biprisme: {
-      poids: -2,
+      poids: 0,
+      nonContributifSiPresente: true,
+      malusSiPresente: -2,
       resultat: 'Examen non contributif.',
       justificationMalus:
         'Examen non nécessaire : le biprisme explore la microtropie, incompatible avec des angles aussi larges.',
