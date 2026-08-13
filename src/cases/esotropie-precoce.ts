@@ -12,9 +12,9 @@ import type { CasClinique } from '../engine/types';
  */
 export const esotropiePrecoce: CasClinique = {
   id: 'esotropie-precoce',
-  titre: 'Strabisme convergent chez une adolescente de 16 ans',
+  titre: 'Léa, 16 ans, adressée par son ophtalmologiste pour un bilan orthoptique',
   resume:
-    "Léa, adressée par son ophtalmologiste pour bilan orthoptique. La déviation convergente est connue, son type reste à établir.",
+    'Léa, 16 ans, adressée par son ophtalmologiste pour un bilan orthoptique.',
   patient: {
     prenom: 'Léa',
     age: 16,

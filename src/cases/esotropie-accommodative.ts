@@ -235,9 +235,9 @@ function resoudreExamenMaxime(ctx: ContexteExamen): ExamenCas | null {
  */
 export const esotropieAccommodative: CasClinique = {
   id: 'esotropie-accommodative',
-  titre: 'Déviation convergente chez un jeune adulte de 23 ans',
+  titre: 'Maxime, 23 ans, adressé par son ophtalmologiste pour un bilan orthoptique',
   resume:
-    'Maxime consulte seul pour un bilan orthoptique. Il est arrivé sans lunettes ; la nature exacte de sa déviation reste à préciser.',
+    'Maxime, 23 ans, adressé par son ophtalmologiste pour un bilan orthoptique.',
   patient: {
     prenom: 'Maxime',
     age: 23,
