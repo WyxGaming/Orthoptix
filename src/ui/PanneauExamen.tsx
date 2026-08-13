@@ -3,10 +3,9 @@ import { EYES, type BasePrisme, type Eye } from '../domain/ocular-model';
 import { CATALOGUE_EXAMENS } from '../engine/exams';
 import { useSession } from '../engine/session';
 import { interpretationsExamen } from '../engine/types';
-import type { ModeInteraction } from '../engine/types';
 import { Bouton, Carte } from './composants';
 
-/** Positions du regard, nommees du point de vue du patient et disposees comme a l'ecran. */
+/** Positions du regard, nommées du point de vue du patient et disposées comme à l'écran. */
 const POSITIONS_REGARD = [
   [
     { az: 25, el: 18, nom: 'Haut-droite' },
@@ -24,15 +23,6 @@ const POSITIONS_REGARD = [
     { az: -25, el: -28, nom: 'Bas-gauche' },
   ],
 ];
-
-/** Ce que l'on cherche a neutraliser avec les prismes depend de l'epreuve en cours. */
-const AIDE_PRISMES: Record<ModeInteraction, string> = {
-  occlusion:
-    "Montez la puissance jusqu'à ce que le cache ne déclenche plus aucun mouvement : le prisme neutralisant donne l'angle. Un mouvement qui change de sens signe une sur-correction.",
-  reflets: "Montez la puissance jusqu'à recentrer le reflet cornéen de l'œil dévié.",
-  motilite: '',
-  presentation: '',
-};
 
 const BASES: { valeur: BasePrisme; libelle: string }[] = [
   { valeur: 'temporale', libelle: 'Base temporale' },
@@ -59,10 +49,6 @@ function CommandesMotilite() {
           </Bouton>
         ))}
       </div>
-      <p className="mt-2 text-xs text-slate-500">
-        Mire tenue à 33 cm. Les positions sont nommées du côté du patient : le regard à droite se
-        lit à gauche de l'écran, comme en consultation.
-      </p>
     </div>
   );
 }
@@ -70,7 +56,6 @@ function CommandesMotilite() {
 function CommandesOcclusion() {
   const occlure = useSession((s) => s.occlure);
   const occlusion = useSession((s) => s.etat.occlusion);
-  const oeilFixateur = useSession((s) => s.etat.oeilFixateur);
 
   return (
     <div className="space-y-2">
@@ -84,16 +69,11 @@ function CommandesOcclusion() {
           Découvrir
         </Bouton>
       </div>
-      <p className="text-xs text-slate-500">
-        Commencez par un cache unilatéral (restitution, préférence de fixation), puis alternez
-        sans temps binoculaire pour libérer l'angle total. Œil fixateur actuel :{' '}
-        <span className="text-slate-300">{oeilFixateur}</span>.
-      </p>
     </div>
   );
 }
 
-function CommandesPrismes({ aide }: { aide: string }) {
+function CommandesPrismes() {
   const poserPrisme = useSession((s) => s.poserPrisme);
   const prismes = useSession((s) => s.etat.prismes);
   const [oeil, setOeil] = useState<Eye>('OD');
@@ -137,7 +117,6 @@ function CommandesPrismes({ aide }: { aide: string }) {
           Retirer
         </Bouton>
       </div>
-      <p className="text-xs text-slate-500">{aide}</p>
     </div>
   );
 }
@@ -211,29 +190,19 @@ export function PanneauExamen({
 
         {definition.distance === 'loin' && (
           <p className="rounded-md border border-amber-900/60 bg-amber-950/30 px-3 py-2 text-xs text-amber-200/90">
-            Mire placée à 5 mètres, hors du champ : l'enfant fixe au-dessus de votre épaule et
-            vous ne voyez plus le point lumineux.{' '}
-            {definition.interaction === 'reflets'
-              ? 'Les reflets que vous lisez sur les cornées sont ceux de cette lumière lointaine.'
-              : 'Seuls les mouvements des yeux sont lisibles.'}
+            Mire à 5 mètres, hors du champ visuel.
           </p>
         )}
 
         {definition.interaction === 'motilite' && <CommandesMotilite />}
         {definition.interaction === 'occlusion' && <CommandesOcclusion />}
-        {definition.prismes && <CommandesPrismes aide={AIDE_PRISMES[definition.interaction]} />}
-        {definition.interaction === 'reflets' && !definition.prismes && (
-          <p className="text-xs text-slate-500">
-            Comparez la position du reflet à celle du centre pupillaire. Un millimètre de
-            décentrement correspond à environ 15 dioptries prismatiques.
-          </p>
-        )}
+        {definition.prismes && <CommandesPrismes />}
 
         {definition.interaction === 'presentation' && (
           <div className="space-y-2">
             {!resultatRevele ? (
               <Bouton ton="principal" onClick={() => setResultatRevele(true)}>
-                Presenter le test a {cas.patient.prenom}
+                Présenter le test à {cas.patient.prenom}
               </Bouton>
             ) : (
               <p className="rounded-md border border-slate-700 bg-slate-950/60 p-3 text-sm text-slate-200">

@@ -24,37 +24,35 @@ export const CATALOGUE_EXAMENS: Record<ExamenId, DefinitionExamen> = {
     nom: 'Test de Lang',
     rubrique: 'sensoriel',
     description:
-      'Test stéréoscopique avec correction optique, présenté à 40 cm. Dépistage rapide de la vision du relief.',
+      'Test stéréoscopique avec correction optique, présenté à 40 cm.',
     interaction: 'presentation',
   },
   tno: {
     id: 'tno',
     nom: 'TNO',
     rubrique: 'sensoriel',
-    description:
-      'Test stéréoscopique aléatoire avec lunettes rouge-vert, quantifie le seuil de stéréoscopie.',
+    description: 'Test stéréoscopique aléatoire avec lunettes rouge-vert.',
     interaction: 'presentation',
   },
   worth: {
     id: 'worth',
     nom: 'Test de Worth',
     rubrique: 'sensoriel',
-    description: "Recherche de fusion et de neutralisation à l'aide de quatre points colorés.",
+    description: 'Quatre points colorés.',
     interaction: 'presentation',
   },
   bagolini: {
     id: 'bagolini',
     nom: 'Verres striés de Bagolini',
     rubrique: 'sensoriel',
-    description:
-      "Étude de la correspondance rétinienne en conditions peu dissociantes, à l'aide de deux verres striés.",
+    description: 'Deux verres striés, conditions peu dissociantes.',
     interaction: 'presentation',
   },
   verreRouge: {
     id: 'verreRouge',
     nom: 'Verre rouge',
     rubrique: 'sensoriel',
-    description: 'Recherche de diplopie et de la correspondance rétinienne sous filtre rouge.',
+    description: 'Filtre rouge.',
     interaction: 'presentation',
   },
   motilite: {
@@ -62,23 +60,21 @@ export const CATALOGUE_EXAMENS: Record<ExamenId, DefinitionExamen> = {
     nom: 'Motilité oculaire',
     rubrique: 'moteur',
     description:
-      "Poursuite de la mire, tenue à 33 cm, dans les neuf positions du regard, à la recherche d'une hyper ou d'une hypoaction.",
+      'Poursuite de la mire, tenue à 33 cm, dans les neuf positions du regard.',
     interaction: 'motilite',
   },
   bielschowsky: {
     id: 'bielschowsky',
     nom: 'Manœuvre de Bielschowsky',
     rubrique: 'moteur',
-    description:
-      "Inclinaison de la tête sur chaque épaule, pour explorer une paralysie d'un muscle cyclovertical.",
+    description: 'Inclinaison de la tête sur chaque épaule.',
     interaction: 'presentation',
   },
   hirschberg: {
     id: 'hirschberg',
     nom: 'Reflets de Hirschberg',
     rubrique: 'reflets',
-    description:
-      "Lampe tenue à 33 cm dans l'axe visuel : estimation de l'angle par le décentrement du reflet cornéen.",
+    description: "Lampe tenue à 33 cm dans l'axe visuel.",
     interaction: 'reflets',
     saisieMesure: true,
   },
@@ -86,8 +82,7 @@ export const CATALOGUE_EXAMENS: Record<ExamenId, DefinitionExamen> = {
     id: 'krimsky',
     nom: 'Test de Krimsky',
     rubrique: 'reflets',
-    description:
-      "Prismes interposés, lampe à 33 cm, jusqu'à recentrer le reflet cornéen de l'œil dévié : quantifie l'angle.",
+    description: 'Prismes interposés, lampe à 33 cm.',
     interaction: 'reflets',
     saisieMesure: true,
     prismes: true,
@@ -96,8 +91,7 @@ export const CATALOGUE_EXAMENS: Record<ExamenId, DefinitionExamen> = {
     id: 'krimskyLoin',
     nom: 'Test de Krimsky de loin',
     rubrique: 'reflets',
-    description:
-      "Même neutralisation par prismes, mais sur une lumière placée à 5 mètres : l'enfant n'accommode plus. Utile quand la coopération ne permet pas le cover test.",
+    description: 'Prismes interposés, lumière à 5 mètres.',
     interaction: 'reflets',
     saisieMesure: true,
     prismes: true,
@@ -107,8 +101,7 @@ export const CATALOGUE_EXAMENS: Record<ExamenId, DefinitionExamen> = {
     id: 'coverPres',
     nom: 'Cover test en VP',
     rubrique: 'occlusion',
-    description:
-      "Cover test unilatéral puis alterné, sur mire à 33 cm : dépiste la tropie, précise la fixation, puis quantifie l'angle total aux prismes.",
+    description: 'Cover test unilatéral puis alterné, sur mire à 33 cm.',
     interaction: 'occlusion',
     saisieMesure: true,
     prismes: true,
@@ -117,8 +110,7 @@ export const CATALOGUE_EXAMENS: Record<ExamenId, DefinitionExamen> = {
     id: 'coverLoin',
     nom: 'Cover test en VL',
     rubrique: 'occlusion',
-    description:
-      "Même épreuve sur une mire à 5 mètres : l'enfant n'accommode plus. Comparer les deux angles fait la part de l'accommodation dans la déviation.",
+    description: 'Cover test unilatéral puis alterné, sur mire à 5 mètres.',
     interaction: 'occlusion',
     saisieMesure: true,
     prismes: true,
@@ -128,15 +120,14 @@ export const CATALOGUE_EXAMENS: Record<ExamenId, DefinitionExamen> = {
     id: 'deviometrie',
     nom: 'Déviométrie au synoptophore',
     rubrique: 'occlusion',
-    description:
-      "Mesure objective et subjective de l'angle, et surtout étude de la correspondance rétinienne au synoptophore.",
+    description: 'Mesure au synoptophore.',
     interaction: 'presentation',
   },
   biprisme: {
     id: 'biprisme',
     nom: 'Biprisme de Gracis',
     rubrique: 'occlusion',
-    description: "Recherche d'une microtropie et de la correspondance rétinienne au biprisme.",
+    description: 'Biprisme de Gracis.',
     interaction: 'presentation',
   },
 };
