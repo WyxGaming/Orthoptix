@@ -49,7 +49,7 @@ function bilanMaximeParfait() {
   }
   realiser('refraction');
   realiser('acuite');
-  realiser('lang', { correction: 'asc' });
+  realiser('lang', { correction: 'asc', loupesPlus3: true });
   realiser('tno', { correction: 'asc', loupesPlus3: true });
   realiser('motilite');
   realiser('hirschberg', { correction: 'asc' }, 15);
@@ -63,7 +63,7 @@ function bilanMaximeParfait() {
   validerSynthese({
     'type-strabisme': 'accommodative',
     conduite: 'correction',
-    'signes-cles': 'Lang ASC positif, angle majore SC, orthotropie +3, accommodatif',
+    'signes-cles': 'Lang ASC +3 positif, angle majore SC, orthotropie +3, accommodatif',
     chirurgie: 'non',
   });
 }
@@ -97,9 +97,11 @@ describe('cas Maxime — esotropie accommodative', () => {
     expect(session().correctionPortee).toBe('asc');
   });
 
-  it('Lang positif en ASC et negatif en SC', () => {
-    realiser('lang', { correction: 'asc' });
+  it('Lang positif seulement en ASC + loupes +3', () => {
+    realiser('lang', { correction: 'asc', loupesPlus3: true });
     expect(session().bilan.at(-1)!.contenu).toMatch(/positif/i);
+    realiser('lang', { correction: 'asc' });
+    expect(session().bilan.at(-1)!.contenu).toMatch(/negatif|aucune figure/i);
     realiser('lang', { correction: 'sc' });
     expect(session().bilan.at(-1)!.contenu).toMatch(/negatif|aucune figure/i);
   });

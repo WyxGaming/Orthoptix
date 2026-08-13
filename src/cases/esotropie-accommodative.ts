@@ -2,7 +2,7 @@ import type { CasClinique, ContexteExamen, ExamenCas } from '../engine/types';
 import { examensDissociantsAvant } from '../engine/examen-resolver';
 
 const OPTIONS_EXAMEN = {
-  lang: { choixCorrection: true },
+  lang: { choixCorrection: true, choixLoupesPlus3: true },
   tno: { choixCorrection: true, choixLoupesPlus3: true },
   hirschberg: { choixCorrection: true, choixLoupesPlus3: true },
   krimsky: { choixCorrection: true, choixLoupesPlus3: true },
@@ -19,17 +19,18 @@ function resoudreExamenMaxime(ctx: ContexteExamen): ExamenCas | null {
 
   switch (examenId) {
     case 'lang':
-      if (asc) {
+      if (asc && plus3) {
         return {
           poids: 0,
           resultat:
-            'Test de Lang positif : Maxime identifie les deux figures en relief et les décrit correctement.',
+            'Test de Lang positif avec correction et loupes +3 : Maxime identifie les deux figures en relief et les décrit correctement.',
           interpretation: {
-            question: 'Que traduit ce résultat avec correction ?',
+            question: 'Que traduit ce Lang positif en ASC + loupes +3 ?',
             options: [
               {
                 id: 'stereo-presente',
-                libelle: 'Vision stéréoscopique présente sous correction optique totale',
+                libelle:
+                  'Vision stéréoscopique présente lorsque l accommodation est saturée ; la binocularité sensorielle existe',
                 correct: true,
               },
               {
@@ -44,21 +45,20 @@ function resoudreExamenMaxime(ctx: ContexteExamen): ExamenCas | null {
               },
             ],
             explication:
-              'Sous correction totale, le Lang positif prouve qu une vision stéréoscopique existe : la binocularité sensorielle est conservée malgré la tropie manifeste.',
+              'Le Lang n est positif qu en ASC avec loupes +3 : l accommodation saturée révèle une stéréoscopie latente, malgré la tropie manifeste en conditions habituelles.',
           },
         };
       }
       return {
         poids: 0,
-        resultat:
-          'Test de Lang négatif sans correction : aucune figure perçue en relief.',
+        resultat: 'Test de Lang négatif : aucune figure perçue en relief dans ces conditions.',
         interpretation: {
-          question: 'Que concluez-vous du Lang sans correction ?',
+          question: 'Pourquoi le Lang est-il négatif ici ?',
           options: [
             {
-              id: 'angle-sc',
+              id: 'conditions',
               libelle:
-                "L angle sans correction est trop large pour permettre la fusion ; ce n est pas une preuve d absence de stéréoscopie sous ASC",
+                'Conditions inadaptées : le Lang n est positif qu en ASC avec loupes +3 (accommodation saturée)',
               correct: true,
             },
             {
@@ -67,13 +67,14 @@ function resoudreExamenMaxime(ctx: ContexteExamen): ExamenCas | null {
               correct: false,
             },
             {
-              id: 'esophorie',
-              libelle: 'Esophorie décompensée sans correction',
+              id: 'angle-sc',
+              libelle:
+                'Angle sans correction trop large ; il faut comparer en ASC + loupes +3',
               correct: false,
             },
           ],
           explication:
-            'Sans correction, l hypermétropie non compensée majore l esotropie : le Lang devient négatif. Il faut le comparer au Lang ASC, qui reste positif ici.',
+            'Sans loupes +3 (ou sans correction), l esotropie empêche la fusion : le Lang reste négatif. Seul le test en ASC + loupes +3 révèle la stéréoscopie.',
         },
       };
 
@@ -365,6 +366,7 @@ function resoudreExamenMaxime(ctx: ContexteExamen): ExamenCas | null {
  * Cas 2 : esotropie accommodative chez un jeune adulte hypermétrope.
  *
  * L etudiant choisit ASC/SC et les loupes +3 pour Lang, TNO, reflets et cover test.
+ * Le Lang n est positif qu en ASC + loupes +3.
  * Le TNO n est positif qu en debut de bilan, ASC + loupes +3.
  */
 export const esotropieAccommodative: CasClinique = {
@@ -604,7 +606,7 @@ export const esotropieAccommodative: CasClinique = {
     deviometrie: {
       poids: -1,
       resultat: 'Mesure difficile, sans élément décisif.',
-      justificationMalus: 'Le synoptophore n est pas prioritaire : le Lang ASC et le TNO précoce suffisent.',
+      justificationMalus: 'Le synoptophore n est pas prioritaire : le Lang ASC + loupes +3 et le TNO précoce suffisent.',
     },
     biprisme: {
       poids: -2,
@@ -623,9 +625,9 @@ export const esotropieAccommodative: CasClinique = {
   realisationsAttendues: [
     {
       examenId: 'lang',
-      conditions: { correction: 'asc' },
+      conditions: { correction: 'asc', loupesPlus3: true },
       poids: 4,
-      libelle: 'Test de Lang (ASC)',
+      libelle: 'Test de Lang (ASC + loupes +3)',
     },
     {
       examenId: 'tno',
@@ -729,7 +731,7 @@ export const esotropieAccommodative: CasClinique = {
           },
         ],
         explication:
-          'Angle qui augmente sans correction et en VP, orthotropie sous +3, Lang positif en ASC, stéréoscopie révélée par TNO précoce : esotropie accommodative.',
+          'Angle qui augmente sans correction et en VP, orthotropie sous +3, Lang positif en ASC + loupes +3, stéréoscopie révélée par TNO précoce : esotropie accommodative.',
       },
       {
         id: 'conduite',
@@ -786,9 +788,9 @@ export const esotropieAccommodative: CasClinique = {
           },
         ],
         reponseAttendue:
-          'Angle majore sans correction, orthotropie sous +3, Lang positif en ASC, composante accommodative.',
+          'Angle majore sans correction, orthotropie sous +3, Lang positif en ASC + loupes +3, composante accommodative.',
         explication:
-          'Les arguments clés sont l écart ASC/SC, l O\'t sous +3, le Lang ASC positif et le TNO précoce avec loupes.',
+          'Les arguments clés sont l écart ASC/SC, l O\'t sous +3, le Lang ASC + loupes +3 positif et le TNO précoce avec loupes.',
       },
       {
         id: 'chirurgie',
@@ -805,7 +807,7 @@ export const esotropieAccommodative: CasClinique = {
   compteRenduExpert: [
     'Maxime, 23 ans, consulte seul. Lunettes depuis l âge de 3 ans, portées en permanence. Pas d amblyopie, jamais d amblyothérapie. Pas d ATCD familiaux ou généraux.',
     'Correction portée : +5.00 OD, +7.00 OG (correction totale). Acuités symétriques 10/10 P2 aux deux yeux.',
-    'Sensoriel : Lang positif en ASC. TNO à 120″ (2/2) réalisé en début de bilan, ASC avec loupes +3 ; stéréoscopie fine confirmée.',
+    'Sensoriel : Lang positif en ASC avec loupes +3. TNO à 120″ (2/2) réalisé en début de bilan, ASC avec loupes +3 ; stéréoscopie fine confirmée.',
     'Reflets et occlusion VP : E\'t ~15 DP en ASC, ~40 DP en SC, orthotropie (O\'t) en ASC + loupes +3.',
     'Vision de loin : Et ~6 DP en ASC, ~10 DP en SC — tropie permanente, jamais de phorie.',
     'Motilité normale. Conclusion : esotropie accommodative partiellement accommodative, stéréoscopie présente sous correction. Renforcer le port des lunettes ; pas de chirurgie en première intention.',
