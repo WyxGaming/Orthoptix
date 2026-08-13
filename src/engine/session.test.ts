@@ -191,11 +191,11 @@ describe('bareme', () => {
 
     session().demarrer(esotropiePrecoce, 'evaluation');
     session().lancerExamen('deviometrie');
-    session().validerExamen({ interpretationId: 'mesure-angle' });
+    session().validerExamen({ interpretationId: 'ao-egal-as' });
     const interpretation = session()
       .resultat()
       .lignes.find((l) => l.libelle.includes('synoptophore') && l.libelle.includes('interpretation'))!;
     expect(interpretation.points).toBe(0);
-    expect(interpretation.commentaire).toMatch(/correspondance/i);
+    expect(interpretation.commentaire).toMatch(/AO|correspondance/i);
   });
 });

@@ -395,28 +395,29 @@ export const esotropiePrecoce: CasClinique = {
       poids: 2,
       optionnel: true,
       resultat:
-        'Angle objectif concordant avec le cover test. Pas de fusion subjective utilisable a l angle objectif : la correspondance retinienne est anormale, comme attendu dans une esotropie precoce a grand angle.',
+        'Angle objectif concordant avec le cover test. Angle subjectif non superposable : AO different de AS. Correspondance retinienne anormale, comme attendu dans une esotropie precoce a grand angle.',
       interpretation: {
-        question: 'Pourquoi avez-vous demande le synoptophore dans ce bilan ?',
+        question:
+          'Pourquoi demander le synoptophore, et quelle est la correspondance retinienne du patient ?',
         options: [
           {
-            id: 'correspondance',
-            libelle: 'Pour etudier la correspondance retinienne',
+            id: 'ao-different-as',
+            libelle: 'AO different de AS',
             correct: true,
           },
           {
-            id: 'mesure-angle',
-            libelle: 'Pour mesurer l angle objectif, deja connu au cover test',
+            id: 'ao-egal-as',
+            libelle: 'AO egal a AS',
             correct: false,
           },
           {
-            id: 'stereoscopie',
-            libelle: 'Pour quantifier la vision stereoscopique',
+            id: 'correspondance-normale',
+            libelle: 'Correspondance retinienne normale',
             correct: false,
           },
         ],
         explication:
-          'L angle est deja mesure aux prismes. L interet du synoptophore ici est sensoriel : preciser la correspondance retinienne (anormale dans ce strabisme precoce).',
+          'Le synoptophore compare l angle objectif (AO) et l angle subjectif (AS). Ici AO est different de AS : la correspondance retinienne est anormale, comme attendu dans une esotropie precoce a grand angle.',
       },
     },
   },
