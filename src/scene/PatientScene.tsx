@@ -14,7 +14,6 @@ import {
   RAYON_GLOBE,
 } from './geometrie';
 import { ORBITES_DEFAUT, type PositionsOrbites } from './orbites';
-import { LunettesPatient } from './LunettesPatient';
 import { TetePatient } from './TetePatient';
 
 /** Cote temporal de l'oeil, exprime en X : la droite du patient est en -X. */
@@ -147,7 +146,6 @@ export function PatientScene({ zoomReflets }: { zoomReflets: boolean }) {
       <directionalLight position={[8, -4, 10]} intensity={0.4} />
       <Suspense fallback={null}>
         <TetePatient onOrbites={retenirOrbites} />
-        <LunettesPatient orbites={orbites} />
       </Suspense>
       {EYES.map((oeil) => (
         <group key={oeil} position={orbites[oeil]} scale={orbites.rayon / RAYON_GLOBE}>

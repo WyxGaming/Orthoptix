@@ -105,16 +105,7 @@ export function StartScreen() {
         >
           CC-BY-4.0
         </a>
-        . Monture{' '}
-        <a
-          className="text-slate-500 underline decoration-slate-700 hover:text-slate-400"
-          href="https://sketchfab.com/3d-models/lunettes-a-montures-maronne-38c5d0da8276449583ca1ae9d3e3045b"
-          target="_blank"
-          rel="noreferrer"
-        >
-          donystark
-        </a>{' '}
-        (CC-BY-4.0) ou procedurale si le fichier 3D n est pas dans le depot.
+        .
       </p>
     </div>
   );
