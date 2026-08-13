@@ -12,7 +12,7 @@ import {
   libelleConditionsMesure,
 } from '../engine/examen-resolver';
 import { conditionsCorrespond } from '../engine/scoring';
-import { useSession } from '../engine/session';
+import { melangeAleatoire, useSession } from '../engine/session';
 import type { ConditionsExamen } from '../engine/types';
 import { interpretationsExamen } from '../engine/types';
 import { Bouton, Carte } from './composants';
@@ -44,6 +44,7 @@ const BASES: { valeur: BasePrisme; libelle: string }[] = [
 ];
 
 function ComportementVisuel({
+  propositions,
   sequence,
   onAjouter,
   onRetirerDernier,
@@ -52,6 +53,7 @@ function ComportementVisuel({
   onReveler,
   resultat,
 }: {
+  propositions: EtapeComportementVisuelId[];
   sequence: EtapeComportementVisuelId[];
   onAjouter: (id: EtapeComportementVisuelId) => void;
   onRetirerDernier: () => void;
@@ -66,11 +68,10 @@ function ComportementVisuel({
     <div className="space-y-3">
       <p className="text-sm font-medium text-slate-200">Que souhaitez-vous faire ?</p>
       <p className="text-xs text-slate-500">
-        Cliquez les épreuves dans l ordre où vous les réalisez (lumière monoculaire, puis
-        binoculaire, objet monoculaire, puis binoculaire).
+        Cliquez les épreuves dans l ordre où vous souhaitez les réaliser.
       </p>
       <div className="flex flex-wrap gap-1.5">
-        {ORDRE_ETAPES_COMPORTEMENT_VISUEL.map((id) => {
+        {propositions.map((id) => {
           const dejaChoisi = sequence.includes(id);
           return (
             <Bouton
@@ -323,6 +324,9 @@ export function PanneauExamen({
   const [interpretationsChoix, setInterpretationsChoix] = useState<Record<string, string>>({});
   const [resultatRevele, setResultatRevele] = useState(false);
   const [sequenceComportement, setSequenceComportement] = useState<EtapeComportementVisuelId[]>([]);
+  const [propositionsComportement, setPropositionsComportement] = useState<EtapeComportementVisuelId[]>(
+    [],
+  );
 
   useEffect(() => {
     if (!examenEnCours) return;
@@ -351,6 +355,11 @@ export function PanneauExamen({
     setInterpretationsChoix({});
     setResultatRevele(false);
     setSequenceComportement([]);
+    setPropositionsComportement(
+      examenEnCours === 'comportementVisuel'
+        ? melangeAleatoire(ORDRE_ETAPES_COMPORTEMENT_VISUEL)
+        : [],
+    );
   }, [examenEnCours, cas]);
 
   if (!examenEnCours) {
@@ -526,6 +535,7 @@ export function PanneauExamen({
 
         {estComportementVisuel && (
           <ComportementVisuel
+            propositions={propositionsComportement}
             sequence={sequenceComportement}
             onAjouter={(id) => setSequenceComportement((prev) => [...prev, id])}
             onRetirerDernier={() => setSequenceComportement((prev) => prev.slice(0, -1))}
