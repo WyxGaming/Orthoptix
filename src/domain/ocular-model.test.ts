@@ -124,13 +124,11 @@ describe('upshoot bilateral en adduction', () => {
     expect(etat.OG.elevationDeg).toBeGreaterThan(10);
   });
 
-  it('garde la pupille de l oeil en adduction dans la fente palpebrale', () => {
-    // Par fixation croisee, l oeil qui adduit est celui qui fixe : il reste donc sur la
-    // cible au lieu d etre porte en adduction extreme, ou son iris serait masque.
+  it('en regard lateral, l oeil fixateur suit la mire sans fixation croisee', () => {
     const gaze: Gaze = { azimuthDeg: 25, elevationDeg: 0 };
-    const etat = etatOculaire(lea, { ...enPositionPrimaire(), gaze });
-    expect(ecartMire(etat, 'OG', gaze)).toBeCloseTo(0, 3);
-    expect(Math.abs(etat.OD.azimuthDeg)).toBeLessThan(6);
+    const etat = etatOculaire(lea, { ...enPositionPrimaire('OD'), gaze });
+    expect(ecartMire(etat, 'OD', gaze)).toBeCloseTo(0, 3);
+    expect(etat.OG.deviationLampeDp.horizontal).toBeGreaterThan(30);
   });
 
   it('n eleve aucun oeil en position primaire', () => {

@@ -171,27 +171,13 @@ export function effetPrisme(prisme: Prisme | undefined): { horizontal: number; v
   }
 }
 
-/** Version laterale au-dela de laquelle la fixation croisee s'installe. */
-export const SEUIL_FIXATION_CROISEE_DEG = 10;
-
 /**
- * Oeil qui fixe reellement, compte tenu de la position du regard et de l'occlusion.
- *
- * En fixation alternante, les versions laterales installent une fixation croisee : c'est
- * l'oeil en adduction qui prend la cible, l'autre restant en abduction relative. C'est le
- * comportement classique du strabisme precoce, et c'est aussi ce qui rend l'hyperaction
- * observable : sans cela l'oeil devie serait porte en adduction extreme et sa pupille
- * disparaitrait derriere le bord palpebral nasal.
+ * Oeil qui fixe reellement, compte tenu de l'occlusion.
+ * La fixation alternante se lit au cover test ; en motilite, les versions laterales
+ * restent conjuguees sans basculer le fixateur vers l'oeil en adduction.
  */
-export function oeilFixateurEffectif(params: ParametresOculaires, etat: EtatExamen): Eye {
-  const enAdduction = EYES.find((oeil) => signeAdduction(oeil) * etat.gaze.azimuthDeg > 0);
-  const croisee =
-    params.fixation.mode === 'alternante' &&
-    Math.abs(etat.gaze.azimuthDeg) > SEUIL_FIXATION_CROISEE_DEG
-      ? enAdduction
-      : undefined;
-
-  const souhaite = croisee ?? etat.oeilFixateur;
+export function oeilFixateurEffectif(_params: ParametresOculaires, etat: EtatExamen): Eye {
+  const souhaite = etat.oeilFixateur;
   return etat.occlusion === souhaite ? autreOeil(souhaite) : souhaite;
 }
 
