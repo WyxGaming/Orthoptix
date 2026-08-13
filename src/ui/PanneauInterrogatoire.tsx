@@ -76,9 +76,10 @@ function EtagereExamens() {
         );
       })}
       <p className="pt-1 text-xs text-slate-500">
-        Tous les examens du cabinet sont accessibles à tout moment. À vous de choisir ceux
+        {cas.messageExamens ??
+          `Tous les examens du cabinet sont accessibles à tout moment. À vous de choisir ceux
         qu'appelle ce tableau clinique — et de renoncer aux autres. Passez la souris sur un examen
-        pour en relire le principe. {cas.patient.prenom} est coopérant{cas.patient.sexe === 'F' ? 'e' : ''}.
+        pour en relire le principe. ${cas.patient.prenom} est coopérant${cas.patient.sexe === 'F' ? 'e' : ''}.`}
         {Object.keys(cas.optionsExamen ?? {}).length > 0 &&
           ' Pour certains examens, choisissez ASC ou SC et éventuellement les loupes +3 avant de présenter le test.'}
         {cas.debutSansCorrection &&

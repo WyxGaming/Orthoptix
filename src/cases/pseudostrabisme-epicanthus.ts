@@ -3,8 +3,9 @@ import type { CasClinique } from '../engine/types';
 /**
  * Cas 3 : pseudo-strabisme chez un nourrisson asiatique avec épicanthus.
  *
- * Orthotropie réelle (deviation 0) mais angle kappa positif : les reflets
- * suggèrent une esotropie alors que le cover test est négatif — piège classique.
+ * Piège pédagogique : l'anamnèse parentale oriente vers un strabisme précoce,
+ * alors que le bilan repose sur le comportement visuel et les reflets (centrés en PP).
+ * Le cover test n'est pas réalisable à 5 mois.
  */
 export const pseudostrabismeEpicanthus: CasClinique = {
   id: 'pseudostrabisme-epicanthus',
@@ -16,7 +17,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
     ageLibelle: '5 mois',
     sexe: 'F',
     motif:
-      "Les parents s'inquiètent d'un regard « croisé » remarqué depuis la naissance, surtout sur les photos.",
+      "Les parents sont convaincus d'un strabisme convergent depuis la naissance et demandent un avis avant qu'il ne soit « trop tard ».",
   },
 
   oculaire: {
@@ -25,104 +26,115 @@ export const pseudostrabismeEpicanthus: CasClinique = {
     fixation: { mode: 'alternante' },
     upshoot: { OD: 0, OG: 0 },
     dvd: 0,
-    /** Angle kappa positif : reflets temporalisés mimant une esotropie au Hirschberg. */
-    kappa: { OD: 12, OG: 12 },
+    kappa: { OD: 0, OG: 0 },
     correction: { OD: { sphere: 1.5 }, OG: { sphere: 1.5 } },
     acuite: { OD: 'fixation OK', OG: 'fixation OK' },
   },
+
+  messageExamens:
+    "Mei a 5 mois : le bilan repose sur l'étude du comportement visuel et des reflets. Le cover test prolongé est en général impossible ; le TNO ne s'interprète pas à cet âge.",
 
   questions: [
     {
       id: 'motif',
       rubrique: 'anamnese',
-      libelle: "Pourquoi consultez-vous aujourd'hui ?",
+      libelle: "Qu'est-ce qui vous amène à consulter aujourd'hui ? (question aux parents)",
       reponse:
-        "On nous a dit que Mei avait les yeux croisés. On s'inquiète depuis qu'elle est née, surtout sur les photos de famille.",
+        "On est sûrs qu'elle louche. Le pédiatre nous a un peu rassurés, mais on veut un avis spécialisé avant qu'il ne soit trop tard — on a lu qu'il fallait agir tôt.",
       poids: 4,
       commentaire:
-        "Poser le motif parental oriente vers une inquiétude esthétique plutôt qu'un strabisme fonctionnel avéré.",
+        "Les parents sont convaincus de ce qu'ils voient : ne pas prendre leur récit pour une confirmation clinique.",
     },
     {
       id: 'depuis-quand',
       rubrique: 'anamnese',
-      libelle: "Depuis quand observez-vous cet aspect ?",
+      libelle: 'Depuis quand ses yeux vous semblent-ils croisés ? (parents)',
       reponse:
-        "Dès la naissance. Les grands-parents l'ont remarqué tout de suite. Ça ne semble pas s'aggraver.",
+        "Dès les premières semaines de vie. Comme les photos de strabisme précoce qu'on trouve en ligne — ça ne s'est jamais corrigé selon nous.",
+      poids: 5,
+      commentaire:
+        "Un début très précoce et l'absence de correction perçue par les parents font penser à une E't — piège classique du pseudo-strabisme.",
+    },
+    {
+      id: 'constance',
+      rubrique: 'anamnese',
+      libelle: 'La déviation vous paraît-elle permanente ? (parents)',
+      reponse:
+        "Oui, pour nous c'est permanent. On ne l'a presque jamais vue avec les deux yeux parfaitement droits en face.",
       poids: 4,
       commentaire:
-        "Un pseudo-strabisme est souvent remarqué très tôt ; l'absence d'aggravation est rassurante.",
-    },
-    {
-      id: 'photos-regard',
-      rubrique: 'anamnese',
-      libelle: "L'aspect est-il constant ou surtout visible sur certaines photos ou en regard latéral ?",
-      reponse:
-        "C'est surtout flagrant sur les photos et quand elle regarde sur le côté. De face, parfois on ne voit rien.",
-      poids: 5,
-      commentaire:
-        "L'épicanthus et le pont nasal large accentuent l'illusion en regard latéral : argument clé pour le pseudo-strabisme.",
-    },
-    {
-      id: 'morphologie',
-      rubrique: 'anamnese',
-      libelle: "Y a-t-il des particularités du visage ou des paupières ?",
-      reponse:
-        "Elle a des plis des paupières vers le nez, un peu comme dans la famille. Le médecin a parlé d'épicanthus.",
-      poids: 5,
-      commentaire:
-        "L'épicanthus masque le blanc scléral médial et donne une fausse impression de convergent.",
+        "Le caractère « permanent » dans le récit parental oriente vers une tropie — à confronter au comportement visuel et aux reflets.",
     },
     {
       id: 'alternance',
       rubrique: 'anamnese',
-      libelle: "Avez-vous l'impression qu'un œil reste toujours tourné vers l'intérieur ?",
+      libelle: "Est-ce toujours le même œil, ou les deux ? (parents)",
       reponse:
-        "Non, ce n'est pas toujours le même œil. Parfois on ne voit rien du tout quand elle nous fixe.",
-      poids: 3,
+        "Parfois l'un, parfois l'autre, parfois les deux en même temps… On ne sait plus très bien. Mais ça louche, c'est sûr.",
+      poids: 4,
       commentaire:
-        "Pas de strabisme fixe unilatéral : l'aspect fluctuant selon la position du regard oriente vers un piège morphologique.",
+        "Un récit fluctuant ou bilatéral peut faire penser à une alternance — encore un piège anamnestique fréquent.",
+    },
+    {
+      id: 'photos-regard',
+      rubrique: 'anamnese',
+      libelle: "Quand l'aspect est-il le plus frappant ? (parents)",
+      reponse:
+        "Sur les photos surtout, et quand elle regarde sur le côté. De face, de temps en temps, on se demande si on ne s'imagine pas.",
+      poids: 5,
+      commentaire:
+        "Photos et regard latéral : l'épicanthus accentue l'illusion — argument clé une fois le bilan objectif fait.",
     },
     {
       id: 'developpement',
       rubrique: 'anamnese',
-      libelle: "Le développement moteur et visuel semble-t-il normal ?",
+      libelle: 'Comment se comporte-t-elle visuellement au quotidien ? (parents)',
       reponse:
-        "Oui, elle suit bien des objets et des visages, sourit en contact, développe psychomoteur normal pour son âge.",
+        "Elle suit bien notre regard et les jouets, sourit quand on lui parle, attrape les objets. Le pédiatre dit que c'est normal.",
       poids: 4,
       commentaire:
-        "Fixation et poursuite conservées : pas d'alarme neurologique ni de strabisme manifeste fonctionnel.",
+        "Comportement visuel conservé : discordance avec un vrai strabisme manifeste non neutralisé.",
+    },
+    {
+      id: 'morphologie',
+      rubrique: 'anamnese',
+      libelle: 'Avez-vous remarqué des particularités des paupières ou du nez ? (parents)',
+      reponse:
+        "Elle a des plis vers le nez au niveau des paupières. Le pédiatre a dit « épicanthus ». On ne l'avait pas relié aux yeux croisés.",
+      poids: 5,
+      commentaire:
+        "L'épicanthus masque le sclère médial : les parents ne font pas le lien, c'est au praticien de l'intégrer.",
     },
     {
       id: 'correction',
       rubrique: 'anamnese',
-      libelle: 'Porte-t-elle des lunettes ?',
-      reponse: "Non, pas encore. Personne ne nous en a parlé.",
-      poids: 2,
-      commentaire: "À 5 mois, pas de correction habituelle ; l'hypermétropie physiologique ne justifie pas de verres.",
+      libelle: 'Porte-t-elle des lunettes ? (parents)',
+      reponse: 'Non, personne ne nous en a parlé.',
+      poids: 1,
     },
     {
       id: 'familiaux',
       rubrique: 'antecedents',
-      libelle: "Y a-t-il des antécédents familiaux de strabisme ou d'épicanthus ?",
+      libelle: 'Y a-t-il des antécédents familiaux de strabisme ou d amblyopie ? (parents)',
       reponse:
-        "La mère et la grand-mère ont les mêmes plis des paupières. Pas de strabisme opéré dans la famille.",
-      poids: 3,
+        "Non, personne dans la famille n'a eu de strabisme ni d'œil paresseux. Pas d'opération des yeux non plus.",
+      poids: 4,
       commentaire:
-        "L'épicanthus est souvent familial ; l'absence de vrai strabisme familial est rassurante.",
+        "Absence d'ATCD familiaux de strabisme : éloigne un strabisme précoce héréditaire classique.",
     },
     {
       id: 'grossesse',
       rubrique: 'antecedents',
-      libelle: "Comment s'est déroulée la grossesse et la naissance ?",
-      reponse: 'Grossesse normale, naissance à terme, poids de naissance normal.',
+      libelle: 'Grossesse et accouchement ? (parents)',
+      reponse: 'Grossesse normale, naissance à terme.',
       poids: 2,
     },
     {
       id: 'general',
       rubrique: 'antecedents',
-      libelle: 'Y a-t-il une pathologie générale connue ?',
-      reponse: 'Non, aucune.',
-      poids: 2,
+      libelle: 'Maladie ou traitement en cours ? (parents)',
+      reponse: 'Non.',
+      poids: 1,
     },
     {
       id: 'ecrans',
@@ -137,29 +149,187 @@ export const pseudostrabismeEpicanthus: CasClinique = {
       libelle: 'Quel est son groupe sanguin ?',
       reponse: 'On ne sait pas.',
       poids: -2,
-      commentaire: 'Hors sujet pour un bilan orthoptique.',
+      commentaire: 'Hors sujet.',
     },
     {
       id: 'metier-parents',
       rubrique: 'antecedents',
-      libelle: 'Quelle est la profession des parents ?',
+      libelle: 'Profession des parents ?',
       reponse: 'Le père est informaticien, la mère est designer.',
       poids: -2,
-      commentaire: 'Sans lien avec la déviation apparente.',
+      commentaire: 'Hors sujet.',
     },
   ],
 
   examens: {
-    motilite: {
-      poids: 6,
+    acuite: {
+      poids: 8,
       resultat:
-        'Poursuite horizontale et verticale complète, sans limitation. Pas de surélévation en adduction. Réflexes pupillaires normaux.',
+        "Étude du comportement visuel : suivi lumière réalisé monoculaire (OD puis OG) puis binoculaire — poursuite fluide et symétrique. Suivi objet (cloche, visage du praticien) : OK des deux côtés, sans préférence fixatrice manifeste.",
+      interpretation: {
+        question: "Que concluez-vous de cette étude du comportement visuel ?",
+        options: [
+          {
+            id: 'fixation-normale',
+            libelle:
+              "Fixation et poursuite normales, symétriques, sans signe de préférence pathologique — incompatible avec un strabisme non neutralisé",
+            correct: true,
+          },
+          {
+            id: 'amblyopie',
+            libelle: 'Amblyopie unilatérale avec préférence fixatrice',
+            correct: false,
+          },
+          {
+            id: 'deficit',
+            libelle: 'Déficit visuel profond bilatéral',
+            correct: false,
+          },
+        ],
+        explication:
+          "À 5 mois, le suivi lumière et le suivi objet remplacent l'acuité chiffrée. Ici tout est symétrique et normal.",
+      },
+    },
+    reactionOcclusion: {
+      poids: 8,
+      resultat:
+        "Réaction à l'occlusion : occlusion brève de l'OD puis de l'OG — Mei tourne la tête symétriquement des deux côtés pour éviter le cache, sans préférence nette ni mouvement oculaire de rattrapage visible. Comportement identique OD et OG.",
+      interpretation: {
+        question: "Comment interpréter cette réaction à l'occlusion ?",
+        options: [
+          {
+            id: 'symetrique',
+            libelle:
+              "Réaction symétrique, sans signe de préférence fixatrice pathologique ; ne confirme pas une esotropie",
+            correct: true,
+          },
+          {
+            id: 'pref-od',
+            libelle: "Préférence fixatrice de l'OD, strabisme avec fixateur stable",
+            correct: false,
+          },
+          {
+            id: 'restitution',
+            libelle: "Mouvement de restitution convergent objectivant une esotropie",
+            correct: false,
+          },
+        ],
+        explication:
+          "Ce test n'est pas un cover test : on observe le comportement face à l'occlusion. Ici, symétrie et absence de rattrapage oculaire ne plaident pas pour une tropie.",
+      },
+    },
+    hirschberg: {
+      poids: 8,
+      attendu: { min: 0, max: 2, unite: 'DP' },
+      resultat:
+        "Position primaire : reflets cornéens centrés des deux côtés. En regard latéral, l'épicanthus masque le sclère interne et donne esthétiquement l'impression d'une esotropie majorée — sans déport objective du reflet en position primaire.",
+      interpretation: {
+        question: 'Comment interpréter ces reflets ?',
+        options: [
+          {
+            id: 'reflets-centres',
+            libelle:
+              "Reflets centrés en position primaire : pas de tropie objective ; l'illusion en regard latéral relève de l'épicanthus",
+            correct: true,
+          },
+          {
+            id: 'eso-certaine',
+            libelle: 'Esotropie certaine objectivée au Hirschberg',
+            correct: false,
+          },
+          {
+            id: 'kappa-seul',
+            libelle: "Fausse esotropie par angle kappa positif en position primaire",
+            correct: false,
+          },
+        ],
+        explication:
+          "En PP les reflets sont centrés. L'impression convergente en latéral est morphologique (épicanthus, pont nasal), pas une déviation mesurée.",
+      },
+    },
+    lang: {
+      poids: 2,
+      resultat:
+        "Test de Lang présenté : Mei porte un bref regard fugace sur les figures, sans fixation prolongée ni recherche du relief. Réaction compatible avec l'âge (5 mois : début de la mise en place de la vision binoculaire).",
+      interpretation: {
+        question: 'Comment interpréter cette réaction au Lang ?',
+        options: [
+          {
+            id: 'age-normal',
+            libelle:
+              "Réaction attendue à 5 mois : vision binoculaire en cours d'installation, sans signification pathologique isolée",
+            correct: true,
+          },
+          {
+            id: 'pas-stereo',
+            libelle: 'Absence définitive de vision stéréoscopique prouvant un strabisme',
+            correct: false,
+          },
+          {
+            id: 'stereo-presente',
+            libelle: 'Stéréoscopie manifeste confirmée',
+            correct: false,
+          },
+        ],
+        explication:
+          "Le Lang peut être tenté sans pénalité : à 5 mois, une fixation fugace est normale et ne tranche pas pour ou contre un strabisme.",
+      },
+    },
+    refraction: {
+      poids: 2,
+      resultat:
+        'Réfraction sous cycloplégie : +1.50 D sphérique aux deux yeux. Hypermétropie physiologique du nourrisson, sans correction indiquée.',
+      interpretation: {
+        question: 'Comment interpréter cette réfraction ?',
+        options: [
+          {
+            id: 'physiologique',
+            libelle: 'Hypermétropie physiologique, sans lien avec le pseudo-strabisme',
+            correct: true,
+          },
+          {
+            id: 'accommodative',
+            libelle: 'Esotropie accommodative nécessitant des verres',
+            correct: false,
+          },
+          {
+            id: 'sans-interet',
+            libelle: 'Sans intérêt à 5 mois',
+            correct: false,
+          },
+        ],
+        explication:
+          "L'hypermétropie modérée est normale et n'explique pas l'aspect « croisé » perçu par les parents.",
+      },
+    },
+
+    coverPres: {
+      poids: 0,
+      nonContributifSiPresente: true,
+      malusSiPresente: -2,
+      resultat:
+        "Cover test non réalisable : Mei se débat, pleure et refuse l'occlusion. Aucune mesure d'angle par dissociation prolongée.",
+      justificationMalus:
+        "À 5 mois le cover test est souvent impossible ; insister n'apporte pas de mesure fiable et perturbe l'enfant.",
+    },
+    coverLoin: {
+      poids: 0,
+      nonContributifSiPresente: true,
+      malusSiPresente: -2,
+      resultat: "Cover test de loin non réalisable : même difficulté de coopération.",
+      justificationMalus: "Idem cover test VP : non contributif chez ce nourrisson.",
+    },
+    motilite: {
+      poids: 2,
+      optionnel: true,
+      resultat:
+        'Poursuite en neuf positions du regard : complète, sans limitation ni surélévation en adduction.',
       interpretation: {
         question: 'Que concluez-vous de la motilité ?',
         options: [
           {
             id: 'normale',
-            libelle: 'Motilité normale, sans signe de paralysie ni de strabisme précoce',
+            libelle: 'Motilité normale',
             correct: true,
           },
           {
@@ -169,226 +339,58 @@ export const pseudostrabismeEpicanthus: CasClinique = {
           },
           {
             id: 'upshoot',
-            libelle: 'Hyperaction bilatérale des obliques inférieurs',
+            libelle: 'Hyperaction des obliques inférieurs',
             correct: false,
           },
         ],
-        explication:
-          "Une motilité libre et symétrique écarte un strabisme paralytique ou précoce ; elle est compatible avec une orthotropie réelle.",
-      },
-    },
-    hirschberg: {
-      poids: 6,
-      attendu: { min: 10, max: 15, unite: 'DP' },
-      resultat:
-        "Reflets cornéens déportés vers la tempe des deux côtés, donnant l'impression d'une esotropie d'environ 10 à 15 DP.",
-      interpretation: {
-        question: 'Comment interpréter ces reflets en position primaire ?',
-        options: [
-          {
-            id: 'piège-kappa',
-            libelle:
-              "Piège possible : reflets faussement convergents (angle kappa positif) ; le cover test est indispensable pour trancher",
-            correct: true,
-          },
-          {
-            id: 'eso-certaine',
-            libelle: 'Esotropie certaine de 10 à 15 DP',
-            correct: false,
-          },
-          {
-            id: 'exo',
-            libelle: 'Exotropie',
-            correct: false,
-          },
-        ],
-        explication:
-          "Un reflet temporalisé peut traduire un angle kappa positif et non une vraie esotropie. Devant un épicanthus, ne jamais conclure sans cover test.",
+        explication: 'Motilité libre : compatible avec une orthotropie, éloigne un strabisme précoce.',
       },
     },
     krimsky: {
-      poids: 4,
-      attendu: { min: 10, max: 15, unite: 'DP' },
+      poids: 0,
+      nonContributifSiPresente: true,
+      malusSiPresente: -1,
       resultat:
-        "Les reflets se recentrent avec des prismes base temporale d'environ 10 à 15 DP, concordant avec le Hirschberg.",
-      interpretation: {
-        question: 'Le Krimsky confirme-t-il une esotropie ?',
-        options: [
-          {
-            id: 'non-sans-cover',
-            libelle:
-              "Non isolément : il mesure le décalage des reflets, qui peut être dû à l'angle kappa ; seul le cover test objectivise une tropie",
-            correct: true,
-          },
-          {
-            id: 'eso-prouvee',
-            libelle: 'Oui, esotropie prouvée',
-            correct: false,
-          },
-          {
-            id: 'exo',
-            libelle: 'Exotropie prouvée',
-            correct: false,
-          },
-        ],
-        explication:
-          "Krimsky et Hirschberg explorent la position des reflets, pas la tropie réelle. Un angle kappa positif fausse la mesure.",
-      },
+        "Reflets déjà centrés au Hirschberg : le Krimsky n'apporte pas d'information supplémentaire.",
+      justificationMalus: "Reflets centrés en PP : pas d'indication au Krimsky.",
     },
     krimskyLoin: {
-      poids: 3,
-      attendu: { min: 10, max: 15, unite: 'DP' },
-      resultat:
-        "Sur lumière lointaine, même décalage des reflets qu'à 33 cm : pas de variation accommodative.",
-    },
-    coverPres: {
-      poids: 10,
-      attendu: { min: 0, max: 2, unite: 'DP' },
-      resultat:
-        "Cover unilatéral et alterné : aucun mouvement de restitution, pas de reprise de fixation latérale. Orthotropie de près.",
-      interpretation: {
-        question: 'Que concluez-vous de ce cover test de près ?',
-        options: [
-          {
-            id: 'orthotropie',
-            libelle: 'Orthotropie : pas de tropie, malgré les reflets faussement convergents',
-            correct: true,
-          },
-          {
-            id: 'esophorie',
-            libelle: 'Esophorie décompensée',
-            correct: false,
-          },
-          {
-            id: 'eso-tropie',
-            libelle: 'Esotropie manifeste confirmée',
-            correct: false,
-          },
-        ],
-        explication:
-          "Le cover test est l'examen clé : absence de mouvement = pas de strabisme. C'est ce qui distingue le pseudo-strabisme d'une vraie esotropie.",
-      },
-    },
-    coverLoin: {
-      poids: 5,
-      attendu: { min: 0, max: 2, unite: 'DP' },
-      resultat: 'Cover test de loin : orthotropie, aucun mouvement de restitution.',
-      interpretation: {
-        question: 'La comparaison près / loin est-elle utile ici ?',
-        options: [
-          {
-            id: 'orthotropie-stable',
-            libelle: 'Orthotropie stable de près comme de loin : pas de composante accommodative',
-            correct: true,
-          },
-          {
-            id: 'accommodative',
-            libelle: 'Esotropie accommodative',
-            correct: false,
-          },
-          {
-            id: 'exces-convergence',
-            libelle: 'Excès de convergence',
-            correct: false,
-          },
-        ],
-        explication:
-          "Orthotropie à toutes distances : pas de strabisme caché. L'illusion venait des reflets et de la morphologie palpébrale.",
-      },
-    },
-    refraction: {
-      poids: 3,
-      resultat:
-        'Réfraction sous cycloplégie : +1.50 D sphérique aux deux yeux. Hypermétropie physiologique du nourrisson, sans correction indiquée à cet âge.',
-      interpretation: {
-        question: 'Comment interpréter cette réfraction ?',
-        options: [
-          {
-            id: 'physiologique',
-            libelle:
-              'Hypermétropie physiologique du nourrisson, sans lien avec le pseudo-strabisme ; pas de lunettes à prescrire',
-            correct: true,
-          },
-          {
-            id: 'accommodative',
-            libelle: 'Esotropie accommodative nécessitant une correction immédiate',
-            correct: false,
-          },
-          {
-            id: 'sans-interet',
-            libelle: 'Réfraction sans intérêt chez un nourrisson',
-            correct: false,
-          },
-        ],
-        explication:
-          "L'hypermétropie modérée est normale à 5 mois. Elle n'explique pas l'aspect « croisé » et ne justifie pas de verres ni de chirurgie.",
-      },
-    },
-    acuite: {
-      poids: 3,
-      resultat:
-        "Fixation et poursuite binoculaires normales pour l'âge. Pas de test d'acuité chiffré possible à 5 mois.",
-      interpretation: {
-        question: "Que retenir de l'examen visuel à cet âge ?",
-        options: [
-          {
-            id: 'fixation-normale',
-            libelle: "Fixation et poursuite normales, sans signe d'amblyopie ni de préférence pathologique",
-            correct: true,
-          },
-          {
-            id: 'amblyopie',
-            libelle: 'Amblyopie unilatérale',
-            correct: false,
-          },
-          {
-            id: 'acuite-basse',
-            libelle: 'Acuité visuelle pathologiquement basse',
-            correct: false,
-          },
-        ],
-        explication:
-          "À 5 mois, l'évaluation repose sur la fixation et la poursuite : ici normales, cohérentes avec une orthotropie.",
-      },
-    },
-
-    lang: {
-      poids: -2,
-      resultat: 'Test non réalisable de façon fiable à 5 mois.',
-      justificationMalus:
-        "Le Lang n'est pas indiqué avant 2–3 ans. À cet âge, il n'apporte rien au diagnostic de pseudo-strabisme.",
+      poids: 0,
+      nonContributifSiPresente: true,
+      malusSiPresente: -1,
+      resultat: 'Sans intérêt devant des reflets centrés en position primaire.',
+      justificationMalus: 'Idem Krimsky VP.',
     },
     tno: {
       poids: -2,
-      resultat: 'Test non réalisable de façon fiable à 5 mois.',
-      justificationMalus:
-        "Le TNO n'est pas indiqué avant 3–4 ans. Réaliser ce test dissocie inutilement et n'éclaire pas la conduite.",
+      resultat: 'Test non interprétable de façon fiable à 5 mois.',
+      justificationMalus: "Le TNO n'est pas indiqué avant 3–4 ans.",
     },
     worth: {
       poids: -2,
-      resultat: 'Test non interprétable de façon fiable à cet âge.',
-      justificationMalus: 'Épreuve dissociante non contributive chez un nourrisson de 5 mois.',
+      resultat: 'Test non interprétable à cet âge.',
+      justificationMalus: 'Épreuve dissociante non fiable chez un nourrisson de 5 mois.',
     },
     bagolini: {
       poids: -1,
-      resultat: 'Coopération insuffisante pour une interprétation fiable.',
-      justificationMalus: 'Dissociation inutile et non fiable à cet âge.',
+      resultat: 'Coopération insuffisante.',
+      justificationMalus: 'Non fiable à 5 mois.',
     },
     verreRouge: {
       poids: -2,
-      resultat: 'Test non réalisable de façon fiable.',
-      justificationMalus: 'Hors indication à 5 mois.',
+      resultat: 'Test non réalisable.',
+      justificationMalus: 'Hors indication.',
     },
     bielschowsky: {
       poids: -2,
       resultat: "Pas de modification à l'inclinaison de la tête.",
-      justificationMalus: 'Manœuvre des cyclo-verticaux sans indication devant une motilité normale.',
+      justificationMalus: 'Sans indication.',
     },
     deviometrie: {
       poids: 0,
       nonContributifSiPresente: true,
       malusSiPresente: -1,
-      resultat: 'Examen non réalisable de façon fiable à cet âge.',
+      resultat: 'Examen non réalisable à cet âge.',
       justificationMalus: 'Synoptophore inadapté à 5 mois.',
     },
     biprisme: {
@@ -396,31 +398,23 @@ export const pseudostrabismeEpicanthus: CasClinique = {
       nonContributifSiPresente: true,
       malusSiPresente: -2,
       resultat: 'Examen non contributif.',
-      justificationMalus: 'Biprisme de Bagolini inadapté chez un nourrisson.',
+      justificationMalus: 'Inadapté chez un nourrisson.',
     },
   },
 
-  ordreAttendu: [
-    'motilite',
-    'hirschberg',
-    'krimsky',
-    'krimskyLoin',
-    'coverLoin',
-    'coverPres',
-    'acuite',
-    'refraction',
-  ],
+  ordreAttendu: ['acuite', 'reactionOcclusion', 'hirschberg', 'lang'],
 
   commentaireConduiteBilan:
-    'Motilité et cover tests en priorité ; reflets avec prudence (angle kappa) ; pas de tests stéréoscopiques à cet âge ; acuité et réfraction en fin de bilan.',
+    "Commencer par l'étude du comportement visuel (suivi lumière/objet), puis la réaction à l'occlusion, les reflets, et éventuellement le Lang ; ne pas insister sur le cover test.",
 
   ordreAnamneseAttendu: [
     'motif',
     'depuis-quand',
-    'photos-regard',
-    'morphologie',
+    'constance',
     'alternance',
+    'photos-regard',
     'developpement',
+    'morphologie',
   ],
 
   synthese: {
@@ -433,12 +427,12 @@ export const pseudostrabismeEpicanthus: CasClinique = {
         options: [
           {
             id: 'pseudostrabisme',
-            libelle: "Pseudo-strabisme (pseudostrabismus) lié à l'épicanthus et à l'angle kappa",
+            libelle: "Pseudo-strabisme sur épicanthus (pseudostrabismus)",
             correct: true,
           },
           {
             id: 'esotropie',
-            libelle: 'Esotropie infantile',
+            libelle: 'Esotropie infantile précoce',
             correct: false,
           },
           {
@@ -453,36 +447,36 @@ export const pseudostrabismeEpicanthus: CasClinique = {
           },
         ],
         explication:
-          "Cover test négatif + reflets faussement convergents + épicanthus + angle kappa positif = pseudo-strabisme. Pas de vraie tropie.",
+          "Comportement visuel normal, réaction à l'occlusion symétrique, reflets centrés en PP, épicanthus : pseudo-strabisme. Le récit parental ne suffit pas.",
       },
       {
         id: 'signes-cles',
         type: 'ouverte',
-        question: 'Quels éléments vous ont orientés vers ce diagnostic ?',
+        question: 'Quels éléments objectifs vous ont orientés ?',
         poids: 4,
         seuil: 3,
         criteres: [
           {
-            id: 'cover',
-            variantes: ['cover', 'occlusion', 'orthotrop', 'pas de mouvement', 'negatif', 'négatif'],
+            id: 'comportement',
+            variantes: ['suivi', 'lumiere', 'lumière', 'objet', 'fixation', 'poursuite', 'symetri', 'symétri'],
+          },
+          {
+            id: 'occlusion',
+            variantes: ['occlusion', 'reaction', 'réaction', 'tete', 'tête', 'symetri', 'symétri', 'pas de preference'],
+          },
+          {
+            id: 'reflets',
+            variantes: ['reflet', 'hirschberg', 'centr', 'orthotrop', 'primaire'],
           },
           {
             id: 'epicanthus',
-            variantes: ['epicanthus', 'épicanthus', 'plis', 'paupier', 'pont nasal', 'sclere', 'blanc'],
-          },
-          {
-            id: 'kappa',
-            variantes: ['kappa', 'angle kappa', 'reflet', 'hirschberg', 'fausse', 'pseudo', 'illusion'],
-          },
-          {
-            id: 'regard',
-            variantes: ['photo', 'lateral', 'latéral', 'regard', 'morpholog'],
+            variantes: ['epicanthus', 'épicanthus', 'plis', 'paupier', 'pont nasal', 'lateral', 'latéral', 'morpholog'],
           },
         ],
         reponseAttendue:
-          'Cover test négatif (orthotropie), épicanthus / pont nasal large, reflets faussement convergents (angle kappa positif), aspect accentué en regard latéral ou sur photos.',
+          "Suivi lumière/objet normal et symétrique, réaction à l'occlusion symétrique sans rattrapage, reflets centrés en PP, épicanthus avec illusion en regard latéral.",
         explication:
-          "La triade diagnostique est : illusion morphologique (épicanthus), reflets trompeurs (kappa), cover test normal.",
+          "Le diagnostic repose sur le comportement visuel et les reflets — pas sur le récit parental ni un cover test non réalisable.",
       },
       {
         id: 'conduite',
@@ -502,7 +496,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
           },
           {
             id: 'lunettes',
-            libelle: 'Prescrire immédiatement des lunettes correctrices',
+            libelle: 'Prescrire immédiatement des lunettes',
             correct: false,
           },
           {
@@ -512,7 +506,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
           },
         ],
         explication:
-          "Le pseudo-strabisme ne se traite pas : réassurance et surveillance. L'aspect s'améliore souvent avec la croissance du pont nasal.",
+          "Pas de strabisme réel : réassurance et surveillance. L'aspect s'améliore souvent avec la croissance du pont nasal.",
       },
       {
         id: 'chirurgie',
@@ -521,18 +515,17 @@ export const pseudostrabismeEpicanthus: CasClinique = {
         poids: 2,
         correct: false,
         explication:
-          "Non : pas de strabisme réel. Une chirurgie serait iatrogène. L'épicanthus isolé ne justifie une chirurgie esthétique que sur demande familiale tardive, pas en urgence.",
+          "Non : pseudo-strabisme sans tropie objectivable. Chirurgie strabologique non indiquée.",
       },
     ],
   },
 
   compteRenduExpert: [
-    "Mei, 5 mois, adressée par le pédiatre pour un regard « croisé » remarqué dès la naissance, surtout sur photos et en regard latéral. Épicanthus bilatéral familial. Développement normal, fixation et poursuite conservées.",
-    "Examen morphologique : plis palpébraux médiaux (épicanthus), pont nasal large masquant le sclère interne.",
-    "Motilité : poursuite complète, sans limitation ni upshoot.",
-    "Reflets : Hirschberg et Krimsky autour de 10–15 DP, reflets temporalisés des deux côtés — fausse impression d'esotropie (angle kappa positif).",
-    "Cover test VP et VL : orthotropie, aucun mouvement de restitution — pas de strabisme.",
-    "Réfraction sous cycloplégie : +1.50 D aux deux yeux, hypermétropie physiologique. Pas de correction optique indiquée.",
-    "Conclusion : pseudo-strabisme sur épicanthus avec angle kappa positif. Rassurance parentale, surveillance ; pas de chirurgie strabologique.",
+    "Mei, 5 mois, adressée par le pédiatre. Parents convaincus d'un strabisme convergent depuis la naissance — récit orientant vers une E't, à ne pas prendre pour une preuve. Pas d'ATCD familiaux de strabisme. Épicanthus bilatéral.",
+    "Étude du comportement visuel : suivi lumière monoculaire puis binoculaire OK ; suivi objet symétrique, sans préférence pathologique.",
+    "Réaction à l'occlusion : mouvements de tête symétriques OD/OG, sans rattrapage oculaire visible.",
+    "Reflets : centrés en position primaire ; fausse impression convergente en regard latéral (épicanthus).",
+    "Lang : regard fugace, compatible avec l'âge. Cover test non réalisable (coopération).",
+    "Réfraction : +1.50 D bilatéral, physiologique. Conclusion : pseudo-strabisme. Rassurance parentale, surveillance.",
   ],
 };

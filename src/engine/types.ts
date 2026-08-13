@@ -24,6 +24,7 @@ export type ExamenId =
   | 'krimskyLoin'
   | 'coverPres'
   | 'coverLoin'
+  | 'reactionOcclusion'
   | 'deviometrie'
   | 'biprisme';
 
@@ -236,6 +237,8 @@ export type CasClinique = {
    * de l interrogatoire. Seules ces questions comptent ; les autres peuvent s intercaler.
    */
   ordreAnamneseAttendu?: string[];
+  /** Message affiche sous l etagere d examens (cooperation, conduite attendue…). */
+  messageExamens?: string;
   synthese: SyntheseCas;
   /** Compte rendu tel que l'aurait redige un orthoptiste experimente. */
   compteRenduExpert: string[];

@@ -116,6 +116,14 @@ export const CATALOGUE_EXAMENS: Record<ExamenId, DefinitionExamen> = {
     prismes: true,
     distance: 'loin',
   },
+  reactionOcclusion: {
+    id: 'reactionOcclusion',
+    nom: "Réaction à l'occlusion",
+    rubrique: 'sensoriel',
+    description:
+      "Occlusion brève de chaque œil : observation du comportement (mouvements de tête, recherche de l'occlusion, préférence fixatrice).",
+    interaction: 'presentation',
+  },
   deviometrie: {
     id: 'deviometrie',
     nom: 'Déviométrie au synoptophore',

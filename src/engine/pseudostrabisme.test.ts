@@ -11,10 +11,11 @@ const session = () => useSession.getState();
 const ORDRE_ANAMNESE_MEI = [
   'motif',
   'depuis-quand',
-  'photos-regard',
-  'morphologie',
+  'constance',
   'alternance',
+  'photos-regard',
   'developpement',
+  'morphologie',
 ] as const;
 
 function poserAnamneseEssentielle() {
@@ -44,18 +45,14 @@ function realiser(id: ExamenId, mesure?: number) {
 function bilanMeiParfait() {
   const { validerSynthese } = session();
   poserAnamneseEssentielle();
-  realiser('motilite');
-  realiser('hirschberg', 12);
-  realiser('krimsky', 12);
-  realiser('krimskyLoin', 12);
-  realiser('coverLoin', 0);
-  realiser('coverPres', 0);
   realiser('acuite');
-  realiser('refraction');
+  realiser('reactionOcclusion');
+  realiser('hirschberg', 0);
+  realiser('lang');
   validerSynthese({
     diagnostic: 'pseudostrabisme',
     'signes-cles':
-      'Cover test negatif orthotropie, epicanthus pont nasal, angle kappa reflets faussement convergents',
+      'Suivi lumiere objet symetrique, reaction occlusion symetrique, reflets centres epicanthus regard lateral',
     conduite: 'rassurance',
     chirurgie: 'non',
   });
@@ -66,7 +63,7 @@ describe('pseudostrabisme-epicanthus', () => {
     useSession.getState().demarrer(pseudostrabismeEpicanthus, 'evaluation');
   });
 
-  it('expose une fausse esotropie au Hirschberg mais une orthotropie au cover test', () => {
+  it('a des reflets centres en position primaire (orthotropie)', () => {
     const etat = {
       gaze: { azimuthDeg: 0, elevationDeg: 0 },
       distanceFixationCm: 33,
@@ -77,39 +74,45 @@ describe('pseudostrabisme-epicanthus', () => {
     };
     const o = etatOculaire(pseudostrabismeEpicanthus.oculaire, etat);
     expect(o.OG.deviationLampeDp.horizontal).toBeCloseTo(0, 6);
-    expect(prismFromReflexMm(-o.OG.reflet.xMm)).toBeCloseTo(12, 1);
+    expect(Math.abs(prismFromReflexMm(-o.OG.reflet.xMm))).toBeLessThan(2);
   });
 
   it('bonus anamnese si les questions essentielles sont dans le bon ordre', () => {
     poserAnamneseEssentielle();
-    const resultat = session().resultat();
-    const bonus = resultat.lignes.find((l) => l.libelle.includes('anamnèse'));
+    const bonus = session()
+      .resultat()
+      .lignes.find((l) => l.libelle.includes('anamnèse'));
     expect(bonus?.points).toBe(5);
   });
 
-  it('bonus conduite du bilan si cover avant refraction', () => {
+  it('bonus conduite du bilan si comportement visuel en tete', () => {
     poserAnamneseEssentielle();
-    realiser('motilite');
-    realiser('hirschberg', 12);
-    realiser('krimsky', 12);
-    realiser('krimskyLoin', 12);
-    realiser('coverLoin', 0);
-    realiser('coverPres', 0);
     realiser('acuite');
-    realiser('refraction');
+    realiser('reactionOcclusion');
+    realiser('hirschberg', 0);
+    realiser('lang');
     const bonus = session()
       .resultat()
       .lignes.find((l) => l.libelle.toLowerCase().includes('conduite du bilan'));
     expect(bonus?.points).toBe(5);
   });
 
-  it('malus si Lang realise a 5 mois', () => {
+  it('malus si cover test insiste malgre la cooperation limitee', () => {
     poserAnamneseEssentielle();
-    realiser('lang');
+    realiser('coverPres');
     const malus = session()
       .resultat()
-      .lignes.find((l) => l.libelle.toLowerCase().includes('lang'));
+      .lignes.find((l) => l.libelle.toLowerCase().includes('cover'));
     expect(malus?.nature).toBe('malus');
+  });
+
+  it('lang realisable sans malus a 5 mois', () => {
+    poserAnamneseEssentielle();
+    realiser('lang');
+    const lang = session()
+      .resultat()
+      .lignes.find((l) => l.libelle.toLowerCase().includes('lang'));
+    expect(lang?.nature).not.toBe('malus');
   });
 
   it('score eleve pour un bilan complet et correct', () => {
