@@ -34,7 +34,6 @@ export const pseudostrabismeEpicanthus: CasClinique = {
   messageExamens:
     "Mei a 5 mois : commencer par le Lang, puis le comportement visuel (suivi lumière/objet) et la réaction à l'occlusion dans la rubrique Réfraction et acuité. Le cover test prolongé est impossible.",
 
-  examensMasques: ['acuite'],
   questions: [
     {
       id: 'motif',
@@ -110,8 +109,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
       reponse:
         "Non, personne dans la famille n'a eu de strabisme ni d'œil paresseux. Pas d'opération des yeux non plus.",
       poids: 4,
-      commentaire:
-        "Absence d'ATCD familiaux de strabisme : éloigne un strabisme précoce héréditaire classique.",
+      commentaire: "Absence d'ATCD familiaux de strabisme ou d'amblyopie.",
     },
     {
       id: 'grossesse',
@@ -153,6 +151,12 @@ export const pseudostrabismeEpicanthus: CasClinique = {
   ],
 
   examens: {
+    acuite: {
+      poids: -2,
+      resultat: "Acuité visuelle chiffrée non réalisable à 5 mois.",
+      justificationMalus:
+        "L'acuité visuelle n'est pas possible à cet âge : le bilan repose sur le comportement visuel.",
+    },
     comportementVisuel: {
       poids: 0,
       etapesComportementVisuelAttendues: [
@@ -162,7 +166,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
         'objetBino',
       ],
       resultat:
-        "Suivi lumière monoculaire (OD puis OG) puis binoculaire : poursuite fluide et symétrique. Suivi objet (cloche, visage) monoculaire puis binoculaire : OK des deux côtés, sans préférence fixatrice manifeste.",
+        "Suivi lumière en monoculaire : comportement normal. Suivi lumière en binoculaire : comportement normal. Suivi objet en monoculaire : comportement normal. Suivi objet en binoculaire : comportement normal. Poursuite symétrique, sans préférence fixatrice manifeste.",
       interpretation: {
         question: "Que concluez-vous de cette étude du comportement visuel ?",
         options: [

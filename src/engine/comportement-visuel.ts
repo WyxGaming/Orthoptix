@@ -5,14 +5,16 @@ export type EtapeComportementVisuelId =
   | 'objetMono'
   | 'objetBino';
 
+export const RETOUR_ETAPE_COMPORTEMENT_VISUEL = 'Comportement normal';
+
 export const ETAPES_COMPORTEMENT_VISUEL: Record<
   EtapeComportementVisuelId,
   { libelle: string; ordre: number }
 > = {
-  lumiereMono: { libelle: 'Faire suivre une lumière en monoculaire', ordre: 0 },
-  lumiereBino: { libelle: 'Faire suivre une lumière en binoculaire', ordre: 1 },
-  objetMono: { libelle: 'Faire suivre un objet en monoculaire', ordre: 2 },
-  objetBino: { libelle: 'Faire suivre un objet en binoculaire', ordre: 3 },
+  lumiereMono: { libelle: 'Suivi lumière en monoculaire', ordre: 0 },
+  lumiereBino: { libelle: 'Suivi lumière en binoculaire', ordre: 1 },
+  objetMono: { libelle: 'Suivi objet en monoculaire', ordre: 2 },
+  objetBino: { libelle: 'Suivi objet en binoculaire', ordre: 3 },
 };
 
 export const ORDRE_ETAPES_COMPORTEMENT_VISUEL: EtapeComportementVisuelId[] = [

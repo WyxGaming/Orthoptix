@@ -3,6 +3,7 @@ import { EYES, type BasePrisme, type Eye } from '../domain/ocular-model';
 import {
   ETAPES_COMPORTEMENT_VISUEL,
   ORDRE_ETAPES_COMPORTEMENT_VISUEL,
+  RETOUR_ETAPE_COMPORTEMENT_VISUEL,
   type EtapeComportementVisuelId,
 } from '../engine/comportement-visuel';
 import { CATALOGUE_EXAMENS } from '../engine/exams';
@@ -47,38 +48,26 @@ function ComportementVisuel({
   propositions,
   sequence,
   onAjouter,
-  onRetirerDernier,
   onReinitialiser,
-  resultatRevele,
-  onReveler,
-  resultat,
+  termine,
 }: {
   propositions: EtapeComportementVisuelId[];
   sequence: EtapeComportementVisuelId[];
   onAjouter: (id: EtapeComportementVisuelId) => void;
-  onRetirerDernier: () => void;
   onReinitialiser: () => void;
-  resultatRevele: boolean;
-  onReveler: () => void;
-  resultat?: string;
+  termine: boolean;
 }) {
-  const complet = sequence.length === ORDRE_ETAPES_COMPORTEMENT_VISUEL.length;
-
   return (
     <div className="space-y-3">
       <p className="text-sm font-medium text-slate-200">Que souhaitez-vous faire ?</p>
       <p className="text-xs text-slate-500">
-        Cliquez les épreuves dans l ordre où vous souhaitez les réaliser.
+        Appuyez sur les cases dans l ordre où vous réalisez les épreuves.
       </p>
       <div className="flex flex-wrap gap-1.5">
         {propositions.map((id) => {
           const dejaChoisi = sequence.includes(id);
           return (
-            <Bouton
-              key={id}
-              disabled={dejaChoisi || resultatRevele}
-              onClick={() => onAjouter(id)}
-            >
+            <Bouton key={id} disabled={dejaChoisi || termine} onClick={() => onAjouter(id)}>
               {ETAPES_COMPORTEMENT_VISUEL[id].libelle}
             </Bouton>
           );
@@ -87,34 +76,24 @@ function ComportementVisuel({
       {sequence.length > 0 && (
         <div className="rounded-md border border-slate-800 bg-slate-950/40 p-3">
           <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
-            Séquence choisie
+            Notes au fil de l examen
           </p>
-          <ol className="list-decimal space-y-1 pl-4 text-sm text-slate-200">
-            {sequence.map((id) => (
-              <li key={id}>{ETAPES_COMPORTEMENT_VISUEL[id].libelle}</li>
+          <ol className="space-y-2">
+            {sequence.map((id, index) => (
+              <li key={`${id}-${index}`} className="text-sm text-slate-200">
+                <span>{ETAPES_COMPORTEMENT_VISUEL[id].libelle}</span>
+                <span className="ml-2 text-emerald-400">— {RETOUR_ETAPE_COMPORTEMENT_VISUEL}</span>
+              </li>
             ))}
           </ol>
-          {!resultatRevele && (
-            <div className="mt-2 flex gap-2">
-              <Bouton ton="discret" onClick={onRetirerDernier} disabled={sequence.length === 0}>
-                Retirer la dernière
-              </Bouton>
+          {!termine && (
+            <div className="mt-2">
               <Bouton ton="discret" onClick={onReinitialiser}>
                 Recommencer
               </Bouton>
             </div>
           )}
         </div>
-      )}
-      {complet && !resultatRevele && (
-        <Bouton ton="principal" onClick={onReveler}>
-          Réaliser ces épreuves
-        </Bouton>
-      )}
-      {resultatRevele && resultat && (
-        <p className="rounded-md border border-slate-700 bg-slate-950/60 p-3 text-sm text-slate-200">
-          {resultat}
-        </p>
       )}
     </div>
   );
@@ -201,15 +180,12 @@ function CommandesConditions({
         </div>
       )}
       {options.choixLoupesPlus3 && distance !== 'loin' && (
-        <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-300">
-          <input
-            type="checkbox"
-            checked={Boolean(conditions.loupesPlus3)}
-            onChange={(e) => onChange({ ...conditions, loupesPlus3: e.target.checked })}
-            className="rounded border-slate-600 bg-slate-950"
-          />
-          Loupes +3 en VP (test accommodatif)
-        </label>
+        <Bouton
+          actif={Boolean(conditions.loupesPlus3)}
+          onClick={() => onChange({ ...conditions, loupesPlus3: !conditions.loupesPlus3 })}
+        >
+          Loupes +3 (VP)
+        </Bouton>
       )}
     </div>
   );
@@ -220,17 +196,24 @@ function CommandesMotilite() {
   const gaze = useSession((s) => s.etat.gaze);
 
   return (
-    <div>
-      <div className="grid w-fit grid-cols-3 gap-1.5">
-        {POSITIONS_REGARD.flat().map((p) => (
-          <Bouton
-            key={p.nom}
-            actif={gaze.azimuthDeg === p.az && gaze.elevationDeg === p.el}
-            onClick={() => deplacerCible({ azimuthDeg: p.az, elevationDeg: p.el })}
-            className="w-32 justify-center text-xs"
+    <div className="space-y-2">
+      <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+        Positions du regard
+      </p>
+      <div className="grid grid-cols-3 gap-1">
+        {POSITIONS_REGARD.flat().map((pos) => (
+          <button
+            key={pos.nom}
+            type="button"
+            onClick={() => deplacerCible({ azimuthDeg: pos.az, elevationDeg: pos.el })}
+            className={`rounded-md border px-2 py-1.5 text-xs ${
+              gaze.azimuthDeg === pos.az && gaze.elevationDeg === pos.el
+                ? 'border-sky-500 bg-sky-950/40 text-sky-200'
+                : 'border-slate-700 text-slate-400 hover:border-slate-500'
+            }`}
           >
-            {p.nom}
-          </Bouton>
+            {pos.nom}
+          </button>
         ))}
       </div>
     </div>
@@ -242,17 +225,15 @@ function CommandesOcclusion() {
   const occlusion = useSession((s) => s.etat.occlusion);
 
   return (
-    <div className="space-y-2">
-      <div className="flex flex-wrap gap-1.5">
-        {EYES.map((oeil) => (
-          <Bouton key={oeil} actif={occlusion === oeil} onClick={() => occlure(oeil)}>
-            Cacher {oeil}
-          </Bouton>
-        ))}
-        <Bouton actif={occlusion === 'aucune'} onClick={() => occlure('aucune')}>
-          Découvrir
+    <div className="flex flex-wrap gap-1.5">
+      <Bouton actif={occlusion === 'aucune'} onClick={() => occlure('aucune')}>
+        Aucune occlusion
+      </Bouton>
+      {EYES.map((oeil) => (
+        <Bouton key={oeil} actif={occlusion === oeil} onClick={() => occlure(oeil)}>
+          Occlusion {oeil}
         </Bouton>
-      </div>
+      ))}
     </div>
   );
 }
@@ -261,45 +242,50 @@ function CommandesPrismes() {
   const poserPrisme = useSession((s) => s.poserPrisme);
   const prismes = useSession((s) => s.etat.prismes);
   const [oeil, setOeil] = useState<Eye>('OD');
+  const [puissance, setPuissance] = useState('');
   const [base, setBase] = useState<BasePrisme>('temporale');
-  const puissance = prismes[oeil]?.puissance ?? 0;
 
-  const appliquer = (valeur: number) => {
-    const bornee = Math.max(0, Math.min(80, valeur));
-    poserPrisme(oeil, bornee === 0 ? null : { puissance: bornee, base });
+  const appliquer = () => {
+    const p = Number.parseFloat(puissance.replace(',', '.'));
+    if (!Number.isFinite(p) || p <= 0) {
+      poserPrisme(oeil, null);
+      return;
+    }
+    poserPrisme(oeil, { puissance: p, base });
   };
 
   return (
     <div className="space-y-2 rounded-md border border-slate-800 bg-slate-950/40 p-3">
-      <div className="flex flex-wrap items-center gap-1.5">
-        <span className="text-xs text-slate-500">Prisme devant</span>
+      <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Prismes</p>
+      <div className="flex flex-wrap items-center gap-2">
         {EYES.map((e) => (
           <Bouton key={e} actif={oeil === e} onClick={() => setOeil(e)}>
             {e}
           </Bouton>
         ))}
-      </div>
-      <div className="flex flex-wrap items-center gap-1.5">
-        {BASES.map((b) => (
-          <Bouton
-            key={b.valeur}
-            actif={base === b.valeur}
-            onClick={() => {
-              setBase(b.valeur);
-              if (puissance > 0) poserPrisme(oeil, { puissance, base: b.valeur });
-            }}
-          >
-            {b.libelle}
+        <input
+          value={puissance}
+          onChange={(e) => setPuissance(e.target.value)}
+          placeholder="Puissance"
+          className="w-20 rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-sm"
+        />
+        <select
+          value={base}
+          onChange={(e) => setBase(e.target.value as BasePrisme)}
+          className="rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-sm text-slate-200"
+        >
+          {BASES.map((b) => (
+            <option key={b.valeur} value={b.valeur}>
+              {b.libelle}
+            </option>
+          ))}
+        </select>
+        <Bouton onClick={appliquer}>Appliquer</Bouton>
+        {prismes[oeil] && (
+          <Bouton ton="discret" onClick={() => poserPrisme(oeil, null)}>
+            Retirer
           </Bouton>
-        ))}
-      </div>
-      <div className="flex items-center gap-2">
-        <Bouton onClick={() => appliquer(puissance - 2)}>−2</Bouton>
-        <span className="w-24 text-center font-mono text-lg text-slate-100">{puissance} DP</span>
-        <Bouton onClick={() => appliquer(puissance + 2)}>+2</Bouton>
-        <Bouton ton="discret" onClick={() => appliquer(0)}>
-          Retirer
-        </Bouton>
+        )}
       </div>
     </div>
   );
@@ -435,11 +421,13 @@ export function PanneauExamen({
     interpretationsConditionnelles.every((interp) => Boolean(interpretationsChoix[interp.id]));
 
   const estComportementVisuel = definition.interaction === 'comportementVisuel';
+  const comportementVisuelComplet =
+    sequenceComportement.length === ORDRE_ETAPES_COMPORTEMENT_VISUEL.length;
 
   const peutConsigner =
     !examenNonContributif &&
     (estComportementVisuel
-      ? resultatRevele && interpretationsCompletes
+      ? comportementVisuelComplet && interpretationsCompletes
       : (definition.interaction !== 'presentation' || resultatRevele) &&
         (demandeMesuresMultiples
           ? (mesuresMultiplesCompletes && alternanceComplete) ||
@@ -538,11 +526,8 @@ export function PanneauExamen({
             propositions={propositionsComportement}
             sequence={sequenceComportement}
             onAjouter={(id) => setSequenceComportement((prev) => [...prev, id])}
-            onRetirerDernier={() => setSequenceComportement((prev) => prev.slice(0, -1))}
             onReinitialiser={() => setSequenceComportement([])}
-            resultatRevele={resultatRevele}
-            onReveler={() => setResultatRevele(true)}
-            resultat={examenEffectif?.resultat}
+            termine={comportementVisuelComplet}
           />
         )}
 
@@ -593,7 +578,7 @@ export function PanneauExamen({
 
         {interpretationsConditionnelles.length > 0 &&
           (estComportementVisuel
-            ? resultatRevele
+            ? comportementVisuelComplet
             : definition.interaction !== 'presentation' || resultatRevele) &&
           interpretationsConditionnelles.map((interp) => (
             <fieldset key={interp.id} className="space-y-1.5">
@@ -643,27 +628,24 @@ export function PanneauExamen({
               const mesureOk = dejaConsignes.has(cle) || mesureValide(mesures[cle] ?? '');
               const complet = dejaConsignes.has(cle) || mesureOk;
               return (
-                <li key={cle}>
-                  {libelleConditionsMesure(combo)} : {complet ? 'complet ✓' : 'en cours…'}
+                <li key={cle} className={complet ? 'text-emerald-500/80' : ''}>
+                  {libelleConditionsMesure(combo)} {complet ? '✓' : '— mesure requise'}
                 </li>
               );
             })}
-            {examenEnCours === 'coverPres' && (
-              <li>
-                Alternance spontanée : {alternanceComplete ? 'complet ✓' : 'en cours…'}
-              </li>
-            )}
           </ul>
         )}
       </div>
 
-      <div className="flex shrink-0 items-center gap-2 border-t border-slate-800 px-4 py-3">
-        <Bouton ton="principal" onClick={consigner} disabled={!peutConsigner}>
-          Consigner l'examen
-        </Bouton>
+      <div className="flex shrink-0 justify-end gap-2 border-t border-slate-800 p-3">
         <Bouton ton="discret" onClick={abandonnerExamen}>
-          Renoncer
+          Abandonner
         </Bouton>
+        {!examenNonContributif && (
+          <Bouton ton="principal" disabled={!peutConsigner} onClick={consigner}>
+            Consigner
+          </Bouton>
+        )}
       </div>
     </Carte>
   );

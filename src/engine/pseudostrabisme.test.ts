@@ -119,6 +119,15 @@ describe('pseudostrabisme-epicanthus', () => {
     expect(ordre?.points).toBe(0);
   });
 
+  it('malus si acuite visuelle tentee a 5 mois', () => {
+    poserAnamneseEssentielle();
+    realiser('acuite');
+    const malus = session()
+      .resultat()
+      .lignes.find((l) => l.libelle.toLowerCase().includes('acuité'));
+    expect(malus?.nature).toBe('malus');
+  });
+
   it('malus si cover test insiste malgre la cooperation limitee', () => {
     poserAnamneseEssentielle();
     realiser('coverPres');
