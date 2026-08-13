@@ -8,6 +8,8 @@ const MODELE_URL = '/models/lunettes/lunettes.glb';
 const DEMI_VERRE_CM = 1.15;
 /** Ecart pupillaire supplementaire sur la monture, en cm. */
 const ECART_PUPILLAIRE_SUPPLEMENTAIRE_CM = 5;
+/** Reduction globale de la monture par rapport au calage orbites. */
+const FACTEUR_ECHELLE = 0.85;
 const DECALAGE_FIN: [number, number, number] = [0, -0.35, 0.45];
 
 /** Orientation du GLB importe : 270 deg vers la droite autour de l'axe vertical. */
@@ -61,7 +63,7 @@ function LunettesMesh({ orbites }: { orbites: PositionsOrbites }) {
     const { position, ecartPupillaire } = cadreOrbites(orbites);
     const largeurCible =
       ecartPupillaire + ECART_PUPILLAIRE_SUPPLEMENTAIRE_CM + DEMI_VERRE_CM * 2;
-    const facteur = largeurCible / taille.x;
+    const facteur = (largeurCible / taille.x) * FACTEUR_ECHELLE;
     clone.scale.setScalar(facteur);
     clone.updateMatrixWorld(true);
 
