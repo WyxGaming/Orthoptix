@@ -8,6 +8,9 @@ const MODELE_URL = '/models/lunettes/lunettes.glb';
 const DEMI_VERRE_CM = 1.15;
 const DECALAGE_FIN: [number, number, number] = [0, -0.35, 0.45];
 
+/** Orientation du GLB importe : 90 deg vers la droite autour de l'axe vertical. */
+const CORRECTION_Y = -Math.PI / 2;
+
 function cadreOrbites(orbites: PositionsOrbites) {
   const [odX, odY, odZ] = orbites.OD;
   const [ogX, ogY, ogZ] = orbites.OG;
@@ -45,7 +48,7 @@ function LunettesMesh({ orbites }: { orbites: PositionsOrbites }) {
 
   useLayoutEffect(() => {
     clone.position.set(0, 0, 0);
-    clone.rotation.set(0, 0, 0);
+    clone.rotation.set(0, CORRECTION_Y, 0);
     clone.scale.set(1, 1, 1);
     clone.updateMatrixWorld(true);
 
