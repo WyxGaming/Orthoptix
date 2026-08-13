@@ -173,7 +173,7 @@ export const pseudostrabismeEpicanthus: CasClinique = {
           {
             id: 'fixation-normale',
             libelle:
-              "Fixation et poursuite normales, symétriques, sans signe de préférence pathologique — incompatible avec un strabisme non neutralisé",
+              'Fixation et poursuite normales, symétriques, sans signe de préférence pathologique',
             correct: true,
           },
           {
