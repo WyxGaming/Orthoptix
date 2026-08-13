@@ -105,7 +105,7 @@ export function StartScreen() {
         >
           CC-BY-4.0
         </a>
-        .
+        . Monture 3D fournie separement.
       </p>
     </div>
   );
