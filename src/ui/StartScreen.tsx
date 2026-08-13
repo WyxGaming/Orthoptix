@@ -1,13 +1,28 @@
 import { useState } from 'react';
-import { CAS_DISPONIBLES } from '../cases';
+import { CAS_DISPONIBLES, casCliniquePrepare } from '../cases';
+import { useAdminSession } from '../engine/adminSession';
 import { useSession, type Mode } from '../engine/session';
+import { ModalConnexionAdmin } from './AdminPanel';
 import { Bouton, Carte } from './composants';
 
 export function StartScreen() {
   const demarrer = useSession((s) => s.demarrer);
+  const ouvrirAdmin = useSession((s) => s.ouvrirAdmin);
+  const authentifie = useAdminSession((s) => s.authentifie);
   const [mode, setMode] = useState<Mode>('entrainement');
   const [casId, setCasId] = useState(CAS_DISPONIBLES[0]!.id);
-  const cas = CAS_DISPONIBLES.find((c) => c.id === casId)!;
+  const [modalAdmin, setModalAdmin] = useState(false);
+  const casBase = CAS_DISPONIBLES.find((c) => c.id === casId)!;
+  const cas = casCliniquePrepare(casBase);
+  const questionsAdmin = cas.questions.length - casBase.questions.length;
+
+  const accederAdmin = () => {
+    if (authentifie) {
+      ouvrirAdmin();
+    } else {
+      setModalAdmin(true);
+    }
+  };
 
   return (
     <div className="mx-auto flex min-h-full max-w-3xl flex-col justify-center gap-6 p-8">
@@ -34,6 +49,12 @@ export function StartScreen() {
             >
               <div className="font-medium text-slate-100">{c.titre}</div>
               <div className="text-sm text-slate-400">{c.resume}</div>
+              {casCliniquePrepare(c).questions.length > c.questions.length && (
+                <div className="mt-1 text-xs text-sky-500/80">
+                  +{casCliniquePrepare(c).questions.length - c.questions.length} question(s)
+                  administrateur
+                </div>
+              )}
             </button>
           ))}
         </div>
@@ -72,10 +93,31 @@ export function StartScreen() {
         <p className="text-sm text-slate-500">
           {cas.patient.prenom}, {cas.patient.age} ans. {cas.patient.motif}
         </p>
-        <Bouton ton="principal" onClick={() => demarrer(cas, mode)}>
+        <Bouton ton="principal" onClick={() => demarrer(casBase, mode)}>
           Commencer le bilan
         </Bouton>
       </div>
+
+      {questionsAdmin > 0 && (
+        <p className="text-xs text-sky-500/80">
+          Ce cas inclut {questionsAdmin} question(s) ajoutée(s) en administration.
+        </p>
+      )}
+
+      <div className="flex justify-end">
+        <Bouton ton="discret" onClick={accederAdmin}>
+          Administration
+        </Bouton>
+      </div>
+
+      <ModalConnexionAdmin
+        ouvert={modalAdmin}
+        onFermer={() => setModalAdmin(false)}
+        onConnecte={() => {
+          setModalAdmin(false);
+          ouvrirAdmin();
+        }}
+      />
 
       <p className="text-[11px] leading-relaxed text-slate-600">
         Modèle 3D basé sur{' '}

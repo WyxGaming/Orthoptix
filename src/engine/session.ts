@@ -12,6 +12,7 @@ import {
   type Prisme,
 } from '../domain/ocular-model';
 import { CATALOGUE_EXAMENS } from './exams';
+import { casCliniquePrepare } from '../cases';
 import { calculerScore, dansIntervalle, type Resultat } from './scoring';
 import type { ActionJournal, CasClinique, ExamenId, QuestionAnamnese, ReponsesSynthese } from './types';
 import { interpretationsExamen } from './types';
@@ -29,7 +30,7 @@ export function melangeAleatoire<T>(items: readonly T[]): T[] {
 }
 
 export type Mode = 'entrainement' | 'evaluation';
-export type Phase = 'accueil' | 'bilan' | 'synthese' | 'debriefing';
+export type Phase = 'accueil' | 'admin' | 'bilan' | 'synthese' | 'debriefing';
 
 export type Message = {
   id: number;
@@ -58,6 +59,8 @@ type SessionState = {
   messages: Message[];
 
   demarrer: (cas: CasClinique, mode: Mode) => void;
+  ouvrirAdmin: () => void;
+  quitterAdmin: () => void;
   poserQuestion: (id: string) => void;
   lancerExamen: (id: ExamenId) => void;
   validerExamen: (saisie?: {
@@ -97,24 +100,29 @@ export const useSession = create<SessionState>((set, get) => ({
   reponsesSynthese: null,
   messages: [],
 
-  demarrer: (cas, mode) =>
+  demarrer: (cas, mode) => {
+    const prepare = casCliniquePrepare(cas);
     set({
-      cas,
-      questionsOrdre: melangeAleatoire(cas.questions),
+      cas: prepare,
+      questionsOrdre: melangeAleatoire(prepare.questions),
       mode,
       phase: 'bilan',
       journal: [],
       bilan: [],
-      etat: etatExamenInitial(oeilFixateurInitial(cas)),
+      etat: etatExamenInitial(oeilFixateurInitial(prepare)),
       examenEnCours: null,
       reponsesSynthese: null,
       messages: [],
-    }),
+    });
+  },
 
   rejouer: () => {
     const { cas, mode, demarrer } = get();
     demarrer(cas, mode);
   },
+
+  ouvrirAdmin: () => set({ phase: 'admin' }),
+  quitterAdmin: () => set({ phase: 'accueil' }),
 
   poserQuestion: (id) => {
     const { cas, journal, bilan, mode, aDejaPose } = get();

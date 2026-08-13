@@ -5,6 +5,7 @@ import { CHAMP_ENSEMBLE_DEG, DISTANCE_OBSERVATEUR } from './scene/geometrie';
 import { PatientScene } from './scene/PatientScene';
 import { Bouton } from './ui/composants';
 import { Debriefing } from './ui/Debriefing';
+import { AdminPanel } from './ui/AdminPanel';
 import { PanneauBilan } from './ui/PanneauBilan';
 import { PanneauExamen } from './ui/PanneauExamen';
 import { PanneauInterrogatoire } from './ui/PanneauInterrogatoire';
@@ -70,6 +71,7 @@ export function App() {
   return (
     <div className="h-full">
       {phase === 'accueil' && <StartScreen />}
+      {phase === 'admin' && <AdminPanel />}
       {phase === 'bilan' && <Bilan />}
       {phase === 'synthese' && <Synthese />}
       {phase === 'debriefing' && <Debriefing />}
