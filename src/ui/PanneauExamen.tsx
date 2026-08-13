@@ -432,12 +432,6 @@ export function PanneauExamen({
 
         {definition.interaction === 'presentation' && (
           <div className="space-y-2">
-            {examenNonContributif && (
-              <p className="rounded-md border border-amber-900/60 bg-amber-950/30 px-3 py-2 text-xs text-amber-200/90">
-                Examen non nécessaire ici : absent du barème tant qu'il n'est pas présenté. Le
-                présenter compte comme non contributif (malus).
-              </p>
-            )}
             {!resultatRevele ? (
               <Bouton
                 ton="principal"
