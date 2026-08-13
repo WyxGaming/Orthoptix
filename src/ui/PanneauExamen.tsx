@@ -18,9 +18,9 @@ const POSITIONS_REGARD = [
     { az: -25, el: 0, nom: 'Gauche' },
   ],
   [
-    { az: 25, el: -18, nom: 'Bas-droite' },
-    { az: 0, el: -18, nom: 'Bas' },
-    { az: -25, el: -18, nom: 'Bas-gauche' },
+    { az: 25, el: -28, nom: 'Bas-droite' },
+    { az: 0, el: -28, nom: 'Bas' },
+    { az: -25, el: -28, nom: 'Bas-gauche' },
   ],
 ];
 
