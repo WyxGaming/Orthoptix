@@ -1,5 +1,5 @@
 import { useFrame, useThree } from '@react-three/fiber';
-import { Suspense, useCallback, useRef, useState } from 'react';
+import { Suspense, useCallback, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { enVisionDeLoin, EYES, type Eye as OeilId } from '../domain/ocular-model';
 import { useSession } from '../engine/session';
@@ -8,6 +8,7 @@ import {
   CHAMP_ENSEMBLE_DEG,
   CHAMP_RAPPROCHE_DEG,
   DECALAGE_ZOOM_Y,
+  DECALAGE_CIBLE_Y,
   DISTANCE_CIBLE,
   DISTANCE_OBSERVATEUR,
   directionRegard,
@@ -86,6 +87,54 @@ function Prismes({ orbites }: { orbites: PositionsOrbites }) {
   );
 }
 
+/** Texture de mire : croix et anneaux concentriques, lisibles comme point de fixation. */
+function useTextureMireFixation() {
+  return useMemo(() => {
+    const taille = 256;
+    const canvas = document.createElement('canvas');
+    canvas.width = taille;
+    canvas.height = taille;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    const c = taille / 2;
+    ctx.fillStyle = '#120e08';
+    ctx.fillRect(0, 0, taille, taille);
+
+    const anneaux: [number, number, number][] = [
+      [98, 2.5, 0.22],
+      [72, 2, 0.42],
+      [46, 1.8, 0.62],
+      [20, 0, 1],
+    ];
+    for (const [rayon, epaisseur, alpha] of anneaux) {
+      ctx.beginPath();
+      ctx.arc(c, c, rayon, 0, Math.PI * 2);
+      if (epaisseur === 0) {
+        ctx.fillStyle = `rgba(255, 248, 225, ${alpha})`;
+        ctx.fill();
+      } else {
+        ctx.strokeStyle = `rgba(255, 210, 120, ${alpha})`;
+        ctx.lineWidth = epaisseur;
+        ctx.stroke();
+      }
+    }
+
+    ctx.strokeStyle = 'rgba(255, 190, 80, 0.55)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(c - 108, c);
+    ctx.lineTo(c + 108, c);
+    ctx.moveTo(c, c - 108);
+    ctx.lineTo(c, c + 108);
+    ctx.stroke();
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    return texture;
+  }, []);
+}
+
 /**
  * Point de fixation lumineux tenu par le praticien : c'est lui qui cree le reflet.
  *
@@ -95,6 +144,9 @@ function Prismes({ orbites }: { orbites: PositionsOrbites }) {
  */
 function Cible() {
   const groupe = useRef<THREE.Group>(null);
+  const face = useRef<THREE.Group>(null);
+  const camera = useThree((s) => s.camera);
+  const texture = useTextureMireFixation();
   const deLoin = useSession((s) => enVisionDeLoin(s.etat));
 
   useFrame((_, dt) => {
@@ -104,13 +156,38 @@ function Cible() {
       .multiplyScalar(DISTANCE_CIBLE)
       .add(new THREE.Vector3(0, DECALAGE_CIBLE_Y, 0));
     groupe.current.position.lerp(cible, 1 - Math.exp(-dt / 0.09));
+    face.current?.lookAt(camera.position);
   });
 
   return (
     <group ref={groupe} position={[0, DECALAGE_CIBLE_Y, DISTANCE_CIBLE]}>
+      {texture && (
+        <group ref={face} visible={!deLoin}>
+          <mesh>
+            <planeGeometry args={[0.62, 0.62]} />
+            <meshBasicMaterial
+              map={texture}
+              transparent
+              opacity={0.94}
+              toneMapped={false}
+              depthWrite={false}
+            />
+          </mesh>
+          <mesh>
+            <ringGeometry args={[0.28, 0.34, 48]} />
+            <meshBasicMaterial
+              color="#ffcc66"
+              transparent
+              opacity={0.35}
+              toneMapped={false}
+              depthWrite={false}
+            />
+          </mesh>
+        </group>
+      )}
       <mesh visible={!deLoin}>
-        <sphereGeometry args={[0.13, 16, 16]} />
-        <meshBasicMaterial color="#fff8e1" />
+        <sphereGeometry args={[0.045, 12, 12]} />
+        <meshBasicMaterial color="#fffef8" toneMapped={false} />
       </mesh>
       <pointLight intensity={85} distance={0} decay={1.4} color="#fff6df" />
     </group>
