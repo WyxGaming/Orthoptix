@@ -1,10 +1,6 @@
-import { useGLTF } from '@react-three/drei';
-import { Suspense, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import * as THREE from 'three';
 import type { PositionsOrbites } from './orbites';
-
-const MODELE_URL = '/models/lunettes/scene.gltf';
-const BIN_URL = '/models/lunettes/scene.bin';
 
 /** Demi-largeur de verre au-dela de l'ecart pupillaire, en cm. */
 const DEMI_VERRE_CM = 1.15;
@@ -25,14 +21,13 @@ function cadreOrbites(orbites: PositionsOrbites) {
       (odY + ogY) / 2 + DECALAGE_FIN[1],
       (odZ + ogZ) / 2 + DECALAGE_FIN[2],
     ] as [number, number, number],
-    ecartPupillaire,
     demiEcart: ecartPupillaire / 2,
     demiVerre: ecartPupillaire / 2 + DEMI_VERRE_CM,
   };
 }
 
-/** Repli tant que scene.bin n'est pas dans le depot (~29 Mo, trop lourd pour le chat). */
-function LunettesProcedurales({ orbites }: { orbites: PositionsOrbites }) {
+/** Monture procedurale calée sur les orbites : legere, sans asset externe. */
+export function LunettesPatient({ orbites }: { orbites: PositionsOrbites }) {
   const { position, demiEcart, demiVerre } = cadreOrbites(orbites);
   const rayonVerre = demiVerre * 0.72;
   const epaisseurMonture = 0.07;
@@ -60,7 +55,7 @@ function LunettesProcedurales({ orbites }: { orbites: PositionsOrbites }) {
           <mesh material={monture} rotation={[Math.PI / 2, 0, 0]}>
             <torusGeometry args={[rayonVerre, epaisseurMonture, 12, 40]} />
           </mesh>
-          <mesh material={verre} rotation={[0, 0, 0]}>
+          <mesh material={verre}>
             <circleGeometry args={[rayonVerre - epaisseurMonture * 0.4, 32]} />
           </mesh>
         </group>
@@ -79,66 +74,5 @@ function LunettesProcedurales({ orbites }: { orbites: PositionsOrbites }) {
         </mesh>
       ))}
     </group>
-  );
-}
-
-function LunettesGltf({ orbites }: { orbites: PositionsOrbites }) {
-  const { scene } = useGLTF(MODELE_URL);
-  const clone = useMemo(() => scene.clone(true), [scene]);
-
-  useLayoutEffect(() => {
-    clone.position.set(0, 0, 0);
-    clone.rotation.set(0, 0, 0);
-    clone.scale.set(1, 1, 1);
-    clone.updateMatrixWorld(true);
-
-    const boite = new THREE.Box3().setFromObject(clone);
-    const taille = boite.getSize(new THREE.Vector3());
-    if (taille.x < 1e-3) return;
-
-    const { position, ecartPupillaire } = cadreOrbites(orbites);
-    const largeurCible = ecartPupillaire + DEMI_VERRE_CM * 2;
-    const facteur = largeurCible / taille.x;
-    clone.scale.setScalar(facteur);
-    clone.updateMatrixWorld(true);
-
-    const centreEchelle = new THREE.Box3().setFromObject(clone).getCenter(new THREE.Vector3());
-    clone.position.set(
-      position[0] - centreEchelle.x,
-      position[1] - centreEchelle.y,
-      position[2] - centreEchelle.z,
-    );
-  }, [clone, orbites]);
-
-  return <primitive object={clone} />;
-}
-
-/**
- * Monture sur le patient : modele Sketchfab si scene.bin est present, sinon repli procedurale.
- */
-export function LunettesPatient({ orbites }: { orbites: PositionsOrbites }) {
-  const [modeleDisponible, setModeleDisponible] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    let actif = true;
-    fetch(BIN_URL, { method: 'HEAD' })
-      .then((reponse) => {
-        if (actif) setModeleDisponible(reponse.ok);
-      })
-      .catch(() => {
-        if (actif) setModeleDisponible(false);
-      });
-    return () => {
-      actif = false;
-    };
-  }, []);
-
-  if (modeleDisponible === null) return null;
-  if (!modeleDisponible) return <LunettesProcedurales orbites={orbites} />;
-
-  return (
-    <Suspense fallback={<LunettesProcedurales orbites={orbites} />}>
-      <LunettesGltf orbites={orbites} />
-    </Suspense>
   );
 }

@@ -78,7 +78,7 @@ export function StartScreen() {
       </div>
 
       <p className="text-[11px] leading-relaxed text-slate-600">
-        Modeles 3D : visage{' '}
+        Modele 3D base sur{' '}
         <a
           className="text-slate-500 underline decoration-slate-700 hover:text-slate-400"
           href="https://sketchfab.com/3d-models/angelica-27f75fa94c384000bb6a79a3000f8e80"
@@ -96,25 +96,7 @@ export function StartScreen() {
         >
           NikZava284
         </a>
-        ; monture{' '}
-        <a
-          className="text-slate-500 underline decoration-slate-700 hover:text-slate-400"
-          href="https://sketchfab.com/3d-models/lunettes-a-montures-maronne-38c5d0da8276449583ca1ae9d3e3045b"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Lunettes a montures marronne
-        </a>{' '}
-        par{' '}
-        <a
-          className="text-slate-500 underline decoration-slate-700 hover:text-slate-400"
-          href="https://sketchfab.com/donystark"
-          target="_blank"
-          rel="noreferrer"
-        >
-          donystark
-        </a>
-        . Licence{' '}
+        , sous licence{' '}
         <a
           className="text-slate-500 underline decoration-slate-700 hover:text-slate-400"
           href="https://creativecommons.org/licenses/by/4.0/"
@@ -123,7 +105,7 @@ export function StartScreen() {
         >
           CC-BY-4.0
         </a>
-        .
+        . Monture generee par le moteur Orthoptix.
       </p>
     </div>
   );
