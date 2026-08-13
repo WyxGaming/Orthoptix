@@ -393,7 +393,7 @@ export function calculerScore(
       max: BONUS_CONDUITE_ANAMNESE,
       commentaire: anamnese
         ? undefined
-        : 'Commencer par le motif, redemander les lunettes, vérifier le port de la correction, puis l\'historique optique (depuis quand, constance, amblyopie, diplopie).',
+        : 'La chronologie des questions d\'anamnèse essentielles n\'a pas été respectée.',
       nature: anamnese ? 'bonus' : 'manque',
     });
   }
