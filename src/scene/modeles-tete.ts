@@ -63,8 +63,8 @@ export const MODELES_TETE: Record<string, ConfigModeleTete> = {
     orbitesCentroidesDirects: true,
     /** Ajustement fin X/Y/Z (cm) après centroïdes eyes_low. */
     decalageOrbites: [0, -0.17, -0.22],
-    /** +4 mm écart interpupillaire (valeur négative = écartement). */
-    reductionEcartPupillaireCm: -0.4,
+    /** +2 mm écart interpupillaire (valeur négative = écartement). */
+    reductionEcartPupillaireCm: -0.2,
     /** Réduit pour rentrer les bords temporaux sous la paupière inférieure. */
     echelleGlobes: 0.50,
     credit: {
