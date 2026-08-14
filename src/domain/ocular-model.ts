@@ -32,7 +32,9 @@ export const DEMI_ECART_PUPILLAIRE_CM = 2.8;
 
 export type Refraction = { sphere: number; cylindre?: number; axe?: number };
 
-export type Fixation = { mode: 'alternante' } | { mode: 'preferee'; oeil: Eye };
+export type Fixation =
+  | { mode: 'alternante'; /** Alternance spontanée en position primaire, en secondes. */ alternanceTemporelleS?: number }
+  | { mode: 'preferee'; oeil: Eye };
 
 export type Nystagmus = {
   type: 'manifeste-latent';
@@ -192,8 +194,17 @@ export const SEUIL_FIXATION_LATERALE_DEG = 10;
 export function oeilFixateurEffectif(params: ParametresOculaires, etat: EtatExamen): Eye {
   let souhaite = etat.oeilFixateur;
   if (params.fixation.mode === 'alternante') {
-    if (etat.gaze.azimuthDeg > SEUIL_FIXATION_LATERALE_DEG) souhaite = 'OD';
-    else if (etat.gaze.azimuthDeg < -SEUIL_FIXATION_LATERALE_DEG) souhaite = 'OG';
+    if (Math.abs(etat.gaze.azimuthDeg) <= SEUIL_FIXATION_LATERALE_DEG) {
+      const intervalle = params.fixation.alternanceTemporelleS;
+      if (intervalle && intervalle > 0) {
+        const phase = Math.floor(etat.tempsS / intervalle);
+        souhaite = phase % 2 === 0 ? 'OD' : 'OG';
+      }
+    } else if (etat.gaze.azimuthDeg > SEUIL_FIXATION_LATERALE_DEG) {
+      souhaite = 'OD';
+    } else if (etat.gaze.azimuthDeg < -SEUIL_FIXATION_LATERALE_DEG) {
+      souhaite = 'OG';
+    }
   }
   return etat.occlusion === souhaite ? autreOeil(souhaite) : souhaite;
 }

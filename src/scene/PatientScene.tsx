@@ -194,6 +194,27 @@ function Cible() {
   );
 }
 
+function HorlogeFixation() {
+  useFrame((_, dt) => {
+    const { cas, etat, phase } = useSession.getState();
+    if (phase !== 'bilan') return;
+    const fixation = cas.oculaire.fixation;
+    if (fixation.mode !== 'alternante' || !fixation.alternanceTemporelleS) return;
+
+    const intervalle = fixation.alternanceTemporelleS;
+    const tempsS = etat.tempsS + dt;
+    const phaseFix = Math.floor(tempsS / intervalle);
+    const fixateur: OeilId = phaseFix % 2 === 0 ? 'OD' : 'OG';
+
+    if (Math.abs(tempsS - etat.tempsS) > 1e-6 || fixateur !== etat.oeilFixateur) {
+      useSession.setState({
+        etat: { ...etat, tempsS, oeilFixateur: fixateur },
+      });
+    }
+  });
+  return null;
+}
+
 function Camera({ rapprochee }: { rapprochee: boolean }) {
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const regardY = useRef(0);
@@ -226,6 +247,7 @@ export function PatientScene({ zoomReflets }: { zoomReflets: boolean }) {
 
   return (
     <>
+      <HorlogeFixation />
       <Camera rapprochee={zoomReflets} />
       <ambientLight intensity={0.6} />
       <directionalLight position={[-6, 8, 12]} intensity={1.15} />

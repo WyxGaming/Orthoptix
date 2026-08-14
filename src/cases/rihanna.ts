@@ -25,7 +25,7 @@ export const rihanna: CasClinique = {
     // E't ~10 DP en VP, Et ~40 DP en VL (double paralysie du VI, plus marquée de loin).
     deviation: { horizontal: 10, vertical: 0 },
     deviationLoin: { horizontal: 40, vertical: 0 },
-    fixation: { mode: 'alternante' },
+    fixation: { mode: 'alternante', alternanceTemporelleS: 5 },
     upshoot: { OD: 0, OG: 0 },
     dvd: 0,
     kappa: { OD: 0, OG: 0 },
@@ -343,7 +343,7 @@ export const rihanna: CasClinique = {
       poids: 5,
       attendu: { min: 8, max: 12, unite: 'DP' },
       resultat:
-        "Cover test de près positif : mouvement de restitution de dedans en dehors à l'occlusion de chaque œil, esotropie d'environ 10 DP (E't). Pas de préférence nette de fixation. Diplopie ressentie au décache.",
+        "Cover test de près positif : mouvement de restitution de dedans en dehors à l'occlusion de chaque œil, esotropie d'environ 10 DP (E't). Alternance spontanée de la fixation toutes les ~5 secondes en position primaire. Diplopie ressentie au décache.",
       interpretation: {
         question: 'Que concluez-vous de ce cover test de près ?',
         options: [
@@ -713,7 +713,7 @@ export const rihanna: CasClinique = {
     'Acuités visuelles conservées à 10/10 des deux côtés sans correction optique. Réfraction : emmétropie.',
     'Motilité : limitation nette et symétrique de l’abduction des deux yeux, sans atteinte verticale.',
     'Examen sensoriel : diplopie binoculaire horizontale confirmée (verre rouge, Worth).',
-    'Reflets et occlusion : E\'t ~10 DP en vision de près, Et ~40 DP en vision de loin, sans préférence nette de fixation.',
+    'Reflets et occlusion : E\'t ~10 DP en vision de près, Et ~40 DP en vision de loin ; alternance spontanée de la fixation toutes les ~5 secondes.',
     'Conclusion : double paralysie du VI chez une femme jeune avec signes d’alarme d’HTIC. Bilan orthoptique complété ; orientation urgente pour fond d’œil à la recherche d’un papilloedème, IRM cérébrale et ponction lombaire avec mesure de la pression du LCR, en coordination neuro-ophtalmologique.',
   ],
 };

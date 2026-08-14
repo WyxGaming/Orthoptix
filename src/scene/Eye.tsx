@@ -118,7 +118,7 @@ export function Eye({
       conditionsExamen,
       correctionPortee,
     );
-    const cible = etatOculaire(cas.oculaire, { ...etat, tempsS: 0 }, conditions)[oeil];
+    const cible = etatOculaire(cas.oculaire, etat, conditions)[oeil];
     const pas = Math.min(dt, 0.05);
     const a = amorti.current;
     a.azimuth = amortir(a.azimuth, cible.azimuthDeg, pas);
