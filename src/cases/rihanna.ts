@@ -529,10 +529,16 @@ export const rihanna: CasClinique = {
           {
             id: 'oct',
             libelle: 'OCT papillaire',
-            variantes: ['oct', 'oct papillaire', 'coherence tomographie', 'tomographie coherence'],
+            variantes: [
+              'oct',
+              'oct papillaire',
+              'oct de la papille',
+              'coherence tomographie',
+              'tomographie coherence',
+              'tomographie en coherence optique',
+            ],
             resultat:
               'Épaississement de la couche des fibres nerveuses papillaires bilatéral, concordant avec un œdème papillaire en cours.',
-            essentiel: false,
           },
           {
             id: 'cv',
@@ -544,9 +550,9 @@ export const rihanna: CasClinique = {
           },
         ],
         reponseAttendue:
-          'Fond d’œil : recherche d’un œdème papillaire orientant vers une hypertension intracrânienne.',
+          'Fond d’œil ou OCT papillaire : recherche d’un œdème papillaire orientant vers une hypertension intracrânienne.',
         explication:
-          'Devant une paralysie du VI, le fond d’œil est l’examen ophtalmologique clé pour rechercher un papilloedème et orienter vers une étiologie intracrânienne. L’IRM, la ponction lombaire ou le bilan sanguin relèvent ensuite de la prise en charge médicale.',
+          'Devant une paralysie du VI, le fond d’œil (ou l’OCT papillaire) est l’examen ophtalmologique clé pour rechercher un papilloedème et orienter vers une étiologie intracrânienne. L’IRM, la ponction lombaire ou le bilan sanguin relèvent ensuite de la prise en charge médicale.',
       },
       {
         id: 'etiologie-symptomes',

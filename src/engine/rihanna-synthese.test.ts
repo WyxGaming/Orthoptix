@@ -32,6 +32,12 @@ describe('examensComplementairesDetectes', () => {
     expect(evaluation.juste).toBe(true);
     expect(evaluation.points).toBe(question.poids);
   });
+
+  it('attribue le score plein si l OCT papillaire est propose', () => {
+    const evaluation = evaluerQuestionSynthese(question, 'OCT papillaire');
+    expect(evaluation.juste).toBe(true);
+    expect(evaluation.points).toBe(question.poids);
+  });
 });
 
 describe('synthese Rihanna — étiologie et symptômes', () => {
