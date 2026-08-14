@@ -383,7 +383,10 @@ export const useSession = create<SessionState>((set, get) => ({
           lignes.push({
             id: `synthese-${question.id}-${examen.id}`,
             titre: examen.libelle,
-            contenu: examen.resultat,
+            contenu:
+              examen.resultat ??
+              examen.legendeImage ??
+              'Résultat visuel — interprétation laissée à l’étudiant.',
           });
         }
       }

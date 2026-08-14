@@ -104,8 +104,12 @@ export type ExamenComplementairePrescrit = {
   libelle: string;
   /** Formes acceptees dans la prescription (normalisation identique aux reponses ouvertes). */
   variantes: string[];
-  /** Compte rendu remis lorsque l'examen est prescrit. */
-  resultat: string;
+  /** Compte rendu texte (si pas d'image). */
+  resultat?: string;
+  /** Chemin public vers une image de resultat (ex. /examens/lancaster.png). */
+  imageResultat?: string;
+  /** Legende sous l'image et dans le cahier de bilan. */
+  legendeImage?: string;
   /** Compte pour le seuil de prescription (defaut : true). */
   essentiel?: boolean;
 };

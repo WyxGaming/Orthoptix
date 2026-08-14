@@ -689,8 +689,9 @@ export const rihanna: CasClinique = {
               'red green',
               'red-green',
             ],
-            resultat:
-              'Diplopie horizontale persistante en position primaire, plus large en vision de loin qu’en vision de près. Déviation esotrope concordante des deux yeux, compatible avec une atteinte bilatérale du VI ; pas de composante verticale significative.',
+            imageResultat: '/examens/rihanna-lancaster.png',
+            legendeImage:
+              'Test de Lancaster — document brut, sans interprétation. Analysez la diplopie et la déviation.',
             essentiel: false,
           },
           {

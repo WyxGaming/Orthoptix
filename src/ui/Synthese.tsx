@@ -51,7 +51,22 @@ function ChampExamensComplementaires({
                 <div className="text-xs font-semibold uppercase tracking-wide text-sky-300">
                   {examen.libelle}
                 </div>
-                <p className="mt-1 text-sm text-slate-200">{examen.resultat}</p>
+                {examen.imageResultat ? (
+                  <figure className="mt-2 space-y-2">
+                    <img
+                      src={examen.imageResultat}
+                      alt={examen.legendeImage ?? examen.libelle}
+                      className="max-h-80 w-full rounded border border-slate-700/80 bg-slate-950 object-contain"
+                    />
+                    {examen.legendeImage && (
+                      <figcaption className="text-xs text-slate-400">{examen.legendeImage}</figcaption>
+                    )}
+                  </figure>
+                ) : (
+                  examen.resultat && (
+                    <p className="mt-1 text-sm text-slate-200">{examen.resultat}</p>
+                  )
+                )}
               </div>
             ))
           )}
