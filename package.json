@@ -14,7 +14,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepare:april-model": "node scripts/prepare-april-model.mjs"
+    "prepare:april-model": "node scripts/prepare-april-model.mjs",
+    "prepare:rihanna-model": "node scripts/prepare-rihanna-model.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",

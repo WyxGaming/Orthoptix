@@ -1,22 +1,9 @@
 # Modèle 3D — Rihanna (cas 3)
 
-## Fichiers attendus
+- **Source** : [Rihanna Head Model](https://sketchfab.com/3d-models/rihanna-head-model-a5c312e6a56d4566af4b848159e8b541) par [oYummi](https://sketchfab.com/oYummi) (CC-BY-4.0)
+- **Fichier servi** : `rihanna.glb`
+- **Regénération** : `npm run prepare:rihanna-model`
 
-1. Exporter depuis Sketchfab en **glTF** (`.gltf` + `.bin` + textures) ou **GLB**.
-2. Placer les sources ici :
-   - `scene-source.gltf` (export Sketchfab brut)
-   - ou directement `rihanna.glb` (fichier servi par l'app)
+Sources Sketchfab : `scene-source.gltf`, `scene.bin`. Les textures PNG Sketchfab peuvent être déposées dans `textures/` avant de relancer le script ; sinon des textures procédurales sont générées.
 
-## Intégration dans Orthoptix
-
-Le cas clinique référence `public/models/rihanna/rihanna.glb` via `src/scene/modeles-tete.ts`.
-
-Après ajout du modèle :
-
-1. Ajuster `decalageFin`, `decalageOrbites`, `masquer` si besoin (voir Maxime / April).
-2. Vérifier que le modèle expose des meshes « Eye » ou définir `orbites` manuellement.
-3. Lancer l'app et tester le zoom reflets + cover test.
-
-## Crédit Sketchfab
-
-Renseigner `license.txt` avec l'URL du modèle, l'auteur et la licence (CC-BY-4.0 en général).
+Le mesh `eyes_low` sert à caler les orbites ; les yeux cliniques Orthoptix le remplacent à l'affichage.
