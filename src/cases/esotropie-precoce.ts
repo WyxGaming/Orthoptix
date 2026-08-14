@@ -550,6 +550,10 @@ export const esotropiePrecoce: CasClinique = {
             id: 'et',
             variantes: ["e't", 'et ', 'esotropie', 'strabisme convergent', 'angle'],
           },
+          {
+            id: 'apparition-precoce',
+            variantes: ['apparition precoce', 'apparition précoce'],
+          },
         ],
         reponseAttendue: "NML, upshoot (hyperaction des obliques inférieurs), E't",
         explication:
