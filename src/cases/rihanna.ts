@@ -51,7 +51,7 @@ export const rihanna: CasClinique = {
       reponse: 'Depuis exactement trois jours, sans signe avant-coureur.',
       poids: 4,
       commentaire:
-        'Un début brutal oriente vers une cause acquise récente (vasculaire, compressive, inflammatoire, HTIC…) et non un strabisme de longue date.',
+        'Un début brutal évoque un tableau acquis récent à investiguer en urgence, à distinguer d’un strabisme de longue date.',
     },
     {
       id: 'diplopie',
@@ -80,7 +80,7 @@ export const rihanna: CasClinique = {
         'Oui, des maux de tête oppressifs, surtout le matin et en fin de journée, plus intenses depuis trois jours.',
       poids: 4,
       commentaire:
-        'Céphalées associées à une diplopie aiguë : penser HTIC, processus intracrânien, migraine ophtalmique…',
+        'Céphalées concomitantes à une diplopie aiguë : signe associé à recouper avec le reste de l’anamnèse, sans présumer l’étiologie.',
     },
     {
       id: 'strabisme-antérieur',
@@ -99,7 +99,7 @@ export const rihanna: CasClinique = {
         'Par moments des « voiles » passagers, surtout en me levant vite, mais je vois encore bien les lettres.',
       poids: 3,
       commentaire:
-        'Obscurations visuelles transitoires peuvent accompagner une HTIC avant une baisse d’acuité franche.',
+        'Obscurations visuelles transitoires : symptomatologie à intégrer au bilan (dont fond d’œil), indépendamment de l’acuité annoncée.',
     },
     {
       id: 'acouphenes',
@@ -107,7 +107,8 @@ export const rihanna: CasClinique = {
       libelle: 'Entendez-vous un bruit dans les oreilles, pulsatile ou en syncope avec le pouls ?',
       reponse: 'Oui, un bourdonnement pulsatile à l’oreille droite depuis quelques semaines.',
       poids: 3,
-      commentaire: 'Acouphène pulsatile : signe d’alerte en faveur d’une HTIC ou d’une pathologie vasculaire intracrânienne.',
+      commentaire:
+        'Acouphène pulsatile : signe d’alarme à noter et confronter aux autres symptômes associés.',
     },
     {
       id: 'poids',
@@ -116,7 +117,7 @@ export const rihanna: CasClinique = {
       reponse: 'J’ai pris environ 8 kg en un an, sans changement alimentaire majeur.',
       poids: 3,
       commentaire:
-        'Prise de poids récente chez une femme jeune : facteur de risque classique d’HTIC idiopathique.',
+        'Prise de poids récente chez une femme jeune : élément contextuel à recouper avec les autres signes d’alarme.',
     },
     {
       id: 'correction',
@@ -133,7 +134,8 @@ export const rihanna: CasClinique = {
       libelle: 'Avez-vous des nausées ou des vomissements associés aux céphalées ?',
       reponse: 'Quelques nausées le matin, pas de vomissements.',
       poids: 2,
-      commentaire: 'Nausées matinales renforcent le soupçon d’hypertension intracrânienne.',
+      commentaire:
+        'Nausées matinales associées aux céphalées : élément à intégrer dans la recherche de signes d’alarme.',
     },
     {
       id: 'contraception',
