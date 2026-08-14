@@ -278,7 +278,7 @@ export const rihanna: CasClinique = {
     lancaster: {
       poids: 4,
       resultat: "À vous de l'analyser.",
-      imageResultat: '/examens/rihanna-lancaster.png',
+      imageResultat: '/examens/IMG_6153.jpeg',
       legendeImage: "À vous de l'analyser.",
     },
     worth: {
