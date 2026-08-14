@@ -15,7 +15,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "prepare:april-model": "node scripts/prepare-april-model.mjs",
-    "prepare:rihanna-model": "node scripts/prepare-rihanna-model.mjs"
+    "prepare:rihanna-model": "node scripts/prepare-rihanna-model.mjs",
+    "prepare:lancaster-image": "node scripts/prepare-lancaster-image.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",
@@ -31,10 +32,11 @@
     "@types/react-dom": "^19.2.4",
     "@types/three": "^0.185.4",
     "@vitejs/plugin-react": "^6.0.5",
+    "pngjs": "^7.0.0",
+    "sharp": "^0.35.3",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
     "vite": "^8.2.1",
-    "vitest": "^4.1.10",
-    "pngjs": "^7.0.0"
+    "vitest": "^4.1.10"
   }
 }
