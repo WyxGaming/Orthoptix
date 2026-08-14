@@ -678,6 +678,22 @@ export const rihanna: CasClinique = {
             essentiel: false,
           },
           {
+            id: 'lancaster',
+            libelle: 'Test de Lancaster',
+            variantes: [
+              'lancaster',
+              'test de lancaster',
+              'test lancaster',
+              'lunettes rouge vert',
+              'lunettes rouge-vert',
+              'red green',
+              'red-green',
+            ],
+            resultat:
+              'Diplopie horizontale persistante en position primaire, plus large en vision de loin qu’en vision de près. Déviation esotrope concordante des deux yeux, compatible avec une atteinte bilatérale du VI ; pas de composante verticale significative.',
+            essentiel: false,
+          },
+          {
             id: 'oct',
             libelle: 'OCT papillaire',
             variantes: ['oct', 'oct papillaire', 'coherence tomographie', 'tomographie coherence'],
@@ -697,7 +713,7 @@ export const rihanna: CasClinique = {
         reponseAttendue:
           'Fond d’œil (papilloedème), IRM cérébrale (éliminer une cause structurale), ponction lombaire avec mesure de la pression du LCR ; bilan sanguin pour éliminer une cause secondaire.',
         explication:
-          'Devant une suspicion d’HTIC : confirmer l’œdème papillaire au fond d’œil, éliminer une cause structurale à l’IRM, documenter l’hyperpression du LCR à la PL. Un bilan sanguin (NFS, ionogramme, fonction rénale, TSH…) recherche les causes secondaires ; champ visuel, OCT ou PEV complètent le suivi fonctionnel.',
+          'Devant une suspicion d’HTIC : confirmer l’œdème papillaire au fond d’œil, éliminer une cause structurale à l’IRM, documenter l’hyperpression du LCR à la PL. Un bilan sanguin (NFS, ionogramme, fonction rénale, TSH…) recherche les causes secondaires ; champ visuel, OCT, PEV ou test de Lancaster complètent le bilan fonctionnel.',
       },
       {
         id: 'etiologie-symptomes',
