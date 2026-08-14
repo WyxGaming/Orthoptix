@@ -16,6 +16,8 @@ export type ConfigModeleTete = {
   orbitesCentroidesDirects?: boolean;
   /** Retire des cm a l'ecart interpupillaire total (chaque oeil rapproche de la moitie). */
   reductionEcartPupillaireCm?: number;
+  /** Facteur d'echelle des globes cliniques (1 = taille extraite du mesh). */
+  echelleGlobes?: number;
   credit?: { titre: string; auteur: string; url: string; licence: string };
 };
 
@@ -59,6 +61,7 @@ export const MODELES_TETE: Record<string, ConfigModeleTete> = {
     orbitesCentroidesDirects: true,
     /** Globes volontairement avancés (+Z) pour calage visible devant le mesh. */
     decalageOrbites: [0, 0.08, 1.1],
+    echelleGlobes: 0.6,
     credit: {
       titre: 'Rihanna Head Model',
       auteur: 'oYummi',
