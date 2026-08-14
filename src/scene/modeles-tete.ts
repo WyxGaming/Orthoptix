@@ -59,8 +59,8 @@ export const MODELES_TETE: Record<string, ConfigModeleTete> = {
     decalageFin: [0, 0.55, 1.15],
     masquer: /^lashes/i,
     orbitesCentroidesDirects: true,
-    /** Globes volontairement avancés (+Z) pour calage visible devant le mesh. */
-    decalageOrbites: [0, 0.08, 0.1],
+    /** Ajustement fin X/Y/Z (cm) après centroïdes eyes_low. */
+    decalageOrbites: [0, -0.42, -0.1],
     echelleGlobes: 0.6,
     credit: {
       titre: 'Rihanna Head Model',
