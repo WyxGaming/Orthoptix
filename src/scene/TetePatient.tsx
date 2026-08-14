@@ -286,15 +286,26 @@ function TeteMesh({
         return;
       }
 
-      const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
-      for (const mat of materials) {
-        if (!mat || !('roughness' in mat)) continue;
+      const ajuster = (source: THREE.Material): THREE.Material => {
+        const mat = source.clone();
+        if (!('roughness' in mat)) return mat;
         const standard = mat as THREE.MeshStandardMaterial;
+        // Face avant seulement : l'intérieur bouche (UV noires) ne doit pas transparaître.
+        standard.side = THREE.FrontSide;
+        standard.transparent = false;
+        standard.opacity = 1;
+        standard.depthWrite = true;
         standard.roughness = Math.max(standard.roughness ?? 0.5, 0.82);
         standard.metalness = Math.min(standard.metalness ?? 0, 0.05);
         if ('envMapIntensity' in standard) standard.envMapIntensity = 0.25;
+        if (standard.map) standard.map.colorSpace = THREE.SRGBColorSpace;
         standard.needsUpdate = true;
-      }
+        return mat;
+      };
+
+      obj.material = Array.isArray(obj.material)
+        ? obj.material.map(ajuster)
+        : ajuster(obj.material);
     });
   }, [clone, config, decalage, hauteur, onOrbites]);
 

@@ -448,7 +448,7 @@
   ],
   "materials": [
     {
-      "alphaMode": "BLEND",
+      "alphaMode": "OPAQUE",
       "doubleSided": true,
       "name": "t_head",
       "normalTexture": {

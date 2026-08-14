@@ -9,7 +9,7 @@
 import { createHash } from 'node:crypto';
 import { execSync } from 'node:child_process';
 import { deflateSync } from 'node:zlib';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -186,10 +186,21 @@ if (manquantes.length > 0) {
   genererTextures();
 }
 
+const gltf = JSON.parse(readFileSync(gltfSource, 'utf8'));
+for (const mat of gltf.materials ?? []) {
+  if (mat.name === 't_head') {
+    mat.alphaMode = 'OPAQUE';
+    delete mat.alphaCutoff;
+  }
+}
+const gltfPatched = join(dossier, 'scene-patched.gltf');
+writeFileSync(gltfPatched, `${JSON.stringify(gltf, null, 2)}\n`);
+
 execSync(
-  'npx --yes @gltf-transform/cli copy public/models/rihanna_head_model/scene.gltf public/models/rihanna_head_model/rihanna.glb',
+  `npx --yes @gltf-transform/cli copy ${gltfPatched} public/models/rihanna_head_model/rihanna.glb`,
   { cwd: racine, stdio: 'inherit' },
 );
+unlinkSync(gltfPatched);
 
 const taille = readFileSync(join(dossier, 'rihanna.glb')).length;
 console.log(`rihanna.glb généré (${Math.round(taille / 1024)} Ko).`);
