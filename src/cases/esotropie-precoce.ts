@@ -574,36 +574,85 @@ export const esotropiePrecoce: CasClinique = {
         niveau: 'L3',
         question: 'Quelle technique opératoire et sur quel(s) muscle(s) va-t-on opérer ?',
         poids: 4,
-        seuil: 3,
-        criteres: [
+        alternatives: [
           {
-            id: 'geste',
-            // Recul = geste attendu ; « resection » est aussi accepté (formulation fréquente).
-            variantes: ['recul', 'recession', 'resection', 'résection'],
-          },
-          {
-            id: 'muscle',
-            variantes: [
-              'droit medial',
-              'droits mediaux',
-              'medial',
-              'droits internes',
-              'droit interne',
+            id: 'recul-dm-odg',
+            criteres: [
+              {
+                id: 'geste',
+                variantes: ['recul', 'recession', 'récession'],
+              },
+              {
+                id: 'dm',
+                variantes: [
+                  'droit medial',
+                  'droits mediaux',
+                  'dm ',
+                  'droits internes',
+                  'droit interne',
+                ],
+              },
+              {
+                id: 'odg',
+                variantes: [
+                  'odg',
+                  'od et og',
+                  'od og',
+                  'bilateral',
+                  'bilaterale',
+                  'deux yeux',
+                  'aux deux yeux',
+                ],
+              },
             ],
+            seuil: 3,
           },
           {
-            id: 'dose',
-            variantes: ['5 mm', '5mm', 'environ 5'],
-          },
-          {
-            id: 'cote',
-            variantes: ['od', 'og', 'bilateral', 'deux yeux', 'odg', 'bilaterale'],
+            id: 'recul-dm-pli-dl-og',
+            criteres: [
+              {
+                id: 'recul',
+                variantes: ['recul', 'recession', 'récession'],
+              },
+              {
+                id: 'dm-og',
+                variantes: [
+                  'dm og',
+                  'droit medial og',
+                  'droit medial de l og',
+                  'dm de l og',
+                  'droit interne og',
+                ],
+              },
+              {
+                id: 'pli',
+                variantes: ['pli', 'pliage', 'plication', 'resection', 'résection'],
+              },
+              {
+                id: 'dl-og',
+                variantes: [
+                  'dl og',
+                  'droit lateral og',
+                  'droit latéral og',
+                  'dl de l og',
+                  'droit externe og',
+                ],
+              },
+            ],
+            seuil: 4,
           },
         ],
+        bonusCriteres: [
+          {
+            id: 'dose',
+            variantes: ['5 mm', '5mm', '5 millimetres', '5 millimètres', 'environ 5'],
+          },
+        ],
+        bonusPoints: 1,
         reponseAttendue:
-          "Recul des droits médiaux OD et OG d'environ 5 mm (loi : 1 mm ≈ 4 DP, soit ~40 DP pour 5 mm bilatéraux).",
+          "Recul des droits médiaux ODG (~5 mm), ou recul du DM OG + pliage du DL OG (~5 mm).",
         explication:
-          "Sur une esotropie précoce d'environ 40 DP, le geste de référence est un recul bilatéral des droits médiaux d'environ 5 mm, selon la règle 1 mm ≈ 4 dioptries prismatiques.",
+          "Deux techniques sont possibles : un recul bilatéral des droits médiaux, ou un recul du droit médial OG associé à un pliage du droit latéral OG. Préciser ~5 mm apporte un bonus (1 mm ≈ 4 DP).",
       },
     ],
   },

@@ -1,4 +1,4 @@
-import type { CasClinique, QuestionAnamnese } from './types';
+import type { CasClinique, CritereOuvert, QuestionAnamnese } from './types';
 
 export const ADMIN_MOT_DE_PASSE = 'ortho2026';
 const CLE_STOCKAGE = 'orthoptix-admin-overrides';
@@ -63,12 +63,21 @@ export function appliquerOverrides(
     if (question.type !== 'ouverte') return question;
     const ajouts = overrides.syntheseVariantes[question.id];
     if (!ajouts) return question;
-    return {
-      ...question,
-      criteres: question.criteres.map((critere) => ({
+
+    const enrichir = (criteres: CritereOuvert[]) =>
+      criteres.map((critere) => ({
         ...critere,
         variantes: [...critere.variantes, ...(ajouts[critere.id] ?? [])],
+      }));
+
+    return {
+      ...question,
+      criteres: question.criteres ? enrichir(question.criteres) : undefined,
+      alternatives: question.alternatives?.map((alt) => ({
+        ...alt,
+        criteres: enrichir(alt.criteres),
       })),
+      bonusCriteres: question.bonusCriteres ? enrichir(question.bonusCriteres) : undefined,
     };
   });
 

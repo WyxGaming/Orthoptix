@@ -34,7 +34,7 @@ function reponsesSyntheseParfaites() {
     'type-strabisme': 'esotropie-precoce',
     'signes-pathognomoniques': "NML, upshoot, E't",
     'indication-chirurgicale': 'oui',
-    'technique-operatoire': 'Recul des droits mediaux OD et OG de 5 mm',
+    'technique-operatoire': 'Recul des droits mediaux OD et OG',
   };
 }
 

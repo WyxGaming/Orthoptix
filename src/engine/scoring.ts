@@ -42,9 +42,9 @@ export function criteresCouvert(reponse: string, criteres: CritereOuvert[]): Cri
 export function evaluerQuestionSynthese(
   question: QuestionSynthese,
   reponse: string | undefined,
-): { points: number; juste: boolean; commentaire?: string } {
+): { points: number; max: number; juste: boolean; commentaire?: string } {
   if (reponse === undefined || reponse.trim() === '') {
-    return { points: 0, juste: false, commentaire: question.explication };
+    return { points: 0, max: question.poids, juste: false, commentaire: question.explication };
   }
 
   if (question.type === 'qcm') {
@@ -52,6 +52,7 @@ export function evaluerQuestionSynthese(
     const juste = reponse === bonne?.id;
     return {
       points: juste ? question.poids : 0,
+      max: question.poids,
       juste,
       commentaire: juste ? undefined : question.explication,
     };
@@ -62,23 +63,49 @@ export function evaluerQuestionSynthese(
     const juste = normaliserTexte(reponse) === attendu;
     return {
       points: juste ? question.poids : 0,
+      max: question.poids,
       juste,
       commentaire: juste ? undefined : question.explication,
     };
   }
 
-  const trouves = criteresCouvert(reponse, question.criteres);
-  const seuil = question.seuil ?? question.criteres.length;
+  const bonus =
+    question.bonusCriteres?.length &&
+    criteresCouvert(reponse, question.bonusCriteres).length > 0
+      ? (question.bonusPoints ?? 0)
+      : 0;
+  const commentaireEchec = `${question.explication} Attendu : ${question.reponseAttendue}`;
+
+  if (question.alternatives?.length) {
+    let bestRatio = 0;
+    let juste = false;
+    for (const alt of question.alternatives) {
+      const trouves = criteresCouvert(reponse, alt.criteres);
+      const seuil = alt.seuil ?? alt.criteres.length;
+      if (trouves.length >= seuil) juste = true;
+      bestRatio = Math.max(bestRatio, trouves.length / Math.max(1, seuil));
+    }
+    const points = (juste ? question.poids : Math.round((question.poids * bestRatio))) + bonus;
+    return {
+      points,
+      max: question.poids,
+      juste,
+      commentaire: juste ? undefined : commentaireEchec,
+    };
+  }
+
+  const criteres = question.criteres ?? [];
+  const trouves = criteresCouvert(reponse, criteres);
+  const seuil = question.seuil ?? criteres.length;
   const juste = trouves.length >= seuil;
-  const points = juste
-    ? question.poids
-    : Math.round((question.poids * trouves.length) / Math.max(1, seuil));
+  const points =
+    (juste ? question.poids : Math.round((question.poids * trouves.length) / Math.max(1, seuil))) +
+    bonus;
   return {
     points,
+    max: question.poids,
     juste,
-    commentaire: juste
-      ? undefined
-      : `${question.explication} Attendu : ${question.reponseAttendue}`,
+    commentaire: juste ? undefined : commentaireEchec,
   };
 }
 
@@ -403,7 +430,7 @@ export function calculerScore(
     lignes.push({
       libelle: `Synthèse ${index + 1}${niveau} — ${question.question}`,
       points: evaluation.points,
-      max: question.poids,
+      max: evaluation.max,
       commentaire: evaluation.commentaire,
       nature: evaluation.juste ? 'acquis' : 'manque',
     });
@@ -454,6 +481,6 @@ export function calculerScore(
     lignes,
     total,
     max,
-    pourcentage: max > 0 ? Math.max(0, Math.round((total / max) * 100)) : 0,
+    pourcentage: max > 0 ? Math.min(100, Math.max(0, Math.round((total / max) * 100))) : 0,
   };
 }
