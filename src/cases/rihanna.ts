@@ -527,36 +527,6 @@ export const rihanna: CasClinique = {
           'Limitation d’abduction bilatérale, esotropie majorée de loin, diplopie horizontale aiguë : le tableau est celui d’une double paralysie du VI.',
       },
       {
-        id: 'etiologie',
-        type: 'qcm',
-        question: 'Quelle étiologie générale doit être évoquée en priorité devant ce tableau chez cette patiente ?',
-        poids: 4,
-        options: [
-          {
-            id: 'htic',
-            libelle: 'Hypertension intracrânienne (HTIC / pseudotumor cérébri)',
-            correct: true,
-          },
-          {
-            id: 'amblyopie',
-            libelle: 'Amblyopie de l’enfance non traitée',
-            correct: false,
-          },
-          {
-            id: 'accommodative',
-            libelle: 'Décompensation d’une esotropie accommodative',
-            correct: false,
-          },
-          {
-            id: 'myopie',
-            libelle: 'Myopie simple',
-            correct: false,
-          },
-        ],
-        explication:
-          'Femme jeune, surpoids récent, céphalées, acouphène pulsatile, diplopie aiguë par double VI : l’HTIC idiopathique doit être évoquée en urgence jusqu’à preuve du contraire.',
-      },
-      {
         id: 'signes-retrouves',
         type: 'ouverte',
         question:
@@ -597,65 +567,141 @@ export const rihanna: CasClinique = {
       },
       {
         id: 'examens-complementaires',
-        type: 'ouverte',
+        type: 'examensComplementaires',
         niveau: 'L2',
         question:
           'Quels examens complémentaires prescrivez-vous pour confirmer l’HTIC et orienter la prise en charge ?',
         poids: 5,
         seuil: 2,
-        criteres: [
+        examens: [
           {
-            id: 'fond-oeil',
+            id: 'fo',
+            libelle: 'Fond d’œil',
             variantes: [
               'fond d oeil',
-              'fond d\'oeil',
+              "fond d'oeil",
               'fond doeil',
+              'fo',
               'papille',
               'papilloedeme',
               'papilledeme',
               'oedeme papillaire',
               'œdème papillaire',
             ],
+            resultat:
+              'Œdème papillaire bilatéral de stade III (Frisén) : élévation papillaire, halo péri-papillaire, oblitération de la cupule, absence de pouls veineux spontané à la papille.',
           },
           {
             id: 'irm',
-            variantes: ['irm', 'imagerie', 'scanner', 'tdc', 'encéphale', 'encephale', 'cerveau'],
+            libelle: 'IRM cérébrale',
+            variantes: [
+              'irm',
+              'imagerie',
+              'irm cerebrale',
+              'encéphale',
+              'encephale',
+              'cerveau',
+              'irm encéphale',
+            ],
+            resultat:
+              'Pas de tumeur ni de processus expansif intracrânien. Ventricules de taille normale. Séquences venographiques : sténose bilatérale des sinus latéraux transverses, sans thrombose veineuse cérébrale. Aspect compatible avec une HTIC idiopathique.',
           },
           {
             id: 'pl',
+            libelle: 'Ponction lombaire',
             variantes: [
               'ponction lombaire',
               'pl',
               'lcr',
-              'pression',
+              'liquide cephalorachidien',
               'pression d ouverture',
-              'hypertension intracrânienne',
-              'htic',
+              'pression lombaire',
             ],
+            resultat:
+              'Pression d’ouverture à 32 cmH₂O (normale < 25). LCR clair, protéinorachie et cytologie normales.',
           },
           {
             id: 'oct',
-            variantes: ['oct', 'coherence tomographie', 'papillaire'],
+            libelle: 'OCT papillaire',
+            variantes: ['oct', 'oct papillaire', 'coherence tomographie', 'tomographie coherence'],
+            resultat:
+              'Épaississement de la couche des fibres nerveuses papillaires bilatéral, concordant avec un œdème papillaire en cours.',
+            essentiel: false,
           },
           {
             id: 'cv',
-            variantes: ['champ visuel', 'perimetrie', 'perimétrie', 'scotome'],
+            libelle: 'Champ visuel',
+            variantes: ['champ visuel', 'perimetrie', 'perimétrie', 'scotome', 'cv'],
+            resultat:
+              'Augmentation du scotome blind spot bilatéral, sans defect neurologique périphérique.',
+            essentiel: false,
           },
         ],
         reponseAttendue:
-          'Fond d’œil (recherche de papilloedème), IRM cérébrale, ponction lombaire avec mesure de la pression du LCR ; OCT papillaire et champ visuel en complément.',
+          'Fond d’œil (papilloedème), IRM cérébrale (éliminer une cause structurale), ponction lombaire avec mesure de la pression du LCR.',
         explication:
-          'Devant une HTIC suspectée : confirmer l’œdème papillaire au fond d’œil, éliminer une cause structurale à l’IRM, documenter l’HTIC à la PL (pression d’ouverture élevée). OCT et champ visuel aident au suivi.',
+          'Devant une HTIC suspectée : confirmer l’œdème papillaire au fond d’œil, éliminer une cause structurale à l’IRM, documenter l’HTIC à la PL (pression d’ouverture élevée).',
       },
       {
-        id: 'urgence',
-        type: 'ouiNon',
+        id: 'etiologie-symptomes',
+        type: 'ouverte',
         question:
-          'Faut-il orienter la patiente en urgence vers un service hospitalier (neuro-ophtalmologie / neurologie) ?',
-        poids: 3,
-        correct: true,
+          'Quelle est l’étiologie de cette paralysie et quels sont ses symptômes principaux ?',
+        poids: 5,
+        seuil: 3,
+        criteres: [
+          {
+            id: 'htic',
+            variantes: [
+              'htic',
+              'hypertension intracrânienne',
+              'hypertension intracranienne',
+              'pseudotumor',
+              'pseudotumeur',
+              'iiH',
+              'idiopathic intracranial',
+            ],
+          },
+          {
+            id: 'cephalees',
+            variantes: ['cephalee', 'céphalée', 'mal de tete', 'maux de tete'],
+          },
+          {
+            id: 'diplopie',
+            variantes: ['diplopie', 'vision double', 'double'],
+          },
+          {
+            id: 'papilloedeme',
+            variantes: [
+              'papilloedeme',
+              'papilledeme',
+              'oedeme papillaire',
+              'œdème papillaire',
+              'papille',
+            ],
+          },
+          {
+            id: 'acouphene',
+            variantes: ['acouphene', 'acouphène', 'bourdonnement', 'pulsatile'],
+          },
+          {
+            id: 'vi',
+            variantes: [
+              'vi',
+              'nerf vi',
+              '6',
+              'six',
+              'abducens',
+              'abduction',
+              'paralysie',
+              'paresie',
+            ],
+          },
+        ],
+        reponseAttendue:
+          'HTIC idiopathique (pseudotumor cérébri) : céphalées, diplopie horizontale par double paralysie du VI, papilloedème, acouphène pulsatile, obscurations visuelles ; prise de poids récente.',
         explication:
-          'Diplopie aiguë + double paralysie du VI + signes d’HTIC : orientation hospitalière urgente pour imagerie, fond d’œil spécialisé et prise en charge étiologique (ne pas se limiter à un bilan orthoptique ambulatoire).',
+          'La double paralysie du VI est ici la manifestation oculomotrice d’une HTIC non encore diagnostiquée. Les symptômes d’HTIC associent céphalées, signes visuels (papilloedème, obscurations) et parfois acouphène pulsatile.',
       },
     ],
   },

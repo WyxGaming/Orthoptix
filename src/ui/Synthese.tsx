@@ -1,7 +1,65 @@
 import { useState } from 'react';
 import { useSession } from '../engine/session';
+import { examensComplementairesDetectes } from '../engine/scoring';
 import type { QuestionSynthese, ReponsesSynthese } from '../engine/types';
 import { Bouton, Carte, Etiquette } from './composants';
+
+function ChampExamensComplementaires({
+  question,
+  valeur,
+  onChange,
+}: {
+  question: Extract<QuestionSynthese, { type: 'examensComplementaires' }>;
+  valeur: string;
+  onChange: (valeur: string) => void;
+}) {
+  const [consultes, setConsultes] = useState(false);
+  const detectes = consultes ? examensComplementairesDetectes(valeur, question.examens) : [];
+
+  return (
+    <div className="space-y-3">
+      <textarea
+        value={valeur}
+        onChange={(e) => {
+          setConsultes(false);
+          onChange(e.target.value);
+        }}
+        rows={4}
+        placeholder="Ex. fond d'œil, IRM encéphale, ponction lombaire…"
+        className="w-full resize-y rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none placeholder:text-slate-600 focus:border-sky-500"
+      />
+      <Bouton
+        disabled={!valeur.trim()}
+        onClick={() => setConsultes(true)}
+        className="justify-center"
+      >
+        Consulter les résultats
+      </Bouton>
+      {consultes && (
+        <div className="space-y-2">
+          {detectes.length === 0 ? (
+            <p className="rounded-md border border-amber-800/60 bg-amber-950/20 px-3 py-2 text-sm text-amber-200/90">
+              Aucun examen reconnu dans votre prescription. Vérifiez les intitulés (fond d'œil,
+              IRM, ponction lombaire…).
+            </p>
+          ) : (
+            detectes.map((examen) => (
+              <div
+                key={examen.id}
+                className="rounded-md border border-sky-800/50 bg-sky-950/25 px-3 py-2"
+              >
+                <div className="text-xs font-semibold uppercase tracking-wide text-sky-300">
+                  {examen.libelle}
+                </div>
+                <p className="mt-1 text-sm text-slate-200">{examen.resultat}</p>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function ChampQuestion({
   question,
@@ -12,6 +70,12 @@ function ChampQuestion({
   valeur: string;
   onChange: (valeur: string) => void;
 }) {
+  if (question.type === 'examensComplementaires') {
+    return (
+      <ChampExamensComplementaires question={question} valeur={valeur} onChange={onChange} />
+    );
+  }
+
   if (question.type === 'qcm') {
     return (
       <div className="space-y-2">

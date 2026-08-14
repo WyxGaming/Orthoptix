@@ -5,6 +5,7 @@ import type {
   CasClinique,
   ConditionsExamen,
   CritereOuvert,
+  ExamenComplementairePrescrit,
   ExamenId,
   Intervalle,
   QuestionSynthese,
@@ -38,6 +39,17 @@ export function criteresCouvert(reponse: string, criteres: CritereOuvert[]): Cri
   );
 }
 
+/** Examens complementaires detectes dans une prescription libre. */
+export function examensComplementairesDetectes(
+  reponse: string,
+  examens: ExamenComplementairePrescrit[],
+): ExamenComplementairePrescrit[] {
+  const texte = normaliserTexte(reponse);
+  return examens.filter((examen) =>
+    examen.variantes.some((variante) => texte.includes(normaliserTexte(variante))),
+  );
+}
+
 export function evaluerQuestionSynthese(
   question: QuestionSynthese,
   reponse: string | undefined,
@@ -63,6 +75,23 @@ export function evaluerQuestionSynthese(
       points: juste ? question.poids : 0,
       juste,
       commentaire: juste ? undefined : question.explication,
+    };
+  }
+
+  if (question.type === 'examensComplementaires') {
+    const trouves = examensComplementairesDetectes(reponse, question.examens);
+    const essentielsTrouves = trouves.filter((e) => e.essentiel !== false);
+    const seuil = question.seuil ?? 2;
+    const juste = essentielsTrouves.length >= seuil;
+    const points = juste
+      ? question.poids
+      : Math.round((question.poids * essentielsTrouves.length) / Math.max(1, seuil));
+    return {
+      points,
+      juste,
+      commentaire: juste
+        ? undefined
+        : `${question.explication} Attendu : ${question.reponseAttendue}`,
     };
   }
 

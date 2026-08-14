@@ -13,7 +13,7 @@ import {
 } from '../domain/ocular-model';
 import { CATALOGUE_EXAMENS } from './exams';
 import { casCliniquePrepare } from '../cases';
-import { calculerScore, dansIntervalle, conditionsCorrespond, type Resultat } from './scoring';
+import { calculerScore, dansIntervalle, conditionsCorrespond, examensComplementairesDetectes, type Resultat } from './scoring';
 import { examenResolu, libelleConditions } from './examen-resolver';
 import type {
   ActionJournal,
@@ -361,7 +361,7 @@ export const useSession = create<SessionState>((set, get) => ({
     const { cas, bilan } = get();
     // Chaque reponse de synthese s'inscrit en fin de cahier : c'est le seul endroit
     // du jeu ou le diagnostic et la conduite chirurgicale sont nommes.
-    const lignesSynthese = cas.synthese.questions.map((question, index) => {
+    const lignesSynthese = cas.synthese.questions.flatMap((question, index) => {
       const brute = reponses[question.id]?.trim() ?? '';
       let contenu = brute || 'Sans réponse.';
       if (question.type === 'qcm') {
@@ -369,11 +369,26 @@ export const useSession = create<SessionState>((set, get) => ({
       } else if (question.type === 'ouiNon') {
         contenu = brute === 'oui' ? 'Oui' : brute === 'non' ? 'Non' : contenu;
       }
-      return {
-        id: `synthese-${question.id}`,
-        titre: `Synthèse ${index + 1}`,
-        contenu,
-      };
+
+      const lignes = [
+        {
+          id: `synthese-${question.id}`,
+          titre: `Synthèse ${index + 1}`,
+          contenu,
+        },
+      ];
+
+      if (question.type === 'examensComplementaires' && brute) {
+        for (const examen of examensComplementairesDetectes(brute, question.examens)) {
+          lignes.push({
+            id: `synthese-${question.id}-${examen.id}`,
+            titre: examen.libelle,
+            contenu: examen.resultat,
+          });
+        }
+      }
+
+      return lignes;
     });
     set({
       reponsesSynthese: reponses,

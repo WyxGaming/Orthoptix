@@ -98,6 +98,18 @@ export type CritereOuvert = {
 
 export type NiveauPedagogique = 'L1' | 'L2' | 'L3';
 
+/** Examen complementaire prescrit en synthese : detecte par mots-cles, retour simule. */
+export type ExamenComplementairePrescrit = {
+  id: string;
+  libelle: string;
+  /** Formes acceptees dans la prescription (normalisation identique aux reponses ouvertes). */
+  variantes: string[];
+  /** Compte rendu remis lorsque l'examen est prescrit. */
+  resultat: string;
+  /** Compte pour le seuil de prescription (defaut : true). */
+  essentiel?: boolean;
+};
+
 /**
  * Question de la synthese diagnostique. QCM, oui/non ou reponse ouverte evaluee
  * par mots-cles (les signes pathognomoniques, la technique chirurgicale…).
@@ -118,6 +130,13 @@ export type QuestionSynthese = {
       /** Nombre de criteres requis pour le score plein. Par defaut : tous. */
       seuil?: number;
       /** Formulation expert, affichee au debriefing. */
+      reponseAttendue: string;
+    }
+  | {
+      type: 'examensComplementaires';
+      examens: ExamenComplementairePrescrit[];
+      /** Nombre d'examens essentiels a prescrire pour le score plein. Par defaut : 2. */
+      seuil?: number;
       reponseAttendue: string;
     }
 );
