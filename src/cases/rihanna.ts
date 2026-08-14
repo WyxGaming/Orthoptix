@@ -431,9 +431,9 @@ export const rihanna: CasClinique = {
         type: 'examensComplementaires',
         niveau: 'L2',
         question:
-          'Quels examens complémentaires prescrivez-vous pour obtenir un diagnostic et orienter la prise en charge ?',
+          'Un ophtalmologiste vous teste et vous demande quels examens ophtalmologiques faites-vous pour trouver une étiologie à cette paralysie ?',
         poids: 5,
-        seuil: 2,
+        seuil: 1,
         examens: [
           {
             id: 'fo',
@@ -455,6 +455,7 @@ export const rihanna: CasClinique = {
           {
             id: 'irm',
             libelle: 'IRM cérébrale',
+            essentiel: false,
             variantes: [
               'irm',
               'imagerie',
@@ -470,6 +471,7 @@ export const rihanna: CasClinique = {
           {
             id: 'pl',
             libelle: 'Ponction lombaire',
+            essentiel: false,
             variantes: [
               'ponction lombaire',
               'pl',
@@ -542,9 +544,9 @@ export const rihanna: CasClinique = {
           },
         ],
         reponseAttendue:
-          'Fond d’œil (papilloedème), IRM cérébrale (éliminer une cause structurale), ponction lombaire avec mesure de la pression du LCR ; bilan sanguin pour éliminer une cause secondaire.',
+          'Fond d’œil : recherche d’un œdème papillaire orientant vers une hypertension intracrânienne.',
         explication:
-          'Devant une suspicion d’HTIC : confirmer l’œdème papillaire au fond d’œil, éliminer une cause structurale à l’IRM, documenter l’hyperpression du LCR à la PL. Un bilan sanguin (NFS, ionogramme, fonction rénale, TSH…) recherche les causes secondaires ; champ visuel, OCT ou PEV complètent le bilan fonctionnel.',
+          'Devant une paralysie du VI, le fond d’œil est l’examen ophtalmologique clé pour rechercher un papilloedème et orienter vers une étiologie intracrânienne. L’IRM, la ponction lombaire ou le bilan sanguin relèvent ensuite de la prise en charge médicale.',
       },
       {
         id: 'etiologie-symptomes',

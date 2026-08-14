@@ -27,11 +27,8 @@ describe('examensComplementairesDetectes', () => {
     expect(detectes.map((e) => e.id)).toEqual(['fo', 'irm', 'pl', 'bilan-sanguin', 'pev']);
   });
 
-  it('attribue le score plein si au moins deux examens essentiels sont prescrits', () => {
-    const evaluation = evaluerQuestionSynthese(
-      question,
-      "FO, IRM cérébrale, ponction lombaire",
-    );
+  it('attribue le score plein si le fond d oeil est propose', () => {
+    const evaluation = evaluerQuestionSynthese(question, "Fond d'œil");
     expect(evaluation.juste).toBe(true);
     expect(evaluation.points).toBe(question.poids);
   });
