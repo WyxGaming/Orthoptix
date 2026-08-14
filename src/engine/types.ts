@@ -25,7 +25,8 @@ export type ExamenId =
   | 'coverPres'
   | 'coverLoin'
   | 'deviometrie'
-  | 'biprisme';
+  | 'biprisme'
+  | 'lancaster';
 
 /**
  * Ce que le praticien manipule dans la scene 3D pendant l'examen.
@@ -157,6 +158,10 @@ export type ExamenCas = {
   poids: number;
   /** Compte rendu remis au praticien une fois l'examen realise. */
   resultat: string;
+  /** Image affichee a la place du texte (ex. test de Lancaster). */
+  imageResultat?: string;
+  /** Legende sous l'image. */
+  legendeImage?: string;
   /** Fourchette de reponse acceptee pour les examens chiffres. */
   attendu?: Intervalle;
   /** Pourquoi cet examen n'apporte rien dans ce cas precis. */

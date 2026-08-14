@@ -27,12 +27,6 @@ describe('examensComplementairesDetectes', () => {
     expect(detectes.map((e) => e.id)).toEqual(['fo', 'irm', 'pl', 'bilan-sanguin', 'pev']);
   });
 
-  it('detecte le test de Lancaster', () => {
-    const detectes = examensComplementairesDetectes('Test de Lancaster', question.examens);
-    expect(detectes.map((e) => e.id)).toEqual(['lancaster']);
-    expect(detectes[0]?.imageResultat).toBe('/examens/rihanna-lancaster.png');
-  });
-
   it('attribue le score plein si au moins deux examens essentiels sont prescrits', () => {
     const evaluation = evaluerQuestionSynthese(
       question,

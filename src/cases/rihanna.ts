@@ -275,6 +275,35 @@ export const rihanna: CasClinique = {
           'Deux images distinctes au test rouge traduisent une diplopie binoculaire persistante, cohérente avec une déviation récente non adaptée.',
       },
     },
+    lancaster: {
+      poids: 4,
+      resultat: '',
+      imageResultat: '/examens/rihanna-lancaster.png',
+      legendeImage:
+        'Test de Lancaster — document brut. Analysez la diplopie et la déviation sur les grilles OSX et ODX.',
+      interpretation: {
+        question: 'Que concluez-vous de ce test de Lancaster ?',
+        options: [
+          {
+            id: 'verticale-dissociee',
+            libelle: 'Diplopie verticale dissociée (décalages verticaux opposés OSX / ODX)',
+            correct: true,
+          },
+          {
+            id: 'horizontale-pure',
+            libelle: 'Diplopie horizontale pure, sans composante verticale',
+            correct: false,
+          },
+          {
+            id: 'fusion',
+            libelle: 'Superposition des marques : pas de diplopie',
+            correct: false,
+          },
+        ],
+        explication:
+          'Des marques décalées verticalement en sens opposé sur OSX et ODX traduisent une composante verticale dissociée, à intégrer au bilan oculomoteur.',
+      },
+    },
     worth: {
       poids: 3,
       resultat: 'Perception de cinq points : deux rouges, trois verts, disposés horizontalement.',
@@ -496,6 +525,7 @@ export const rihanna: CasClinique = {
     'motilite',
     'verreRouge',
     'worth',
+    'lancaster',
     'hirschberg',
     'krimsky',
     'krimskyLoin',
@@ -678,23 +708,6 @@ export const rihanna: CasClinique = {
             essentiel: false,
           },
           {
-            id: 'lancaster',
-            libelle: 'Test de Lancaster',
-            variantes: [
-              'lancaster',
-              'test de lancaster',
-              'test lancaster',
-              'lunettes rouge vert',
-              'lunettes rouge-vert',
-              'red green',
-              'red-green',
-            ],
-            imageResultat: '/examens/rihanna-lancaster.png',
-            legendeImage:
-              'Test de Lancaster — document brut, sans interprétation. Analysez la diplopie et la déviation.',
-            essentiel: false,
-          },
-          {
             id: 'oct',
             libelle: 'OCT papillaire',
             variantes: ['oct', 'oct papillaire', 'coherence tomographie', 'tomographie coherence'],
@@ -714,7 +727,7 @@ export const rihanna: CasClinique = {
         reponseAttendue:
           'Fond d’œil (papilloedème), IRM cérébrale (éliminer une cause structurale), ponction lombaire avec mesure de la pression du LCR ; bilan sanguin pour éliminer une cause secondaire.',
         explication:
-          'Devant une suspicion d’HTIC : confirmer l’œdème papillaire au fond d’œil, éliminer une cause structurale à l’IRM, documenter l’hyperpression du LCR à la PL. Un bilan sanguin (NFS, ionogramme, fonction rénale, TSH…) recherche les causes secondaires ; champ visuel, OCT, PEV ou test de Lancaster complètent le bilan fonctionnel.',
+          'Devant une suspicion d’HTIC : confirmer l’œdème papillaire au fond d’œil, éliminer une cause structurale à l’IRM, documenter l’hyperpression du LCR à la PL. Un bilan sanguin (NFS, ionogramme, fonction rénale, TSH…) recherche les causes secondaires ; champ visuel, OCT ou PEV complètent le bilan fonctionnel.',
       },
       {
         id: 'etiologie-symptomes',

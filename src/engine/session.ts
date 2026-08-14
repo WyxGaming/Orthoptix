@@ -325,8 +325,12 @@ export const useSession = create<SessionState>((set, get) => ({
       }
 
       const libelleCond = conditions ? ` (${libelleConditions(conditions)})` : '';
+      const contenuTexte =
+        examen?.resultat?.trim() ||
+        examen?.legendeImage ||
+        (examen?.imageResultat ? 'Document visuel consigné.' : 'Examen réalisé, sans élément notable pour ce cas.');
       const contenu = [
-        examen?.resultat ?? 'Examen réalisé, sans élément notable pour ce cas.',
+        contenuTexte,
         passage.mesure !== undefined ? `Mesure notee : ${passage.mesure} DP.` : null,
       ]
         .filter(Boolean)

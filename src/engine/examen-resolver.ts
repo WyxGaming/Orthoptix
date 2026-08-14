@@ -36,6 +36,7 @@ export const EXAMENS_DISSOCIANTS: ExamenId[] = [
   'worth',
   'bagolini',
   'verreRouge',
+  'lancaster',
   'bielschowsky',
   'motilite',
 ];

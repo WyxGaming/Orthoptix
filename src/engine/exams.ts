@@ -55,6 +55,14 @@ export const CATALOGUE_EXAMENS: Record<ExamenId, DefinitionExamen> = {
     description: 'Filtre rouge.',
     interaction: 'presentation',
   },
+  lancaster: {
+    id: 'lancaster',
+    nom: 'Test de Lancaster',
+    rubrique: 'sensoriel',
+    description:
+      'Lunettes rouge et vert, mesure de la diplopie sur grilles OSX et ODX. Analysez le document obtenu.',
+    interaction: 'presentation',
+  },
   motilite: {
     id: 'motilite',
     nom: 'Motilité oculaire',

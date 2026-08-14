@@ -466,9 +466,26 @@ export function PanneauExamen({
               </Bouton>
             ) : (
               !examenNonContributif && (
-                <p className="rounded-md border border-slate-700 bg-slate-950/60 p-3 text-sm text-slate-200">
-                  {examenEffectif?.resultat ?? 'Le test ne montre rien de particulier.'}
-                </p>
+                <>
+                  {examenEffectif?.imageResultat ? (
+                    <figure className="space-y-2 rounded-md border border-slate-700 bg-slate-950/60 p-3">
+                      <img
+                        src={examenEffectif.imageResultat}
+                        alt={examenEffectif.legendeImage ?? definition.nom}
+                        className="max-h-80 w-full rounded border border-slate-700/80 bg-slate-950 object-contain"
+                      />
+                      {examenEffectif.legendeImage && (
+                        <figcaption className="text-xs text-slate-400">
+                          {examenEffectif.legendeImage}
+                        </figcaption>
+                      )}
+                    </figure>
+                  ) : (
+                    <p className="rounded-md border border-slate-700 bg-slate-950/60 p-3 text-sm text-slate-200">
+                      {examenEffectif?.resultat ?? 'Le test ne montre rien de particulier.'}
+                    </p>
+                  )}
+                </>
               )
             )}
           </div>
