@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { EYES, type BasePrisme, type Eye } from '../domain/ocular-model';
 import { CATALOGUE_EXAMENS } from '../engine/exams';
+import { estSaisieClavier, oeilPourRaccourciOcclusion } from '../engine/raccourcis-occlusion';
 import {
   cleConditions,
   conditionsMesureAttendues,
@@ -161,6 +162,20 @@ function CommandesMotilite() {
 function CommandesOcclusion() {
   const occlure = useSession((s) => s.occlure);
   const occlusion = useSession((s) => s.etat.occlusion);
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (estSaisieClavier(event.target)) return;
+      const oeil = oeilPourRaccourciOcclusion(event.key);
+      if (!oeil) return;
+      event.preventDefault();
+      event.stopPropagation();
+      occlure(oeil);
+    };
+
+    document.addEventListener('keydown', onKey, true);
+    return () => document.removeEventListener('keydown', onKey, true);
+  }, [occlure]);
 
   return (
     <div className="space-y-2">

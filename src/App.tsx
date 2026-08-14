@@ -1,6 +1,5 @@
 import { Canvas } from '@react-three/fiber';
-import { useEffect, useState } from 'react';
-import { CATALOGUE_EXAMENS } from './engine/exams';
+import { useState } from 'react';
 import { useSession } from './engine/session';
 import { CHAMP_ENSEMBLE_DEG, DISTANCE_OBSERVATEUR } from './scene/geometrie';
 import { PatientScene } from './scene/PatientScene';
@@ -18,37 +17,6 @@ function Bilan() {
   const mode = useSession((s) => s.mode);
   const passerALaSynthese = useSession((s) => s.passerALaSynthese);
   const [zoom, setZoom] = useState(false);
-
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      const cible = event.target;
-      if (
-        cible instanceof HTMLInputElement ||
-        cible instanceof HTMLTextAreaElement ||
-        cible instanceof HTMLSelectElement
-      ) {
-        return;
-      }
-
-      const { examenEnCours, occlure } = useSession.getState();
-      if (!examenEnCours) return;
-      if (CATALOGUE_EXAMENS[examenEnCours].interaction !== 'occlusion') return;
-
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault();
-        occlure('OD');
-      } else if (event.key === 'ArrowRight') {
-        event.preventDefault();
-        occlure('OG');
-      } else if (event.key === 'ArrowDown') {
-        event.preventDefault();
-        occlure('aucune');
-      }
-    };
-
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
 
   return (
     <div className="flex h-full flex-col">
