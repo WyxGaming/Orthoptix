@@ -467,7 +467,7 @@
       }
     },
     {
-      "alphaCutoff": 1.0,
+      "alphaCutoff": 0.5,
       "alphaMode": "MASK",
       "doubleSided": true,
       "extensions": {

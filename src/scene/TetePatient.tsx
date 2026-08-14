@@ -6,6 +6,7 @@ import type { ConfigModeleTete } from './modeles-tete';
 import { ORBITES_DEFAUT, type PositionsOrbites } from './orbites';
 
 const estOeilModele = (nom: string) => /eye/i.test(nom) && !/eyelash/i.test(nom);
+const estCheveuxModele = (nom: string) => /hair/i.test(nom);
 
 function centroide(groupe: THREE.Vector3[]): THREE.Vector3 {
   const c = new THREE.Vector3();
@@ -290,6 +291,17 @@ function TeteMesh({
         const mat = source.clone();
         if (!('roughness' in mat)) return mat;
         const standard = mat as THREE.MeshStandardMaterial;
+
+        if (estCheveuxModele(obj.name)) {
+          standard.side = THREE.DoubleSide;
+          standard.transparent = false;
+          standard.alphaTest = 0.5;
+          standard.depthWrite = true;
+          if (standard.map) standard.map.colorSpace = THREE.SRGBColorSpace;
+          standard.needsUpdate = true;
+          return mat;
+        }
+
         // Face avant seulement : l'intérieur bouche (UV noires) ne doit pas transparaître.
         standard.side = THREE.FrontSide;
         standard.transparent = false;

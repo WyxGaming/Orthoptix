@@ -12,6 +12,7 @@ import { deflateSync } from 'node:zlib';
 import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { PNG } from 'pngjs';
 
 const racine = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dossier = join(racine, 'public/models/rihanna_head_model');
@@ -149,6 +150,26 @@ function textureManquante(entree) {
   return !noms.some((f) => existsSync(join(texturesDir, f)));
 }
 
+/** Sketchfab : fond noir des hair cards sans alpha → rectangles visibles. */
+function corrigerAlphaCheveux() {
+  const chemin = join(texturesDir, 't_cards_baseColor.png');
+  if (!existsSync(chemin)) return;
+
+  const png = PNG.sync.read(readFileSync(chemin));
+  let corriges = 0;
+  for (let i = 0; i < png.data.length; i += 4) {
+    const r = png.data[i];
+    const g = png.data[i + 1];
+    const b = png.data[i + 2];
+    if (r < 32 && g < 32 && b < 32) {
+      png.data[i + 3] = 0;
+      corriges++;
+    }
+  }
+  writeFileSync(chemin, PNG.sync.write(png));
+  console.log(`Alpha cheveux corrigé (${corriges} px transparents).`);
+}
+
 function genererTextures() {
   mkdirSync(texturesDir, { recursive: true });
   const w = 512;
@@ -186,11 +207,17 @@ if (manquantes.length > 0) {
   genererTextures();
 }
 
+corrigerAlphaCheveux();
+
 const gltf = JSON.parse(readFileSync(gltfSource, 'utf8'));
 for (const mat of gltf.materials ?? []) {
   if (mat.name === 't_head') {
     mat.alphaMode = 'OPAQUE';
     delete mat.alphaCutoff;
+  }
+  if (mat.name === 't_cards') {
+    mat.alphaMode = 'MASK';
+    mat.alphaCutoff = 0.5;
   }
 }
 const gltfPatched = join(dossier, 'scene-patched.gltf');
