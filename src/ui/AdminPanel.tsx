@@ -3,18 +3,18 @@ import { CAS_DISPONIBLES, casCliniquePrepare } from '../cases';
 import {
   ajouterQuestion,
   ajouterQuestionSynthese,
-  ajouterVarianteSynthese,
-  criteresOuvertsQuestion,
-  motsCritereSynthese,
+  enregistrerCriteresSynthese,
+  modifierQuestionSynthese,
   overridesCas,
+  questionSyntheseAdmin,
+  reinitialiserCriteresSynthese,
   retirerQuestion,
   retirerQuestionSynthese,
-  retirerVarianteBaseSynthese,
-  retirerVarianteSynthese,
+  type SyntheseCriteresOverride,
 } from '../engine/admin';
 import { useAdminSession } from '../engine/adminSession';
 import { useSession } from '../engine/session';
-import type { QuestionAnamnese, QuestionSynthese } from '../engine/types';
+import type { AlternativeOuverte, CritereOuvert, QuestionAnamnese, QuestionSynthese } from '../engine/types';
 import { Bouton, Carte, Etiquette } from './composants';
 
 function FormulaireQuestion({
@@ -382,7 +382,364 @@ function ListeQuestionsSyntheseAdmin({
   );
 }
 
-function SectionMotsSynthese({
+function parseVariantes(texte: string): string[] {
+  return texte
+    .split(/[,;\n]/)
+    .map((v) => v.trim())
+    .filter(Boolean);
+}
+
+function joinVariantes(variantes: string[]): string {
+  return variantes.join(', ');
+}
+
+type LigneCritere = { id: string; variantes: string };
+
+type EtatCriteres = {
+  seuil: string;
+  criteres: LigneCritere[];
+  alternatives: { id: string; seuil: string; criteres: LigneCritere[] }[];
+  bonusCriteres: LigneCritere[];
+  bonusPoints: string;
+};
+
+function etatDepuisQuestion(question: Extract<QuestionSynthese, { type: 'ouverte' }>): EtatCriteres {
+  return {
+    seuil: question.seuil !== undefined ? String(question.seuil) : '',
+    criteres: (question.criteres ?? []).map((c) => ({
+      id: c.id,
+      variantes: joinVariantes(c.variantes),
+    })),
+    alternatives: (question.alternatives ?? []).map((alt) => ({
+      id: alt.id ?? '',
+      seuil: alt.seuil !== undefined ? String(alt.seuil) : '',
+      criteres: alt.criteres.map((c) => ({
+        id: c.id,
+        variantes: joinVariantes(c.variantes),
+      })),
+    })),
+    bonusCriteres: (question.bonusCriteres ?? []).map((c) => ({
+      id: c.id,
+      variantes: joinVariantes(c.variantes),
+    })),
+    bonusPoints: question.bonusPoints !== undefined ? String(question.bonusPoints) : '',
+  };
+}
+
+function overrideDepuisEtat(etat: EtatCriteres): SyntheseCriteresOverride {
+  const mapLignes = (lignes: LigneCritere[]): CritereOuvert[] =>
+    lignes
+      .filter((l) => l.id.trim() && parseVariantes(l.variantes).length > 0)
+      .map((l) => ({ id: l.id.trim(), variantes: parseVariantes(l.variantes) }));
+
+  const alternatives: AlternativeOuverte[] = etat.alternatives
+    .filter((alt) => alt.criteres.some((c) => c.id.trim()))
+    .map((alt) => ({
+      id: alt.id.trim() || undefined,
+      seuil: alt.seuil.trim() ? Number.parseInt(alt.seuil, 10) : undefined,
+      criteres: mapLignes(alt.criteres),
+    }))
+    .filter((alt) => alt.criteres.length > 0);
+
+  const override: SyntheseCriteresOverride = {
+    criteres: mapLignes(etat.criteres),
+    alternatives: alternatives.length > 0 ? alternatives : undefined,
+    bonusCriteres: mapLignes(etat.bonusCriteres),
+    bonusPoints: etat.bonusPoints.trim() ? Number.parseInt(etat.bonusPoints, 10) : undefined,
+  };
+  if (etat.seuil.trim()) override.seuil = Number.parseInt(etat.seuil, 10);
+  if (override.criteres?.length === 0) override.criteres = undefined;
+  if (override.bonusCriteres?.length === 0) override.bonusCriteres = undefined;
+  return override;
+}
+
+function LigneCritereEditor({
+  ligne,
+  onChange,
+  onSupprimer,
+}: {
+  ligne: LigneCritere;
+  onChange: (ligne: LigneCritere) => void;
+  onSupprimer: () => void;
+}) {
+  return (
+    <div className="space-y-1 rounded-md border border-slate-800 bg-slate-950/40 p-2">
+      <div className="flex gap-2">
+        <input
+          value={ligne.id}
+          onChange={(e) => onChange({ ...ligne, id: e.target.value })}
+          placeholder="Identifiant du critère"
+          className="w-40 rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-xs text-slate-100 outline-none focus:border-sky-500"
+        />
+        <Bouton ton="danger" onClick={onSupprimer}>
+          Supprimer
+        </Bouton>
+      </div>
+      <textarea
+        value={ligne.variantes}
+        onChange={(e) => onChange({ ...ligne, variantes: e.target.value })}
+        rows={2}
+        placeholder="Mots acceptés, séparés par des virgules"
+        className="w-full resize-y rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-xs text-slate-100 outline-none focus:border-sky-500"
+      />
+    </div>
+  );
+}
+
+function EditeurCriteresQuestion({
+  casId,
+  question,
+  revision,
+  onChange,
+}: {
+  casId: string;
+  question: Extract<QuestionSynthese, { type: 'ouverte' }>;
+  revision: number;
+  onChange: () => void;
+}) {
+  void revision;
+  const [ouvert, setOuvert] = useState(false);
+  const [etat, setEtat] = useState<EtatCriteres>(() => etatDepuisQuestion(question));
+  const adminAjoutee = questionSyntheseAdmin(casId, question.id);
+  const overrideActif = Boolean(overridesCas(casId).syntheseCriteresOverrides[question.id]);
+
+  const sauvegarder = () => {
+    const patch = overrideDepuisEtat(etat);
+    if (adminAjoutee) {
+      modifierQuestionSynthese(casId, question.id, {
+        ...question,
+        seuil: patch.seuil,
+        criteres: patch.criteres,
+        alternatives: patch.alternatives,
+        bonusCriteres: patch.bonusCriteres,
+        bonusPoints: patch.bonusPoints,
+      });
+    } else {
+      enregistrerCriteresSynthese(casId, question.id, patch);
+    }
+    onChange();
+  };
+
+  const reinitialiser = () => {
+    if (adminAjoutee) return;
+    reinitialiserCriteresSynthese(casId, question.id);
+    onChange();
+  };
+
+  return (
+    <div className="rounded-md border border-slate-800 p-4">
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <p className="text-sm font-medium text-slate-200">{question.question}</p>
+        <div className="flex gap-2">
+          {overrideActif && !adminAjoutee && <Etiquette>Modifié</Etiquette>}
+          <Bouton ton="discret" onClick={() => setOuvert(!ouvert)}>
+            {ouvert ? 'Replier' : 'Modifier les critères'}
+          </Bouton>
+        </div>
+      </div>
+
+      {ouvert && (
+        <div className="mt-4 space-y-4">
+          {(question.criteres !== undefined || etat.criteres.length > 0) && (
+            <div className="space-y-2">
+              <div className="flex flex-wrap items-center gap-3">
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  Critères simples
+                </p>
+                <label className="flex items-center gap-2 text-xs text-slate-400">
+                  Seuil
+                  <input
+                    value={etat.seuil}
+                    onChange={(e) => setEtat({ ...etat, seuil: e.target.value })}
+                    className="w-16 rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-slate-100 outline-none focus:border-sky-500"
+                  />
+                </label>
+              </div>
+              {etat.criteres.map((ligne, index) => (
+                <LigneCritereEditor
+                  key={`simple-${index}`}
+                  ligne={ligne}
+                  onChange={(value) => {
+                    const criteres = [...etat.criteres];
+                    criteres[index] = value;
+                    setEtat({ ...etat, criteres });
+                  }}
+                  onSupprimer={() =>
+                    setEtat({ ...etat, criteres: etat.criteres.filter((_, i) => i !== index) })
+                  }
+                />
+              ))}
+              <Bouton
+                ton="neutre"
+                onClick={() =>
+                  setEtat({ ...etat, criteres: [...etat.criteres, { id: '', variantes: '' }] })
+                }
+              >
+                Ajouter un critère
+              </Bouton>
+            </div>
+          )}
+
+          {(question.alternatives !== undefined || etat.alternatives.length > 0) && (
+            <div className="space-y-3">
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                Alternatives (réponses possibles)
+              </p>
+              {etat.alternatives.map((alt, altIndex) => (
+                <div key={`alt-${altIndex}`} className="space-y-2 rounded-md border border-slate-800 p-3">
+                  <div className="flex flex-wrap gap-2">
+                    <input
+                      value={alt.id}
+                      onChange={(e) => {
+                        const alternatives = [...etat.alternatives];
+                        alternatives[altIndex] = { ...alt, id: e.target.value };
+                        setEtat({ ...etat, alternatives });
+                      }}
+                      placeholder="Identifiant de l'option"
+                      className="min-w-0 flex-1 rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-xs text-slate-100 outline-none focus:border-sky-500"
+                    />
+                    <label className="flex items-center gap-2 text-xs text-slate-400">
+                      Seuil
+                      <input
+                        value={alt.seuil}
+                        onChange={(e) => {
+                          const alternatives = [...etat.alternatives];
+                          alternatives[altIndex] = { ...alt, seuil: e.target.value };
+                          setEtat({ ...etat, alternatives });
+                        }}
+                        className="w-16 rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-slate-100 outline-none focus:border-sky-500"
+                      />
+                    </label>
+                    <Bouton
+                      ton="danger"
+                      onClick={() =>
+                        setEtat({
+                          ...etat,
+                          alternatives: etat.alternatives.filter((_, i) => i !== altIndex),
+                        })
+                      }
+                    >
+                      Supprimer l'option
+                    </Bouton>
+                  </div>
+                  {alt.criteres.map((ligne, critIndex) => (
+                    <LigneCritereEditor
+                      key={`alt-${altIndex}-${critIndex}`}
+                      ligne={ligne}
+                      onChange={(value) => {
+                        const alternatives = [...etat.alternatives];
+                        const criteres = [...alt.criteres];
+                        criteres[critIndex] = value;
+                        alternatives[altIndex] = { ...alt, criteres };
+                        setEtat({ ...etat, alternatives });
+                      }}
+                      onSupprimer={() => {
+                        const alternatives = [...etat.alternatives];
+                        alternatives[altIndex] = {
+                          ...alt,
+                          criteres: alt.criteres.filter((_, i) => i !== critIndex),
+                        };
+                        setEtat({ ...etat, alternatives });
+                      }}
+                    />
+                  ))}
+                  <Bouton
+                    ton="neutre"
+                    onClick={() => {
+                      const alternatives = [...etat.alternatives];
+                      alternatives[altIndex] = {
+                        ...alt,
+                        criteres: [...alt.criteres, { id: '', variantes: '' }],
+                      };
+                      setEtat({ ...etat, alternatives });
+                    }}
+                  >
+                    Ajouter un critère à cette option
+                  </Bouton>
+                </div>
+              ))}
+              <Bouton
+                ton="neutre"
+                onClick={() =>
+                  setEtat({
+                    ...etat,
+                    alternatives: [
+                      ...etat.alternatives,
+                      { id: '', seuil: '', criteres: [{ id: '', variantes: '' }] },
+                    ],
+                  })
+                }
+              >
+                Ajouter une alternative
+              </Bouton>
+            </div>
+          )}
+
+          {(question.bonusCriteres !== undefined ||
+            etat.bonusCriteres.length > 0 ||
+            etat.bonusPoints) && (
+            <div className="space-y-2">
+              <div className="flex flex-wrap items-center gap-3">
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  Bonus optionnel
+                </p>
+                <label className="flex items-center gap-2 text-xs text-slate-400">
+                  Points bonus
+                  <input
+                    value={etat.bonusPoints}
+                    onChange={(e) => setEtat({ ...etat, bonusPoints: e.target.value })}
+                    className="w-16 rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-slate-100 outline-none focus:border-sky-500"
+                  />
+                </label>
+              </div>
+              {etat.bonusCriteres.map((ligne, index) => (
+                <LigneCritereEditor
+                  key={`bonus-${index}`}
+                  ligne={ligne}
+                  onChange={(value) => {
+                    const bonusCriteres = [...etat.bonusCriteres];
+                    bonusCriteres[index] = value;
+                    setEtat({ ...etat, bonusCriteres });
+                  }}
+                  onSupprimer={() =>
+                    setEtat({
+                      ...etat,
+                      bonusCriteres: etat.bonusCriteres.filter((_, i) => i !== index),
+                    })
+                  }
+                />
+              ))}
+              <Bouton
+                ton="neutre"
+                onClick={() =>
+                  setEtat({
+                    ...etat,
+                    bonusCriteres: [...etat.bonusCriteres, { id: '', variantes: '' }],
+                  })
+                }
+              >
+                Ajouter un critère bonus
+              </Bouton>
+            </div>
+          )}
+
+          <div className="flex flex-wrap gap-2 border-t border-slate-800 pt-3">
+            <Bouton ton="principal" onClick={sauvegarder}>
+              Enregistrer les critères
+            </Bouton>
+            {!adminAjoutee && (
+              <Bouton ton="discret" onClick={reinitialiser} disabled={!overrideActif}>
+                Réinitialiser au cas de base
+              </Bouton>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SectionEditionCriteres({
   casId,
   revision,
   onChange,
@@ -391,7 +748,6 @@ function SectionMotsSynthese({
   revision: number;
   onChange: () => void;
 }) {
-  void revision;
   const cas = casCliniquePrepare(CAS_DISPONIBLES.find((c) => c.id === casId)!);
   const ouvertes = cas.synthese.questions.filter((q) => q.type === 'ouverte');
 
@@ -404,113 +760,19 @@ function SectionMotsSynthese({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {ouvertes.map((question) => {
         if (question.type !== 'ouverte') return null;
-        const criteres = criteresOuvertsQuestion(question);
-        if (criteres.length === 0) {
-          return (
-            <div key={question.id} className="rounded-md border border-slate-800 p-4">
-              <p className="text-sm text-slate-200">{question.question}</p>
-              <p className="mt-2 text-xs text-slate-500">Aucun critère ouvert configurable.</p>
-            </div>
-          );
-        }
         return (
-          <div key={question.id} className="space-y-3 rounded-md border border-slate-800 p-4">
-            <p className="text-sm font-medium text-slate-200">{question.question}</p>
-            {criteres.map((critere) => {
-              const mots = motsCritereSynthese(
-                casId,
-                question.id,
-                critere.critereId,
-                critere.variantes,
-              );
-              return (
-                <div key={`${question.id}-${critere.libelle}`} className="space-y-2 border-l-2 border-slate-700 pl-3">
-                  <p className="text-xs font-medium uppercase tracking-wider text-slate-500">
-                    Critère « {critere.libelle} »
-                  </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {mots.map(({ texte, source }) => (
-                      <span
-                        key={texte}
-                        className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-xs ${
-                          source === 'admin'
-                            ? 'bg-sky-950/50 text-sky-200'
-                            : 'bg-slate-800/80 text-slate-300'
-                        }`}
-                      >
-                        {texte}
-                        <button
-                          type="button"
-                          className="text-slate-400 hover:text-rose-300"
-                          title="Retirer ce mot"
-                          onClick={() => {
-                            if (source === 'admin') {
-                              retirerVarianteSynthese(casId, question.id, critere.critereId, texte);
-                            } else {
-                              retirerVarianteBaseSynthese(
-                                casId,
-                                question.id,
-                                critere.critereId,
-                                texte,
-                              );
-                            }
-                            onChange();
-                          }}
-                          aria-label={`Retirer ${texte}`}
-                        >
-                          ×
-                        </button>
-                      </span>
-                    ))}
-                    {mots.length === 0 && (
-                      <span className="text-xs text-slate-600">Aucun mot accepté pour ce critère.</span>
-                    )}
-                  </div>
-                  <AjoutVariante
-                    onAjouter={(texte) => {
-                      ajouterVarianteSynthese(casId, question.id, critere.critereId, texte);
-                      onChange();
-                    }}
-                  />
-                </div>
-              );
-            })}
-          </div>
+          <EditeurCriteresQuestion
+            key={`${question.id}-${revision}`}
+            casId={casId}
+            question={question}
+            revision={revision}
+            onChange={onChange}
+          />
         );
       })}
-    </div>
-  );
-}
-
-function AjoutVariante({ onAjouter }: { onAjouter: (texte: string) => void }) {
-  const [texte, setTexte] = useState('');
-  return (
-    <div className="flex gap-2">
-      <input
-        value={texte}
-        onChange={(e) => setTexte(e.target.value)}
-        placeholder="Ajouter un mot accepté"
-        className="min-w-0 flex-1 rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-sm text-slate-100 outline-none focus:border-sky-500"
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' && texte.trim()) {
-            onAjouter(texte.trim());
-            setTexte('');
-          }
-        }}
-      />
-      <Bouton
-        ton="neutre"
-        disabled={!texte.trim()}
-        onClick={() => {
-          onAjouter(texte.trim());
-          setTexte('');
-        }}
-      >
-        Ajouter
-      </Bouton>
     </div>
   );
 }
@@ -618,12 +880,13 @@ export function AdminPanel() {
               <ListeQuestionsSyntheseAdmin casId={casId} revision={revision} onChange={rafraichir} />
             </Carte>
           </div>
-          <Carte titre="Mots acceptés pour les réponses ouvertes">
+          <Carte titre="Critères des réponses ouvertes">
             <p className="mb-4 text-xs text-slate-500">
-              Ajoutez ou retirez les mots-clés reconnus pour chaque critère. Les mots en gris
-              proviennent du cas de base ; ceux en bleu ont été ajoutés en administration.
+              Modifiez les critères, les mots acceptés, les seuils et les alternatives pour
+              chaque question ouverte. Les changements sont enregistrés localement dans ce
+              navigateur.
             </p>
-            <SectionMotsSynthese casId={casId} revision={revision} onChange={rafraichir} />
+            <SectionEditionCriteres casId={casId} revision={revision} onChange={rafraichir} />
           </Carte>
         </div>
       )}

@@ -7,11 +7,13 @@ import {
   appliquerOverrides,
   criteresOuvertsQuestion,
   overridesCas,
+  reinitialiserCriteresSynthese,
   reinitialiserOverrides,
   retirerQuestion,
   retirerQuestionSynthese,
   retirerVarianteBaseSynthese,
   retirerVarianteSynthese,
+  enregistrerCriteresSynthese,
   verifierMotDePasse,
 } from './admin';
 import { criteresCouvert, evaluerQuestionSynthese } from './scoring';
@@ -112,5 +114,32 @@ describe('admin', () => {
     });
     retirerQuestionSynthese(esotropiePrecoce.id, q.id);
     expect(overridesCas(esotropiePrecoce.id).syntheseQuestions).toHaveLength(0);
+  });
+
+  it('modifie les criteres d une question de synthese de base', () => {
+    enregistrerCriteresSynthese(esotropiePrecoce.id, 'signes-pathognomoniques', {
+      seuil: 1,
+      criteres: [{ id: 'nml', variantes: ['nml', 'nystagmus'] }],
+    });
+    const fusionne = appliquerOverrides(esotropiePrecoce, overridesCas(esotropiePrecoce.id));
+    const question = fusionne.synthese.questions.find((q) => q.id === 'signes-pathognomoniques')!;
+    if (question.type !== 'ouverte') return;
+    expect(question.seuil).toBe(1);
+    expect(question.criteres).toHaveLength(1);
+    const evaluation = evaluerQuestionSynthese(question, 'presence de nystagmus');
+    expect(evaluation.juste).toBe(true);
+  });
+
+  it('reinitialise les criteres modifies', () => {
+    enregistrerCriteresSynthese(esotropiePrecoce.id, 'signes-pathognomoniques', {
+      seuil: 1,
+      criteres: [{ id: 'nml', variantes: ['nml'] }],
+    });
+    reinitialiserCriteresSynthese(esotropiePrecoce.id, 'signes-pathognomoniques');
+    const fusionne = appliquerOverrides(esotropiePrecoce, overridesCas(esotropiePrecoce.id));
+    const question = fusionne.synthese.questions.find((q) => q.id === 'signes-pathognomoniques')!;
+    if (question.type !== 'ouverte') return;
+    expect(question.seuil).toBe(2);
+    expect(question.criteres!.length).toBeGreaterThan(1);
   });
 });

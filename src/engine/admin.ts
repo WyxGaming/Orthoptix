@@ -1,10 +1,31 @@
-import type { CasClinique, CritereOuvert, QuestionAnamnese, QuestionSynthese } from './types';
+import type {
+  AlternativeOuverte,
+  CasClinique,
+  CritereOuvert,
+  QuestionAnamnese,
+  QuestionSynthese,
+} from './types';
 
 export const ADMIN_MOT_DE_PASSE = 'ortho2026';
 const CLE_STOCKAGE = 'orthoptix-admin-overrides';
 
 /** Repli quand localStorage est indisponible (tests, SSR). */
 let memoireOverrides: AdminStorage = {};
+
+export type CritereSyntheseRef = {
+  critereId: string;
+  libelle: string;
+  variantes: string[];
+};
+
+/** Remplacement partiel ou complet de la grille de critères d'une question ouverte. */
+export type SyntheseCriteresOverride = {
+  seuil?: number;
+  criteres?: CritereOuvert[];
+  alternatives?: AlternativeOuverte[];
+  bonusCriteres?: CritereOuvert[];
+  bonusPoints?: number;
+};
 
 export type CasAdminOverrides = {
   questions: QuestionAnamnese[];
@@ -13,21 +34,18 @@ export type CasAdminOverrides = {
   syntheseVariantes: Record<string, Record<string, string[]>>;
   /** questionId → critereId → variantes de base masquées par l'administrateur. */
   syntheseVariantesRetirees: Record<string, Record<string, string[]>>;
+  /** questionId → grille de critères remplacée ou ajustée. */
+  syntheseCriteresOverrides: Record<string, SyntheseCriteresOverride>;
 };
 
 export type AdminStorage = Record<string, CasAdminOverrides>;
-
-export type CritereSyntheseRef = {
-  critereId: string;
-  libelle: string;
-  variantes: string[];
-};
 
 const overridesVides = (): CasAdminOverrides => ({
   questions: [],
   syntheseQuestions: [],
   syntheseVariantes: {},
   syntheseVariantesRetirees: {},
+  syntheseCriteresOverrides: {},
 });
 
 function normaliserOverrides(stockage: Partial<CasAdminOverrides> | undefined): CasAdminOverrides {
@@ -36,6 +54,7 @@ function normaliserOverrides(stockage: Partial<CasAdminOverrides> | undefined): 
     syntheseQuestions: stockage?.syntheseQuestions ?? [],
     syntheseVariantes: stockage?.syntheseVariantes ?? {},
     syntheseVariantesRetirees: stockage?.syntheseVariantesRetirees ?? {},
+    syntheseCriteresOverrides: stockage?.syntheseCriteresOverrides ?? {},
   };
 }
 
@@ -120,6 +139,21 @@ function enrichirCriteres(
   }));
 }
 
+function appliquerCriteresOverride(
+  question: QuestionSynthese,
+  override?: SyntheseCriteresOverride,
+): QuestionSynthese {
+  if (question.type !== 'ouverte' || !override) return question;
+  return {
+    ...question,
+    seuil: override.seuil ?? question.seuil,
+    criteres: override.criteres ?? question.criteres,
+    alternatives: override.alternatives ?? question.alternatives,
+    bonusCriteres: override.bonusCriteres ?? question.bonusCriteres,
+    bonusPoints: override.bonusPoints ?? question.bonusPoints,
+  };
+}
+
 function appliquerVariantesQuestion(
   question: QuestionSynthese,
   ajoutsParQuestion: Record<string, string[]>,
@@ -149,7 +183,7 @@ export function appliquerOverrides(
 ): CasClinique {
   const appliquer = (question: QuestionSynthese) =>
     appliquerVariantesQuestion(
-      question,
+      appliquerCriteresOverride(question, overrides.syntheseCriteresOverrides[question.id]),
       overrides.syntheseVariantes[question.id] ?? {},
       overrides.syntheseVariantesRetirees[question.id] ?? {},
     );
@@ -217,6 +251,50 @@ export function retirerQuestionSynthese(casId: string, questionId: string): void
   overrides.syntheseQuestions = overrides.syntheseQuestions.filter((q) => q.id !== questionId);
   delete overrides.syntheseVariantes[questionId];
   delete overrides.syntheseVariantesRetirees[questionId];
+  delete overrides.syntheseCriteresOverrides[questionId];
+  sauvegarderOverridesCas(casId, overrides);
+}
+
+export function enregistrerCriteresSynthese(
+  casId: string,
+  questionId: string,
+  override: SyntheseCriteresOverride,
+): void {
+  const overrides = overridesCas(casId);
+  overrides.syntheseCriteresOverrides[questionId] = override;
+  sauvegarderOverridesCas(casId, overrides);
+}
+
+export function reinitialiserCriteresSynthese(casId: string, questionId: string): void {
+  const overrides = overridesCas(casId);
+  delete overrides.syntheseCriteresOverrides[questionId];
+  delete overrides.syntheseVariantes[questionId];
+  delete overrides.syntheseVariantesRetirees[questionId];
+  sauvegarderOverridesCas(casId, overrides);
+}
+
+export function questionSyntheseAdmin(casId: string, questionId: string): boolean {
+  return overridesCas(casId).syntheseQuestions.some((q) => q.id === questionId);
+}
+
+export function modifierQuestionSynthese(
+  casId: string,
+  questionId: string,
+  question: Extract<QuestionSynthese, { type: 'ouverte' }>,
+): void {
+  const overrides = overridesCas(casId);
+  const index = overrides.syntheseQuestions.findIndex((q) => q.id === questionId);
+  if (index < 0) {
+    enregistrerCriteresSynthese(casId, questionId, {
+      seuil: question.seuil,
+      criteres: question.criteres,
+      alternatives: question.alternatives,
+      bonusCriteres: question.bonusCriteres,
+      bonusPoints: question.bonusPoints,
+    });
+    return;
+  }
+  overrides.syntheseQuestions[index] = { ...question, id: questionId };
   sauvegarderOverridesCas(casId, overrides);
 }
 
