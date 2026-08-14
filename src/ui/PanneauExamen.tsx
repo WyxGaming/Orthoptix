@@ -38,6 +38,9 @@ const BASES: { valeur: BasePrisme; libelle: string }[] = [
   { valeur: 'inferieure', libelle: 'Base inférieure' },
 ];
 
+/** Examens où le zoom oculaire aide la lecture clinique (reflets, cache, versions). */
+const INTERACTIONS_ZOOM_YEUX = new Set(['reflets', 'occlusion', 'motilite']);
+
 function SaisieMesuresConditions({
   combos,
   mesures,
@@ -268,7 +271,10 @@ export function PanneauExamen({
     setMesures(prefill);
     setInterpretationsChoix({});
     setResultatRevele(false);
-  }, [examenEnCours, cas]);
+    if (!INTERACTIONS_ZOOM_YEUX.has(definition.interaction)) {
+      setZoom(false);
+    }
+  }, [examenEnCours, cas, setZoom]);
 
   if (!examenEnCours) {
     return (
@@ -401,7 +407,7 @@ export function PanneauExamen({
       className="flex h-full min-h-0 flex-col overflow-hidden"
       corpsClassName="flex min-h-0 flex-1 flex-col overflow-hidden"
       actions={
-        definition.interaction === 'reflets' || definition.interaction === 'occlusion' ? (
+        INTERACTIONS_ZOOM_YEUX.has(definition.interaction) ? (
           <Bouton ton="discret" onClick={() => setZoom(!zoom)}>
             {zoom ? "Vue d'ensemble" : 'Zoom sur les yeux'}
           </Bouton>
