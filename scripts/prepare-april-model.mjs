@@ -12,6 +12,7 @@ import { deflateSync } from 'node:zlib';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { PNG } from 'pngjs';
 
 const racine = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dossier = join(racine, 'public/models/april');
@@ -169,6 +170,26 @@ function texturesCompletes() {
   return TEXTURES.every((f) => existsSync(join(texturesDir, f)));
 }
 
+/** Fond noir des hair cards sans alpha → plaques rectangulaires visibles. */
+function corrigerAlphaCheveux() {
+  const chemin = join(texturesDir, 'hair_baseColor.png');
+  if (!existsSync(chemin)) return;
+
+  const png = PNG.sync.read(readFileSync(chemin));
+  let corriges = 0;
+  for (let i = 0; i < png.data.length; i += 4) {
+    const r = png.data[i];
+    const g = png.data[i + 1];
+    const b = png.data[i + 2];
+    if (r < 32 && g < 32 && b < 32) {
+      png.data[i + 3] = 0;
+      corriges++;
+    }
+  }
+  writeFileSync(chemin, PNG.sync.write(png));
+  console.log(`Alpha cheveux/barbe corrigé (${corriges} px transparents).`);
+}
+
 /** Récupère les PNG déposés via l'upload GitHub (public/models/*.png.png). */
 function importerDepuisUpload() {
   const uploadDir = join(racine, 'public/models');
@@ -240,6 +261,8 @@ if (texturesCompletes()) {
   console.warn(`Textures manquantes (${manquantes.length}/7) — complément procédural.`);
   genererTextures();
 }
+
+corrigerAlphaCheveux();
 
 const gltf = JSON.parse(readFileSync(source, 'utf8'));
 writeFileSync(join(dossier, 'scene.gltf'), `${JSON.stringify(gltf, null, 2)}\n`);

@@ -6,7 +6,12 @@ import type { ConfigModeleTete } from './modeles-tete';
 import { ORBITES_DEFAUT, type PositionsOrbites } from './orbites';
 
 const estOeilModele = (nom: string) => /eye/i.test(nom) && !/eyelash/i.test(nom);
-const estCheveuxModele = (nom: string) => /hair/i.test(nom);
+
+/** Hair cards / barbe : nom de mesh (Rihanna) ou nom de matériau (April « hair »). */
+const estMateriauCheveux = (nomMesh: string, mat: THREE.Material): boolean =>
+  /hair/i.test(nomMesh) ||
+  /hair/i.test(mat.name ?? '') ||
+  /^t_cards$/i.test(mat.name ?? '');
 
 function centroide(groupe: THREE.Vector3[]): THREE.Vector3 {
   const c = new THREE.Vector3();
@@ -292,11 +297,16 @@ function TeteMesh({
         if (!('roughness' in mat)) return mat;
         const standard = mat as THREE.MeshStandardMaterial;
 
-        if (estCheveuxModele(obj.name)) {
+        if (estMateriauCheveux(obj.name, source)) {
           standard.side = THREE.DoubleSide;
-          standard.transparent = false;
-          standard.alphaTest = 0.5;
-          standard.depthWrite = true;
+          if (source.transparent) {
+            standard.transparent = true;
+            standard.depthWrite = false;
+          } else {
+            standard.transparent = false;
+            standard.alphaTest = 0.5;
+            standard.depthWrite = true;
+          }
           if (standard.map) standard.map.colorSpace = THREE.SRGBColorSpace;
           standard.needsUpdate = true;
           return mat;
