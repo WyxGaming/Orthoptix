@@ -584,7 +584,7 @@ export const rihanna: CasClinique = {
         type: 'examensComplementaires',
         niveau: 'L2',
         question:
-          'Quels examens complémentaires prescrivez-vous pour confirmer l’HTIC et orienter la prise en charge ?',
+          'Quels examens complémentaires prescrivez-vous pour obtenir un diagnostic et orienter la prise en charge ?',
         poids: 5,
         seuil: 2,
         examens: [
