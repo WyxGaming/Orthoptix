@@ -259,7 +259,12 @@ export function PatientScene({ zoomReflets }: { zoomReflets: boolean }) {
         {montreLunettes && <LunettesPatient orbites={orbites} />}
       </Suspense>
       {EYES.map((oeil) => (
-        <group key={oeil} position={orbites[oeil]} scale={orbites.rayon / RAYON_GLOBE}>
+        <group
+          key={oeil}
+          position={orbites[oeil]}
+          scale={orbites.rayon / RAYON_GLOBE}
+          renderOrder={10}
+        >
           <Eye oeil={oeil} position={[0, 0, 0]} paupieres={false} />
         </group>
       ))}

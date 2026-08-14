@@ -51,9 +51,15 @@ function extraireOrbites(racine: THREE.Object3D, centroidesDirects = false): Pos
 
   const centreOD = centroide(coteNegatif);
   const centreOG = centroide(cotePositif);
+  const maxRayonOD = Math.max(...coteNegatif.map((p) => p.distanceTo(centreOD)));
+  const maxRayonOG = Math.max(...cotePositif.map((p) => p.distanceTo(centreOG)));
   const rayon = Math.min(
-    rayonEnveloppe(coteNegatif, centreOD),
-    rayonEnveloppe(cotePositif, centreOG),
+    centroidesDirects
+      ? Math.min(maxRayonOD, maxRayonOG)
+      : Math.min(
+          rayonEnveloppe(coteNegatif, centreOD),
+          rayonEnveloppe(cotePositif, centreOG),
+        ),
     RAYON_GLOBE,
   );
 
