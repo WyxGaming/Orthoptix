@@ -277,10 +277,9 @@ export const rihanna: CasClinique = {
     },
     lancaster: {
       poids: 4,
-      resultat: '',
+      resultat: "À vous de l'analyser.",
       imageResultat: '/examens/rihanna-lancaster.png',
-      legendeImage:
-        'Test de Lancaster — document brut. Analysez la diplopie et la déviation sur les grilles OSX et ODX.',
+      legendeImage: "À vous de l'analyser.",
       interpretation: {
         question: 'Que concluez-vous de ce test de Lancaster ?',
         options: [

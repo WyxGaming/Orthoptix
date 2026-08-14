@@ -474,9 +474,9 @@ export function PanneauExamen({
                         alt={examenEffectif.legendeImage ?? definition.nom}
                         className="max-h-80 w-full rounded border border-slate-700/80 bg-slate-950 object-contain"
                       />
-                      {examenEffectif.legendeImage && (
+                      {(examenEffectif.resultat || examenEffectif.legendeImage) && (
                         <figcaption className="text-xs text-slate-400">
-                          {examenEffectif.legendeImage}
+                          {examenEffectif.resultat || examenEffectif.legendeImage}
                         </figcaption>
                       )}
                     </figure>
