@@ -280,28 +280,6 @@ export const rihanna: CasClinique = {
       resultat: "À vous de l'analyser.",
       imageResultat: '/examens/rihanna-lancaster.png',
       legendeImage: "À vous de l'analyser.",
-      interpretation: {
-        question: 'Que concluez-vous de ce test de Lancaster ?',
-        options: [
-          {
-            id: 'verticale-dissociee',
-            libelle: 'Diplopie verticale dissociée (décalages verticaux opposés OSX / ODX)',
-            correct: true,
-          },
-          {
-            id: 'horizontale-pure',
-            libelle: 'Diplopie horizontale pure, sans composante verticale',
-            correct: false,
-          },
-          {
-            id: 'fusion',
-            libelle: 'Superposition des marques : pas de diplopie',
-            correct: false,
-          },
-        ],
-        explication:
-          'Des marques décalées verticalement en sens opposé sur OSX et ODX traduisent une composante verticale dissociée, à intégrer au bilan oculomoteur.',
-      },
     },
     worth: {
       poids: 3,
