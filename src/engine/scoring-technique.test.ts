@@ -34,6 +34,15 @@ describe('technique operatoire Léa', () => {
     expect(resultat.points).toBe(5);
   });
 
+  it('accorde un bonus pour 5 mm DM / 5 mm DL OG', () => {
+    const resultat = evaluerQuestionSynthese(
+      question,
+      'Recul DM OG + pliage DL OG : 5 mm DM / 5 mm DL OG',
+    );
+    expect(resultat.juste).toBe(true);
+    expect(resultat.points).toBe(5);
+  });
+
   it('n exige pas la dose pour valider la technique', () => {
     const resultat = evaluerQuestionSynthese(
       question,

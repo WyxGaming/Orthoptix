@@ -644,15 +644,27 @@ export const esotropiePrecoce: CasClinique = {
         ],
         bonusCriteres: [
           {
-            id: 'dose',
+            id: 'dose-bilaterale',
             variantes: ['5 mm', '5mm', '5 millimetres', '5 millimètres', 'environ 5'],
+          },
+          {
+            id: 'dose-unilaterale',
+            variantes: [
+              '5 mm dm / 5 mm dl',
+              '5 mm dm / 5 mm dl og',
+              '5mm dm / 5mm dl og',
+              '5 mm dm et 5 mm dl',
+              '5 mm dm og / 5 mm dl og',
+              '5 mm dm 5 mm dl og',
+              '5 mm dm / 5 mm dl og',
+            ],
           },
         ],
         bonusPoints: 1,
         reponseAttendue:
-          "Recul des droits médiaux ODG (~5 mm), ou recul du DM OG + pliage du DL OG (~5 mm).",
+          "Recul des droits médiaux ODG (~5 mm), ou recul du DM OG + pliage du DL OG (5 mm DM / 5 mm DL OG).",
         explication:
-          "Deux techniques sont possibles : un recul bilatéral des droits médiaux, ou un recul du droit médial OG associé à un pliage du droit latéral OG. Préciser ~5 mm apporte un bonus (1 mm ≈ 4 DP).",
+          "Deux techniques sont possibles : un recul bilatéral des droits médiaux (~5 mm), ou un recul du droit médial OG associé à un pliage du droit latéral OG (5 mm DM / 5 mm DL OG). Préciser la dose apporte un bonus (1 mm ≈ 4 DP).",
       },
     ],
   },
