@@ -1,8 +1,8 @@
 /**
  * Prépare rihanna.glb pour le cas Rihanna (modèle Sketchfab « Rihanna Head Model »).
  *
- * Génère des textures procédurales si les PNG Sketchfab ne sont pas présents.
- * Nécessite scene-source.gltf et scene.bin dans public/models/rihanna/.
+ * Lit public/models/rihanna_head_model/ (scene.gltf, scene.bin, textures/).
+ * Génère des textures procédurales uniquement si des fichiers manquent.
  *
  * Usage : npm run prepare:rihanna-model
  */
@@ -14,13 +14,13 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const racine = join(dirname(fileURLToPath(import.meta.url)), '..');
-const dossier = join(racine, 'public/models/rihanna');
+const dossier = join(racine, 'public/models/rihanna_head_model');
 const texturesDir = join(dossier, 'textures');
 
-const TEXTURES = [
+const TEXTURES_REQUISES = [
   't_head_baseColor.png',
   't_head_metallicRoughness.png',
-  't_head_normal.png',
+  ['t_head_normal.jpeg', 't_head_normal.png'],
   't_cards_baseColor.png',
   't_cards_metallicRoughness.png',
   't_cards_normal.png',
@@ -144,6 +144,11 @@ function textureSpecular(w, h) {
   return remplir(w, h, () => [255, 255, 255, 255]);
 }
 
+function textureManquante(entree) {
+  const noms = Array.isArray(entree) ? entree : [entree];
+  return !noms.some((f) => existsSync(join(texturesDir, f)));
+}
+
 function genererTextures() {
   mkdirSync(texturesDir, { recursive: true });
   const w = 512;
@@ -158,33 +163,31 @@ function genererTextures() {
     't_cards_specularf0.png': textureSpecular(w, h),
   };
   for (const [nom, rgba] of Object.entries(map)) {
-    writeFileSync(join(texturesDir, nom), encodePng(w, h, rgba));
+    if (!existsSync(join(texturesDir, nom))) {
+      writeFileSync(join(texturesDir, nom), encodePng(w, h, rgba));
+    }
   }
-  console.log(`Textures procédurales générées (${w}×${h}).`);
+  console.log(`Textures procédurales générées (${w}×${h}) pour les fichiers manquants.`);
 }
 
-const source = join(dossier, 'scene-source.gltf');
-if (!existsSync(source)) {
-  console.error('scene-source.gltf manquant dans public/models/rihanna/');
+const gltfSource = join(dossier, 'scene.gltf');
+if (!existsSync(gltfSource)) {
+  console.error('scene.gltf manquant dans public/models/rihanna_head_model/');
   process.exit(1);
 }
 if (!existsSync(join(dossier, 'scene.bin'))) {
-  console.error('scene.bin manquant dans public/models/rihanna/');
+  console.error('scene.bin manquant dans public/models/rihanna_head_model/');
   process.exit(1);
 }
 
-const manquantes = TEXTURES.filter((f) => !existsSync(join(texturesDir, f)));
+const manquantes = TEXTURES_REQUISES.filter(textureManquante);
 if (manquantes.length > 0) {
-  console.warn(`Textures manquantes (${manquantes.length}/7) — génération procédurale.`);
+  console.warn(`Textures manquantes (${manquantes.length}/${TEXTURES_REQUISES.length}) — génération procédurale.`);
   genererTextures();
 }
 
-let gltf = readFileSync(source, 'utf8');
-gltf = gltf.replace('textures/t_head_normal.jpeg', 'textures/t_head_normal.png');
-writeFileSync(join(dossier, 'scene.gltf'), gltf);
-
 execSync(
-  'npx --yes @gltf-transform/cli copy public/models/rihanna/scene.gltf public/models/rihanna/rihanna.glb',
+  'npx --yes @gltf-transform/cli copy public/models/rihanna_head_model/scene.gltf public/models/rihanna_head_model/rihanna.glb',
   { cwd: racine, stdio: 'inherit' },
 );
 

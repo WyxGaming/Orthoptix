@@ -50,7 +50,7 @@ export const MODELES_TETE: Record<string, ConfigModeleTete> = {
   },
   /** Cas 3 — Rihanna, 38 ans. */
   rihanna: {
-    url: '/models/rihanna/rihanna.glb',
+    url: '/models/rihanna_head_model/rihanna.glb',
     hauteurVisageCm: 22,
     decalageFin: [0, 0.4, 1.0],
     credit: {

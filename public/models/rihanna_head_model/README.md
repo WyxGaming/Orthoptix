@@ -4,6 +4,6 @@
 - **Fichier servi** : `rihanna.glb`
 - **Regénération** : `npm run prepare:rihanna-model`
 
-Sources Sketchfab : `scene-source.gltf`, `scene.bin`. Les textures PNG Sketchfab peuvent être déposées dans `textures/` avant de relancer le script ; sinon des textures procédurales sont générées.
+Export Sketchfab complet : `scene.gltf`, `scene.bin`, `textures/` (versionnés sur GitHub).
 
 Le mesh `eyes_low` sert à caler les orbites ; les yeux cliniques Orthoptix le remplacent à l'affichage.
