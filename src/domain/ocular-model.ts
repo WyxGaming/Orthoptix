@@ -78,6 +78,11 @@ export type ParametresOculaires = {
   nystagmus?: Nystagmus;
   /** Angle kappa en DP. A zero, le reflet traduit directement l'angle objectif. */
   kappa: Record<Eye, number>;
+  /**
+   * Supplement d azimuth en motilite (degres), par exemple pour corriger une
+   * pseudo-limitation a l abduction sur un regard lateral.
+   */
+  boostMotilite?: Partial<Record<Eye, { gauche?: number; droite?: number }>>;
   correction: Record<Eye, Refraction>;
   acuite: Record<Eye, string>;
 };
@@ -239,11 +244,15 @@ export function etatOculaire(
     // la mire. Elle inclut la convergence propre a la distance d'examen.
     const mire = directionMire(eye, etat.gaze, etat.distanceFixationCm);
 
-    const azimuthDeg =
+    let azimuthDeg =
       mire.azimuthDeg +
       versionDeg +
       signeAdduction(eye) * prismToDegrees(devHorizontaleDp) +
       nystagmusDeg;
+
+    const boost = params.boostMotilite?.[eye];
+    if (boost?.gauche && etat.gaze.azimuthDeg <= -15) azimuthDeg -= boost.gauche;
+    if (boost?.droite && etat.gaze.azimuthDeg >= 15) azimuthDeg += boost.droite;
 
     const elevationDeg =
       mire.elevationDeg + versionVerticaleDeg + prismToDegrees(devVerticaleDp);

@@ -310,3 +310,27 @@ describe('occlusion', () => {
     expect(Math.abs(ecartMire(monoculaire, 'OD'))).toBeCloseTo(0.6 * 4, 5);
   });
 });
+
+describe('boostMotilite', () => {
+  const base: ParametresOculaires = {
+    ...lea,
+    boostMotilite: undefined,
+  };
+  const avecBoost: ParametresOculaires = {
+    ...lea,
+    boostMotilite: { OD: { gauche: 5 } },
+  };
+
+  it('augmente l abduction de l OD en regard gauche', () => {
+    const etatBase = etatOculaire(base, {
+      ...enPositionPrimaire('OD'),
+      gaze: { azimuthDeg: -25, elevationDeg: 0 },
+    });
+    const etatBoost = etatOculaire(avecBoost, {
+      ...enPositionPrimaire('OD'),
+      gaze: { azimuthDeg: -25, elevationDeg: 0 },
+    });
+    expect(etatBoost.OD.azimuthDeg).toBeLessThan(etatBase.OD.azimuthDeg);
+    expect(etatBase.OD.azimuthDeg - etatBoost.OD.azimuthDeg).toBeCloseTo(5, 5);
+  });
+});

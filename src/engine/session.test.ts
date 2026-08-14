@@ -40,12 +40,16 @@ function reponsesSyntheseParfaites() {
 
 function bilanParfait() {
   const { cas, poserQuestion, validerSynthese } = session();
+  if (cas.questionObligatoireEnPremier) {
+    poserQuestion(cas.questionObligatoireEnPremier);
+  }
   for (const q of cas.questions) {
-    if (q.poids > 0) poserQuestion(q.id);
+    if (q.poids > 0 && q.id !== cas.questionObligatoireEnPremier) poserQuestion(q.id);
   }
   for (const id of cas.ordreAttendu) {
     const examen = cas.examens[id];
     if (examen && examen.poids < 0) continue;
+    if (examen?.nonContributifSiPresente) continue;
     realiser(id);
   }
   validerSynthese(reponsesSyntheseParfaites());
@@ -170,12 +174,38 @@ describe('bareme', () => {
 
   it('retire le bonus de conduite si les epreuves dissociantes precedent le sensoriel', () => {
     realiser('coverPres');
+    realiser('tno');
+    const ligne = session()
+      .resultat()
+      .lignes.find((l) => l.libelle.startsWith('Conduite du bilan'))!;
+    expect(ligne.points).toBe(0);
+    expect(ligne.commentaire).toMatch(/TNO en tête de bilan/i);
+  });
+
+  it('penalise le Lang realise sur Léa', () => {
+    bilanParfait();
+    const reference = session().resultat().total;
+
+    session().demarrer(esotropiePrecoce, 'evaluation');
+    bilanParfait();
     realiser('lang');
     const ligne = session()
       .resultat()
-      .lignes.find((l) => l.libelle.startsWith('Conduite'))!;
+      .lignes.find((l) => l.libelle.startsWith('Test de Lang'))!;
+    expect(ligne.nature).toBe('malus');
+    expect(ligne.points).toBe(-2);
+    expect(ligne.commentaire).toMatch(/grand angle/i);
+    expect(session().resultat().total).toBeLessThan(reference);
+  });
+
+  it('retire le bonus anamnese si le motif nest pas demande en premier', () => {
+    session().poserQuestion('age-apparition');
+    session().poserQuestion('motif');
+    const ligne = session()
+      .resultat()
+      .lignes.find((l) => l.libelle.startsWith("Conduite de l'anamnèse"))!;
     expect(ligne.points).toBe(0);
-    expect(ligne.commentaire).toMatch(/Lang en tête de bilan/i);
+    expect(ligne.commentaire).toMatch(/motif de consultation/i);
   });
 
   it('refuse une mesure hors de la fourchette attendue', () => {

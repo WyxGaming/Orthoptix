@@ -171,6 +171,9 @@ function CommandesOcclusion() {
           Découvrir
         </Bouton>
       </div>
+      <p className="text-xs text-slate-500">
+        Raccourcis : ← OG · → OD · ↓ découvrir
+      </p>
     </div>
   );
 }

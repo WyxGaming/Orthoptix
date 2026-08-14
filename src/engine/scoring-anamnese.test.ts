@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { esotropieAccommodative } from '../cases/esotropie-accommodative';
-import { BONUS_CONDUITE_ANAMNESE, ordreAnamneseRespecte } from './scoring';
+import { esotropiePrecoce } from '../cases/esotropie-precoce';
+import {
+  BONUS_CONDUITE_ANAMNESE,
+  conduiteAnamneseRespectee,
+  ordreAnamneseRespecte,
+} from './scoring';
 import type { ActionJournal } from './types';
 
 describe('ordreAnamneseRespecte', () => {
@@ -44,5 +49,28 @@ describe('ordreAnamneseRespecte', () => {
 
   it('expose un bonus de 5 points', () => {
     expect(BONUS_CONDUITE_ANAMNESE).toBe(5);
+  });
+});
+
+describe('conduiteAnamneseRespectee', () => {
+  const journal = (...ids: string[]): ActionJournal[] =>
+    ids.map((id) => ({ type: 'question', id }));
+
+  it('exige le motif en premier pour Léa', () => {
+    expect(
+      conduiteAnamneseRespectee(esotropiePrecoce, journal('motif', 'age-apparition', 'constance')),
+    ).toBe(true);
+    expect(
+      conduiteAnamneseRespectee(esotropiePrecoce, journal('age-apparition', 'motif')),
+    ).toBe(false);
+  });
+
+  it('accepte un ordre libre apres le motif pour Léa', () => {
+    expect(
+      conduiteAnamneseRespectee(
+        esotropiePrecoce,
+        journal('motif', 'familiaux', 'correction', 'chirurgie'),
+      ),
+    ).toBe(true);
   });
 });

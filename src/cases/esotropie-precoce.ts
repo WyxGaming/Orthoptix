@@ -248,9 +248,13 @@ export const esotropiePrecoce: CasClinique = {
       },
     },
     lang: {
-      poids: 5,
+      poids: 0,
+      nonContributifSiPresente: true,
+      malusSiPresente: -2,
       resultat:
         "Test de Lang négatif : Léa ne reconnaît aucune des figures en relief et ne cherche pas à les saisir.",
+      justificationMalus:
+        "Le Lang n'est pas indiqué devant une esotropie manifeste à grand angle : la stéréoscopie est abolie et l'épreuve n'apporte pas d'argument décisionnel.",
       interpretation: {
         question: 'Que traduit ce résultat ?',
         options: [
@@ -429,7 +433,6 @@ export const esotropiePrecoce: CasClinique = {
   },
 
   ordreAttendu: [
-    'lang',
     'tno',
     'motilite',
     'hirschberg',
@@ -441,8 +444,10 @@ export const esotropiePrecoce: CasClinique = {
     'refraction',
   ],
 
+  questionObligatoireEnPremier: 'motif',
+
   commentaireConduiteBilan:
-    'Lang en tête de bilan, puis motilité et mesures ; cover VL avant cover VP ; acuité et réfraction en fin de bilan.',
+    'TNO en tête de bilan, puis motilité et mesures ; cover VL avant cover VP ; acuité et réfraction en fin de bilan.',
 
   synthese: {
     questions: [

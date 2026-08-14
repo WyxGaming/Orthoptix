@@ -246,6 +246,19 @@ export function ordreAnamneseRespecte(cas: CasClinique, journal: ActionJournal[]
   return positions.every((p, i) => i === 0 || p > positions[i - 1]!);
 }
 
+/** Conduite de l anamnese : motif en premier, ou ordre relatif attendu. */
+export function conduiteAnamneseRespectee(cas: CasClinique, journal: ActionJournal[]): boolean {
+  const posees = questionsPosees(journal);
+  if (cas.questionObligatoireEnPremier) {
+    const premiere = posees[0];
+    if (!premiere || premiere.id !== cas.questionObligatoireEnPremier) return false;
+  }
+  if (cas.ordreAnamneseAttendu?.length) {
+    return ordreAnamneseRespecte(cas, journal);
+  }
+  return true;
+}
+
 export function calculerScore(
   cas: CasClinique,
   journal: ActionJournal[],
@@ -407,15 +420,17 @@ export function calculerScore(
     nature: conduite ? 'bonus' : 'manque',
   });
 
-  if (cas.ordreAnamneseAttendu?.length) {
-    const anamnese = ordreAnamneseRespecte(cas, journal);
+  if (cas.questionObligatoireEnPremier || cas.ordreAnamneseAttendu?.length) {
+    const anamnese = conduiteAnamneseRespectee(cas, journal);
     lignes.push({
       libelle: 'Conduite de l\'anamnèse dans l\'ordre',
       points: anamnese ? BONUS_CONDUITE_ANAMNESE : 0,
       max: BONUS_CONDUITE_ANAMNESE,
       commentaire: anamnese
         ? undefined
-        : 'La chronologie des questions d\'anamnèse essentielles n\'a pas été respectée.',
+        : cas.questionObligatoireEnPremier
+          ? 'Le motif de consultation doit être demandé en premier.'
+          : 'La chronologie des questions d\'anamnèse essentielles n\'a pas été respectée.',
       nature: anamnese ? 'bonus' : 'manque',
     });
   }

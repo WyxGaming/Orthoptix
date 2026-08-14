@@ -23,7 +23,7 @@ import { TetePatient } from './TetePatient';
 /** Cote temporal de l'oeil, exprime en X : la droite du patient est en -X. */
 const signeTemporal = (oeil: OeilId) => (oeil === 'OD' ? -1 : 1);
 
-/** Cache d'occlusion : glisse devant l'oeil vise et se retire hors champ. */
+/** Cache d'occlusion : disque noir glissant devant l'oeil vise. */
 function Cache({ orbites }: { orbites: PositionsOrbites }) {
   const cache = useRef<THREE.Group>(null);
   useFrame((_, dt) => {
@@ -39,13 +39,9 @@ function Cache({ orbites }: { orbites: PositionsOrbites }) {
 
   return (
     <group ref={cache} position={[0, 16, 3.6]}>
-      <mesh>
-        <boxGeometry args={[4.4, 5.2, 0.28]} />
-        <meshStandardMaterial color="#2f3a45" roughness={0.6} />
-      </mesh>
-      <mesh position={[0, -3.6, 0]}>
-        <boxGeometry args={[0.7, 2.4, 0.28]} />
-        <meshStandardMaterial color="#2f3a45" roughness={0.6} />
+      <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[2.6, 2.6, 0.24, 48]} />
+        <meshStandardMaterial color="#0a0a0a" roughness={0.85} />
       </mesh>
     </group>
   );
