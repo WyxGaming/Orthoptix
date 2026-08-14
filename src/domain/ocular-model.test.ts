@@ -299,6 +299,37 @@ describe('fixation alternante temporelle', () => {
     expect(oeilFixateurEffectif(rihannaFixation, regardDroite)).toBe('OD');
   });
 });
+
+describe('limitation abduction (paralysie VI)', () => {
+  const viBilateral: ParametresOculaires = {
+    ...lea,
+    deviation: { horizontal: 10, vertical: 0 },
+    fixation: { mode: 'alternante' },
+    limitationAbduction: true,
+    upshoot: { OD: 0, OG: 0 },
+  };
+
+  it('empeche l OD d abducter en regard a droite', () => {
+    const primaire = etatOculaire(viBilateral, { ...enPositionPrimaire('OD'), tempsS: 0 });
+    const droite = etatOculaire(viBilateral, {
+      ...enPositionPrimaire('OD'),
+      tempsS: 0,
+      gaze: { azimuthDeg: 25, elevationDeg: 0 },
+    });
+    expect(droite.OD.azimuthDeg).toBeCloseTo(primaire.OD.azimuthDeg, 3);
+  });
+
+  it('empeche l OG d abducter en regard a gauche', () => {
+    const primaire = etatOculaire(viBilateral, { ...enPositionPrimaire('OG'), tempsS: 0 });
+    const gauche = etatOculaire(viBilateral, {
+      ...enPositionPrimaire('OG'),
+      tempsS: 0,
+      gaze: { azimuthDeg: -25, elevationDeg: 0 },
+    });
+    expect(gauche.OG.azimuthDeg).toBeCloseTo(primaire.OG.azimuthDeg, 3);
+  });
+});
+
 describe('occlusion', () => {
   it('fait prendre la fixation par l oeil decouvert', () => {
     const etat = etatOculaire(lea, { ...enPositionPrimaire('OD'), occlusion: 'OD' });

@@ -82,6 +82,11 @@ export type ParametresOculaires = {
   kappa: Record<Eye, number>;
   correction: Record<Eye, Refraction>;
   acuite: Record<Eye, string>;
+  /**
+   * Paralysie du VI : l'oeil ne peut pas abducter au-delà de sa position en regard primaire
+   * (même élévation). true = bilatéral.
+   */
+  limitationAbduction?: boolean | Partial<Record<Eye, boolean>>;
 };
 
 export type Gaze = { azimuthDeg: number; elevationDeg: number };
@@ -160,6 +165,13 @@ export function directionMire(eye: Eye, gaze: Gaze, distanceCm = DISTANCE_PRES_C
 export function ratioAdduction(eye: Eye, azimuthDeg: number): number {
   const adduction = signeAdduction(eye) * azimuthDeg;
   return Math.min(1, Math.max(0, adduction / PLATEAU_ADDUCTION_DEG));
+}
+
+function abductionLimitee(params: ParametresOculaires, eye: Eye): boolean {
+  const lim = params.limitationAbduction;
+  if (!lim) return false;
+  if (typeof lim === 'boolean') return lim;
+  return lim[eye] ?? false;
 }
 
 /**
@@ -250,11 +262,26 @@ export function etatOculaire(
     // la mire. Elle inclut la convergence propre a la distance d'examen.
     const mire = directionMire(eye, etat.gaze, etat.distanceFixationCm);
 
-    const azimuthDeg =
+    let azimuthDeg =
       mire.azimuthDeg +
       versionDeg +
       signeAdduction(eye) * prismToDegrees(devHorizontaleDp) +
       nystagmusDeg;
+
+    if (abductionLimitee(params, eye)) {
+      const mirePrimaire = directionMire(
+        eye,
+        { azimuthDeg: 0, elevationDeg: etat.gaze.elevationDeg },
+        etat.distanceFixationCm,
+      );
+      const azimuthPrimaire =
+        mirePrimaire.azimuthDeg +
+        versionDeg +
+        signeAdduction(eye) * prismToDegrees(devHorizontaleDp) +
+        nystagmusDeg;
+      // OD abducte vers les azimuts croissants, OG vers les decroissants.
+      azimuthDeg = eye === 'OD' ? Math.min(azimuthDeg, azimuthPrimaire) : Math.max(azimuthDeg, azimuthPrimaire);
+    }
 
     const elevationDeg =
       mire.elevationDeg + versionVerticaleDeg + prismToDegrees(devVerticaleDp);

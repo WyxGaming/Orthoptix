@@ -26,6 +26,7 @@ export const rihanna: CasClinique = {
     deviation: { horizontal: 10, vertical: 0 },
     deviationLoin: { horizontal: 40, vertical: 0 },
     fixation: { mode: 'alternante', alternanceTemporelleS: 5 },
+    limitationAbduction: true,
     upshoot: { OD: 0, OG: 0 },
     dvd: 0,
     kappa: { OD: 0, OG: 0 },
@@ -223,7 +224,7 @@ export const rihanna: CasClinique = {
     motilite: {
       poids: 5,
       resultat:
-        "Versions oculaires : limitation nette et symétrique de l'abduction des deux yeux, avec impossibilité d'atteindre la position latérale extrême. Adduction, élévations et dépressions conservées. Pas d'hyperaction compensatrice des obliques. Pas de signe de paralysie verticale. Poursuite directe difficile latéralement à cause de la diplopie.",
+        "Versions oculaires : abolition de l'abduction des deux yeux — aucun mouvement latéral temporal en regard droit ou gauche. Adduction, élévations et dépressions conservées. Pas d'hyperaction compensatrice des obliques. Pas de signe de paralysie verticale.",
       interpretation: {
         question: 'Comment interprétez-vous cette motilité ?',
         options: [
