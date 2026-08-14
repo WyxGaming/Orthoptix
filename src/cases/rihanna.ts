@@ -252,28 +252,6 @@ export const rihanna: CasClinique = {
       poids: 5,
       resultat:
         'Deux images perçues, rouge et claire, séparées horizontalement. La séparation augmente en regard latéral et de loin.',
-      interpretation: {
-        question: 'Que confirme ce test ?',
-        options: [
-          {
-            id: 'diplopie-binoculaire',
-            libelle: 'Diplopie binoculaire horizontale, non neutralisée',
-            correct: true,
-          },
-          {
-            id: 'suppression',
-            libelle: 'Suppression monoculaire sans diplopie réelle',
-            correct: false,
-          },
-          {
-            id: 'diplopie-monoculaire',
-            libelle: 'Diplopie monoculaire',
-            correct: false,
-          },
-        ],
-        explication:
-          'Deux images distinctes au test rouge traduisent une diplopie binoculaire persistante, cohérente avec une déviation récente non adaptée.',
-      },
     },
     lancaster: {
       poids: 4,
@@ -284,44 +262,12 @@ export const rihanna: CasClinique = {
     worth: {
       poids: 3,
       resultat: 'Perception de cinq points : deux rouges, trois verts, disposés horizontalement.',
-      interpretation: {
-        question: 'Comment interpréter ce résultat ?',
-        options: [
-          {
-            id: 'diplopie',
-            libelle: 'Diplopie binoculaire horizontale',
-            correct: true,
-          },
-          {
-            id: 'suppression',
-            libelle: 'Suppression d’un œil',
-            correct: false,
-          },
-          {
-            id: 'fusion',
-            libelle: 'Fusion normale',
-            correct: false,
-          },
-        ],
-        explication:
-          'Cinq points séparés confirment l’absence de fusion et une diplopie manifeste, attendue dans un strabisme ou une paralysie récente.',
-      },
     },
     hirschberg: {
       poids: 4,
       attendu: { min: 17, max: 23, unite: 'DP' },
       resultat:
         "Reflet cornéen déporté en temporal sur l'œil non fixateur : esotropie de près d'environ 20 DP (E't).",
-      interpretation: {
-        question: 'Quel est le sens de la déviation ?',
-        options: [
-          { id: 'eso', libelle: 'Esotropie', correct: true },
-          { id: 'exo', libelle: 'Exotropie', correct: false },
-          { id: 'hyper', libelle: 'Hypertropie isolée', correct: false },
-        ],
-        explication:
-          "Reflet temporalisé sur l'œil dévié : l'œil est tourné en dedans, donc esotropie, cohérente avec un déficit d'abduction bilatéral.",
-      },
     },
     krimsky: {
       poids: 4,
@@ -334,52 +280,12 @@ export const rihanna: CasClinique = {
       attendu: { min: 35, max: 45, unite: 'DP' },
       resultat:
         'En vision de loin, l’angle augmente nettement : esotropie d’environ 40 DP (Et), bien plus marquée qu’à 33 cm.',
-      interpretation: {
-        question: 'Que suggère cette majoration de loin ?',
-        options: [
-          {
-            id: 'vi',
-            libelle: 'Atteinte du VI (déficit d’abduction), typiquement plus gênante de loin',
-            correct: true,
-          },
-          {
-            id: 'accommodative',
-            libelle: 'Composante accommodative',
-            correct: false,
-          },
-          {
-            id: 'dvd',
-            libelle: 'Déviation verticale dissociée',
-            correct: false,
-          },
-        ],
-        explication:
-          'Une esotropie majorée de loin, avec limitation d’abduction, renforce l’hypothèse de paralysie(s) du VI plutôt qu’une déviation accommodative.',
-      },
     },
     coverPres: {
       poids: 5,
       attendu: { min: 17, max: 23, unite: 'DP' },
       resultat:
         "Cover test de près positif : mouvement de restitution de dedans en dehors à l'occlusion de chaque œil, esotropie d'environ 20 DP (E't). Alternance spontanée de la fixation toutes les ~5 secondes en position primaire. Diplopie ressentie au décache.",
-      interpretation: {
-        question: 'Que concluez-vous de ce cover test de près ?',
-        options: [
-          {
-            id: 'eso-recente',
-            libelle: 'Esotropie manifeste récente, sans neutralisation',
-            correct: true,
-          },
-          { id: 'esophorie', libelle: 'Esophorie seule', correct: false },
-          {
-            id: 'microtropie',
-            libelle: 'Microtropie ancienne neutralisée',
-            correct: false,
-          },
-        ],
-        explication:
-          'Mouvement de restitution dès la première occlusion : tropie manifeste. La diplopie persistante et l’absence d’antécédent orientent vers un tableau acquis récent.',
-      },
     },
     coverLoin: {
       poids: 5,
@@ -390,81 +296,15 @@ export const rihanna: CasClinique = {
     acuite: {
       poids: 3,
       resultat: 'Sans correction optique : OD 10/10, OG 10/10.',
-      interpretation: {
-        question: 'Que retenez-vous de ces acuités ?',
-        options: [
-          {
-            id: 'conservees',
-            libelle: 'Acuités conservées ; la plainte est surtout motrice / diplopique',
-            correct: true,
-          },
-          {
-            id: 'amblyopie',
-            libelle: 'Amblyopie unilatérale',
-            correct: false,
-          },
-          {
-            id: 'baisse-severe',
-            libelle: 'Baisse sévère d’acuité expliquant seule la plainte',
-            correct: false,
-          },
-        ],
-        explication:
-          'Des acuités à 10/10 n’éliminent pas une HTIC débutante ni une paralysie oculomotrice ; elles indiquent surtout que le trouble est binoculaire/moteur.',
-      },
     },
     refraction: {
       poids: 2,
       resultat: 'Emmétropie aux deux yeux : plan sphérique OD et OG.',
-      interpretation: {
-        question: 'Cette réfraction explique-t-elle la diplopie aiguë ?',
-        options: [
-          {
-            id: 'non',
-            libelle: 'Non : une emmétropie n’explique pas une diplopie horizontale brutale',
-            correct: true,
-          },
-          {
-            id: 'oui-accommodative',
-            libelle: 'Oui : esotropie accommodative',
-            correct: false,
-          },
-          {
-            id: 'oui-anisometropie',
-            libelle: 'Oui : par anisométropie majeure',
-            correct: false,
-          },
-        ],
-        explication:
-          'Une patiente emmétrope sans correction portée ne peut pas présenter une diplopie soudaine par amétropie ; il faut chercher une cause neuro-ophtalmologique.',
-      },
     },
     bagolini: {
       poids: 2,
       optionnel: true,
       resultat: 'Deux stries perpendiculaires non superposées, séparées horizontalement.',
-      interpretation: {
-        question: 'Que traduit ce résultat ?',
-        options: [
-          {
-            id: 'diplopie',
-            libelle: 'Diplopie binoculaire',
-            correct: true,
-          },
-          {
-            id: 'suppression',
-            libelle: 'Suppression monoculaire',
-            correct: false,
-          },
-          {
-            id: 'correspondance-anormale',
-            libelle: 'Correspondance rétinienne anormale ancienne',
-            correct: false,
-          },
-        ],
-        explication:
-          'Deux stries séparées confirment l’absence de fusion, cohérent avec une déviation récente.',
-      },
     },
     lang: {
       poids: -1,
