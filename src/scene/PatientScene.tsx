@@ -263,7 +263,9 @@ export function PatientScene({ zoomReflets }: { zoomReflets: boolean }) {
           key={oeil}
           position={orbites[oeil]}
           scale={(orbites.rayon / RAYON_GLOBE) * (configTete.echelleGlobes ?? 1)}
-          renderOrder={10}
+          {...(configTete.ordreRenduGlobes != null
+            ? { renderOrder: configTete.ordreRenduGlobes }
+            : {})}
         >
           <Eye oeil={oeil} position={[0, 0, 0]} paupieres={false} />
         </group>

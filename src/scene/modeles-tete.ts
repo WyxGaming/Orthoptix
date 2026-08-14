@@ -18,6 +18,8 @@ export type ConfigModeleTete = {
   reductionEcartPupillaireCm?: number;
   /** Facteur d'echelle des globes cliniques (1 = taille extraite du mesh). */
   echelleGlobes?: number;
+  /** Ordre de rendu des globes cliniques (defaut : test de profondeur naturel). */
+  ordreRenduGlobes?: number;
   credit?: { titre: string; auteur: string; url: string; licence: string };
 };
 
@@ -60,10 +62,11 @@ export const MODELES_TETE: Record<string, ConfigModeleTete> = {
     masquer: /^lashes/i,
     orbitesCentroidesDirects: true,
     /** Ajustement fin X/Y/Z (cm) après centroïdes eyes_low. */
-    decalageOrbites: [0, -0.17, -0.1],
+    decalageOrbites: [0, -0.17, -0.18],
     /** +4 mm écart interpupillaire (valeur négative = écartement). */
     reductionEcartPupillaireCm: -0.4,
-    echelleGlobes: 0.6,
+    /** Légèrement réduit : le bas dépassait la paupière inférieure du mesh. */
+    echelleGlobes: 0.54,
     credit: {
       titre: 'Rihanna Head Model',
       auteur: 'oYummi',
