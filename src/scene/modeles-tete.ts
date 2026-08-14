@@ -62,11 +62,11 @@ export const MODELES_TETE: Record<string, ConfigModeleTete> = {
     masquer: /^lashes/i,
     orbitesCentroidesDirects: true,
     /** Ajustement fin X/Y/Z (cm) après centroïdes eyes_low. */
-    decalageOrbites: [0, -0.17, -0.18],
+    decalageOrbites: [0, -0.17, -0.22],
     /** +4 mm écart interpupillaire (valeur négative = écartement). */
     reductionEcartPupillaireCm: -0.4,
-    /** Légèrement réduit : le bas dépassait la paupière inférieure du mesh. */
-    echelleGlobes: 0.54,
+    /** Réduit pour rentrer les bords temporaux sous la paupière inférieure. */
+    echelleGlobes: 0.50,
     credit: {
       titre: 'Rihanna Head Model',
       auteur: 'oYummi',
