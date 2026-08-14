@@ -36,10 +36,10 @@ function Bilan() {
 
       if (event.key === 'ArrowLeft') {
         event.preventDefault();
-        occlure('OG');
+        occlure('OD');
       } else if (event.key === 'ArrowRight') {
         event.preventDefault();
-        occlure('OD');
+        occlure('OG');
       } else if (event.key === 'ArrowDown') {
         event.preventDefault();
         occlure('aucune');
