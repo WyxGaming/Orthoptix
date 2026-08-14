@@ -23,6 +23,11 @@ import { TetePatient } from './TetePatient';
 /** Cote temporal de l'oeil, exprime en X : la droite du patient est en -X. */
 const signeTemporal = (oeil: OeilId) => (oeil === 'OD' ? -1 : 1);
 
+const RAYON_CACHE = 1.3;
+const EPAISSEUR_CACHE = 0.12;
+/** Recul du disque par rapport au centre orbitaire, vers l observateur (axe Z+, cm). */
+const AVANCE_CACHE_CM = 4.2;
+
 /** Cache d'occlusion : disque noir glissant devant l'oeil vise. */
 function Cache({ orbites }: { orbites: PositionsOrbites }) {
   const cache = useRef<THREE.Group>(null);
@@ -33,14 +38,18 @@ function Cache({ orbites }: { orbites: PositionsOrbites }) {
     const cible =
       occlusion === 'aucune'
         ? new THREE.Vector3(0, 16, 3.6)
-        : new THREE.Vector3(orbites[occlusion][0], orbites[occlusion][1], orbites[occlusion][2] + 2.2);
+        : new THREE.Vector3(
+            orbites[occlusion][0],
+            orbites[occlusion][1],
+            orbites[occlusion][2] + AVANCE_CACHE_CM,
+          );
     cache.current.position.lerp(cible, 1 - Math.exp(-dt / 0.07));
   });
 
   return (
     <group ref={cache} position={[0, 16, 3.6]}>
       <mesh rotation={[Math.PI / 2, 0, 0]}>
-        <cylinderGeometry args={[2.6, 2.6, 0.24, 48]} />
+        <cylinderGeometry args={[RAYON_CACHE, RAYON_CACHE, EPAISSEUR_CACHE, 48]} />
         <meshStandardMaterial color="#0a0a0a" roughness={0.85} />
       </mesh>
     </group>
