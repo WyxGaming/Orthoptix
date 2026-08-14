@@ -87,6 +87,8 @@ export type ParametresOculaires = {
    * (même élévation). true = bilatéral.
    */
   limitationAbduction?: boolean | Partial<Record<Eye, boolean>>;
+  /** Degrés supplémentaires d'abduction en regard latéral (ajustement fin par oeil). */
+  abductionSupplementaireDeg?: Partial<Record<Eye, number>>;
 };
 
 export type Gaze = { azimuthDeg: number; elevationDeg: number };
@@ -172,6 +174,20 @@ function abductionLimitee(params: ParametresOculaires, eye: Eye): boolean {
   if (!lim) return false;
   if (typeof lim === 'boolean') return lim;
   return lim[eye] ?? false;
+}
+
+/** OD abducte vers +azimuth, OG vers -azimuth. */
+function appliquerAbductionSupplementaire(
+  eye: Eye,
+  azimuthDeg: number,
+  gazeAz: number,
+  supplement?: Partial<Record<Eye, number>>,
+): number {
+  const deg = supplement?.[eye];
+  if (!deg) return azimuthDeg;
+  if (eye === 'OD' && gazeAz > 0) return azimuthDeg + deg;
+  if (eye === 'OG' && gazeAz < 0) return azimuthDeg - deg;
+  return azimuthDeg;
 }
 
 /**
@@ -267,6 +283,13 @@ export function etatOculaire(
       versionDeg +
       signeAdduction(eye) * prismToDegrees(devHorizontaleDp) +
       nystagmusDeg;
+
+    azimuthDeg = appliquerAbductionSupplementaire(
+      eye,
+      azimuthDeg,
+      etat.gaze.azimuthDeg,
+      params.abductionSupplementaireDeg,
+    );
 
     if (abductionLimitee(params, eye)) {
       const mirePrimaire = directionMire(

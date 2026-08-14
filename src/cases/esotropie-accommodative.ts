@@ -255,6 +255,7 @@ export const esotropieAccommodative: CasClinique = {
     deviationLoinSansCorrection: { horizontal: 10, vertical: 0 },
     orthotropieVpSurcorrection: true,
     fixation: { mode: 'preferee', oeil: 'OD' },
+    abductionSupplementaireDeg: { OG: 10 },
     upshoot: { OD: 0, OG: 0 },
     dvd: 0,
     kappa: { OD: 0, OG: 0 },
