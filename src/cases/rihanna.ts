@@ -78,7 +78,7 @@ export const rihanna: CasClinique = {
       libelle: 'Avez-vous des céphalées en même temps que la vision double ?',
       reponse:
         'Oui, des maux de tête oppressifs, surtout le matin et en fin de journée, plus intenses depuis trois jours.',
-      poids: 4,
+      poids: 2,
       commentaire:
         'Céphalées concomitantes à une diplopie aiguë : signe associé à recouper avec le reste de l’anamnèse, sans présumer l’étiologie.',
     },
@@ -92,34 +92,6 @@ export const rihanna: CasClinique = {
         'Absence d’antécédent oculomoteur : tableau acquis, à ne pas interpréter comme un strabisme précoce ou accommodatif.',
     },
     {
-      id: 'acuite-recente',
-      rubrique: 'anamnese',
-      libelle: 'Avez-vous remarqué une baisse de vision récente ou des obscurations visuelles ?',
-      reponse:
-        'Par moments des « voiles » passagers, surtout en me levant vite, mais je vois encore bien les lettres.',
-      poids: 3,
-      commentaire:
-        'Obscurations visuelles transitoires : symptomatologie à intégrer au bilan (dont fond d’œil), indépendamment de l’acuité annoncée.',
-    },
-    {
-      id: 'acouphenes',
-      rubrique: 'anamnese',
-      libelle: 'Entendez-vous un bruit dans les oreilles, pulsatile ou en syncope avec le pouls ?',
-      reponse: 'Oui, un bourdonnement pulsatile à l’oreille droite depuis quelques semaines.',
-      poids: 3,
-      commentaire:
-        'Acouphène pulsatile : signe d’alarme à noter et confronter aux autres symptômes associés.',
-    },
-    {
-      id: 'poids',
-      rubrique: 'anamnese',
-      libelle: 'Avez-vous pris ou perdu du poids récemment ?',
-      reponse: 'J’ai pris environ 8 kg en un an, sans changement alimentaire majeur.',
-      poids: 3,
-      commentaire:
-        'Prise de poids récente chez une femme jeune : élément contextuel à recouper avec les autres signes d’alarme.',
-    },
-    {
       id: 'correction',
       rubrique: 'anamnese',
       libelle: 'Portez-vous des lunettes ou des lentilles ?',
@@ -127,15 +99,6 @@ export const rihanna: CasClinique = {
       poids: 2,
       commentaire:
         'Absence de correction portée : le bilan se conduit en SC ; une éventuelle amétropie ne doit pas masquer le tableau moteur aigu.',
-    },
-    {
-      id: 'nausees',
-      rubrique: 'anamnese',
-      libelle: 'Avez-vous des nausées ou des vomissements associés aux céphalées ?',
-      reponse: 'Quelques nausées le matin, pas de vomissements.',
-      poids: 2,
-      commentaire:
-        'Nausées matinales associées aux céphalées : élément à intégrer dans la recherche de signes d’alarme.',
     },
     {
       id: 'contraception',
@@ -205,9 +168,7 @@ export const rihanna: CasClinique = {
     'depuis-quand',
     'diplopie',
     'distance',
-    'cephalees',
     'strabisme-antérieur',
-    'acuite-recente',
   ],
 
   examens: {
