@@ -19,17 +19,25 @@ import { LunettesPatient } from './LunettesPatient';
 import { configModeleTete } from './modeles-tete';
 import { correctionEffective } from '../engine/correction';
 import { TetePatient } from './TetePatient';
+import {
+  AVANCE_CACHE_SANS_LUNETTES_CM,
+  zCacheDevantMonture,
+} from './calage-lunettes';
 
 /** Cote temporal de l'oeil, exprime en X : la droite du patient est en -X. */
 const signeTemporal = (oeil: OeilId) => (oeil === 'OD' ? -1 : 1);
 
 const RAYON_CACHE = 1.3;
 const EPAISSEUR_CACHE = 0.12;
-/** Recul du disque par rapport au centre orbitaire, vers l observateur (axe Z+, cm). */
-const AVANCE_CACHE_CM = 4.2;
 
 /** Cache d'occlusion : disque noir glissant devant l'oeil vise. */
-function Cache({ orbites }: { orbites: PositionsOrbites }) {
+function Cache({
+  orbites,
+  devantLunettes,
+}: {
+  orbites: PositionsOrbites;
+  devantLunettes: boolean;
+}) {
   const cache = useRef<THREE.Group>(null);
   useFrame((_, dt) => {
     const { etat } = useSession.getState();
@@ -41,16 +49,18 @@ function Cache({ orbites }: { orbites: PositionsOrbites }) {
         : new THREE.Vector3(
             orbites[occlusion][0],
             orbites[occlusion][1],
-            orbites[occlusion][2] + AVANCE_CACHE_CM,
+            devantLunettes
+              ? zCacheDevantMonture(orbites, EPAISSEUR_CACHE)
+              : orbites[occlusion][2] + AVANCE_CACHE_SANS_LUNETTES_CM,
           );
     cache.current.position.lerp(cible, 1 - Math.exp(-dt / 0.07));
   });
 
   return (
     <group ref={cache} position={[0, 16, 3.6]}>
-      <mesh rotation={[Math.PI / 2, 0, 0]}>
+      <mesh rotation={[Math.PI / 2, 0, 0]} renderOrder={12}>
         <cylinderGeometry args={[RAYON_CACHE, RAYON_CACHE, EPAISSEUR_CACHE, 48]} />
-        <meshStandardMaterial color="#0a0a0a" roughness={0.85} />
+        <meshStandardMaterial color="#0a0a0a" roughness={0.85} depthTest={true} />
       </mesh>
     </group>
   );
@@ -276,7 +286,7 @@ export function PatientScene({ zoomReflets }: { zoomReflets: boolean }) {
         </group>
       ))}
       <Prismes orbites={orbites} />
-      <Cache orbites={orbites} />
+      <Cache orbites={orbites} devantLunettes={montreLunettes} />
       <Cible />
     </>
   );

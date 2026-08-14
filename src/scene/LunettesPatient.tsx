@@ -2,6 +2,7 @@ import { useGLTF } from '@react-three/drei';
 import { Component, Suspense, useLayoutEffect, useMemo, type ReactNode } from 'react';
 import * as THREE from 'three';
 import type { PositionsOrbites } from './orbites';
+import { DECALAGE_MONTURE } from './calage-lunettes';
 
 const MODELE_URL = '/models/lunettes/lunettes.glb';
 
@@ -10,7 +11,7 @@ const DEMI_VERRE_CM = 1.15;
 const ECART_PUPILLAIRE_SUPPLEMENTAIRE_CM = 5;
 /** Reduction globale de la monture par rapport au calage orbites. */
 const FACTEUR_ECHELLE = 0.85;
-const DECALAGE_FIN: [number, number, number] = [0, -0.35, 0.45];
+const DECALAGE_FIN = DECALAGE_MONTURE;
 
 /** Orientation du GLB importe : 270 deg vers la droite autour de l'axe vertical. */
 const CORRECTION_Y = -Math.PI / 2 - Math.PI;
