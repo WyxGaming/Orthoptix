@@ -31,10 +31,10 @@ function Bilan() {
       }
       if (event.key === 'ArrowLeft') {
         event.preventDefault();
-        occlure('OG');
+        occlure('OD');
       } else if (event.key === 'ArrowRight') {
         event.preventDefault();
-        occlure('OD');
+        occlure('OG');
       } else if (event.key === 'ArrowDown') {
         event.preventDefault();
         occlure('aucune');
@@ -56,7 +56,7 @@ function Bilan() {
         </div>
         <div className="flex items-center gap-3">
           <span className="hidden text-xs text-slate-500 sm:inline">
-            Occlusion : ← OG · → OD · ↓ découvrir
+            Occlusion : ← OD · → OG · ↓ découvrir
           </span>
           <span className="text-xs uppercase tracking-wider text-slate-500">
             Mode {mode === 'entrainement' ? 'entraînement' : 'évaluation'}
