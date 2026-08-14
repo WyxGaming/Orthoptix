@@ -618,7 +618,7 @@ export const rihanna: CasClinique = {
               'irm encéphale',
             ],
             resultat:
-              'Pas de tumeur ni de processus expansif intracrânien. Ventricules de taille normale. Séquences venographiques : sténose bilatérale des sinus latéraux transverses, sans thrombose veineuse cérébrale. Aspect compatible avec une HTIC idiopathique.',
+              'Pas de tumeur ni de processus expansif intracrânien. Ventricules de taille normale. Séquences venographiques : sténose bilatérale des sinus latéraux transverses, sans signe de thrombose veineuse cérébrale.',
           },
           {
             id: 'pl',
@@ -633,6 +633,49 @@ export const rihanna: CasClinique = {
             ],
             resultat:
               'Pression d’ouverture à 32 cmH₂O (normale < 25). LCR clair, protéinorachie et cytologie normales.',
+          },
+          {
+            id: 'bilan-sanguin',
+            libelle: 'Bilan sanguin',
+            variantes: [
+              'bilan sanguin',
+              'bilan biologique',
+              'biologie',
+              'nfs',
+              'hemogramme',
+              'hémogramme',
+              'tsh',
+              'thyroide',
+              'thyroïde',
+              'ionogramme',
+              'creatinine',
+              'créatinine',
+              'vs',
+              'vsg',
+              'sedimentation',
+              'vitamine a',
+              'vitamine d',
+              'bhcg',
+              'beta hcg',
+              'β-hcg',
+            ],
+            resultat:
+              'NFS, ionogramme, créatininémie, TSH et VSG normaux. Pas d’anémie, d’insuffisance rénale ni de dysthyroïdie évidente. β-HCG négatif.',
+            essentiel: false,
+          },
+          {
+            id: 'pev',
+            libelle: 'Potentiels évoqués visuels',
+            variantes: [
+              'pev',
+              'potentiels evoques',
+              'potentiels évoqués',
+              'potentiel evoque visuel',
+              'pev visuel',
+            ],
+            resultat:
+              'Latences P100 allongées bilatéralement avec amplitudes conservées, concordant avec une atteinte de la voie visuelle aiguë liée à l’œdème papillaire.',
+            essentiel: false,
           },
           {
             id: 'oct',
@@ -652,9 +695,9 @@ export const rihanna: CasClinique = {
           },
         ],
         reponseAttendue:
-          'Fond d’œil (papilloedème), IRM cérébrale (éliminer une cause structurale), ponction lombaire avec mesure de la pression du LCR.',
+          'Fond d’œil (papilloedème), IRM cérébrale (éliminer une cause structurale), ponction lombaire avec mesure de la pression du LCR ; bilan sanguin pour éliminer une cause secondaire.',
         explication:
-          'Devant une HTIC suspectée : confirmer l’œdème papillaire au fond d’œil, éliminer une cause structurale à l’IRM, documenter l’HTIC à la PL (pression d’ouverture élevée).',
+          'Devant une suspicion d’HTIC : confirmer l’œdème papillaire au fond d’œil, éliminer une cause structurale à l’IRM, documenter l’hyperpression du LCR à la PL. Un bilan sanguin (NFS, ionogramme, fonction rénale, TSH…) recherche les causes secondaires ; champ visuel, OCT ou PEV complètent le suivi fonctionnel.',
       },
       {
         id: 'etiologie-symptomes',

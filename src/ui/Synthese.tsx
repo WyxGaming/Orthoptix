@@ -25,7 +25,7 @@ function ChampExamensComplementaires({
           onChange(e.target.value);
         }}
         rows={4}
-        placeholder="Ex. fond d'œil, IRM encéphale, ponction lombaire…"
+        placeholder="Ex. fond d'œil, IRM encéphale, ponction lombaire, bilan sanguin…"
         className="w-full resize-y rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none placeholder:text-slate-600 focus:border-sky-500"
       />
       <Bouton
@@ -40,7 +40,7 @@ function ChampExamensComplementaires({
           {detectes.length === 0 ? (
             <p className="rounded-md border border-amber-800/60 bg-amber-950/20 px-3 py-2 text-sm text-amber-200/90">
               Aucun examen reconnu dans votre prescription. Vérifiez les intitulés (fond d'œil,
-              IRM, ponction lombaire…).
+              IRM, ponction lombaire, bilan sanguin…).
             </p>
           ) : (
             detectes.map((examen) => (

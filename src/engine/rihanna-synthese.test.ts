@@ -19,6 +19,14 @@ describe('examensComplementairesDetectes', () => {
     expect(detectes.map((e) => e.id)).toEqual(['fo', 'irm', 'pl']);
   });
 
+  it('detecte un bilan sanguin et des examens optionnels', () => {
+    const detectes = examensComplementairesDetectes(
+      'FO, IRM, PL, bilan sanguin avec TSH, PEV',
+      question.examens,
+    );
+    expect(detectes.map((e) => e.id)).toEqual(['fo', 'irm', 'pl', 'bilan-sanguin', 'pev']);
+  });
+
   it('attribue le score plein si au moins deux examens essentiels sont prescrits', () => {
     const evaluation = evaluerQuestionSynthese(
       question,
