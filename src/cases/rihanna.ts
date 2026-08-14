@@ -19,15 +19,17 @@ export const rihanna: CasClinique = {
       'Vision double horizontale apparue brutalement depuis trois jours, sans antécédent oculaire.',
   },
 
+  debutSansCorrection: true,
+
   oculaire: {
-    // Esotropie par déficit d'abduction bilatéral : plus marquée de loin (VI).
-    deviation: { horizontal: 22, vertical: 0 },
-    deviationLoin: { horizontal: 32, vertical: 0 },
+    // E't ~10 DP en VP, Et ~40 DP en VL (double paralysie du VI, plus marquée de loin).
+    deviation: { horizontal: 10, vertical: 0 },
+    deviationLoin: { horizontal: 40, vertical: 0 },
     fixation: { mode: 'alternante' },
     upshoot: { OD: 0, OG: 0 },
     dvd: 0,
     kappa: { OD: 0, OG: 0 },
-    correction: { OD: { sphere: -0.5 }, OG: { sphere: -0.5 } },
+    correction: { OD: { sphere: 0 }, OG: { sphere: 0 } },
     acuite: { OD: '10/10', OG: '10/10' },
   },
 
@@ -120,10 +122,10 @@ export const rihanna: CasClinique = {
       id: 'correction',
       rubrique: 'anamnese',
       libelle: 'Portez-vous des lunettes ou des lentilles ?',
-      reponse: 'Des lunettes légères pour la télévision, portées de temps en temps seulement.',
+      reponse: 'Non, je ne porte pas de correction optique.',
       poids: 2,
       commentaire:
-        'Une faible myopie n’explique pas une diplopie aiguë ; elle n’oriente pas le diagnostic moteur.',
+        'Absence de correction portée : le bilan se conduit en SC ; une éventuelle amétropie ne doit pas masquer le tableau moteur aigu.',
     },
     {
       id: 'nausees',
@@ -289,9 +291,9 @@ export const rihanna: CasClinique = {
     },
     hirschberg: {
       poids: 4,
-      attendu: { min: 18, max: 28, unite: 'DP' },
+      attendu: { min: 8, max: 12, unite: 'DP' },
       resultat:
-        "Reflet cornéen déporté en temporal sur l'œil non fixateur : esotropie en position primaire.",
+        "Reflet cornéen déporté en temporal sur l'œil non fixateur : esotropie de près d'environ 10 DP (E't).",
       interpretation: {
         question: 'Quel est le sens de la déviation ?',
         options: [
@@ -305,15 +307,15 @@ export const rihanna: CasClinique = {
     },
     krimsky: {
       poids: 4,
-      attendu: { min: 18, max: 28, unite: 'DP' },
+      attendu: { min: 8, max: 12, unite: 'DP' },
       resultat:
-        'Recentrage du reflet par prismes base temporale, concordant avec une esotropie de près d’environ 22 DP.',
+        'Recentrage du reflet par prismes base temporale : esotropie de près d’environ 10 DP (E\'t).',
     },
     krimskyLoin: {
       poids: 4,
-      attendu: { min: 28, max: 38, unite: 'DP' },
+      attendu: { min: 35, max: 45, unite: 'DP' },
       resultat:
-        'En vision de loin, l’angle augmente : esotropie d’environ 32 DP, plus marquée qu’à 33 cm.',
+        'En vision de loin, l’angle augmente nettement : esotropie d’environ 40 DP (Et), bien plus marquée qu’à 33 cm.',
       interpretation: {
         question: 'Que suggère cette majoration de loin ?',
         options: [
@@ -339,9 +341,9 @@ export const rihanna: CasClinique = {
     },
     coverPres: {
       poids: 5,
-      attendu: { min: 18, max: 28, unite: 'DP' },
+      attendu: { min: 8, max: 12, unite: 'DP' },
       resultat:
-        "Cover test de près positif : mouvement de restitution de dedans en dehors à l'occlusion de chaque œil. Pas de préférence nette de fixation. Diplopie ressentie au décache.",
+        "Cover test de près positif : mouvement de restitution de dedans en dehors à l'occlusion de chaque œil, esotropie d'environ 10 DP (E't). Pas de préférence nette de fixation. Diplopie ressentie au décache.",
       interpretation: {
         question: 'Que concluez-vous de ce cover test de près ?',
         options: [
@@ -363,13 +365,13 @@ export const rihanna: CasClinique = {
     },
     coverLoin: {
       poids: 5,
-      attendu: { min: 28, max: 38, unite: 'DP' },
+      attendu: { min: 35, max: 45, unite: 'DP' },
       resultat:
-        'Cover test de loin : esotropie plus large qu’à 33 cm, autour de 32 DP, concordante avec la gêne déclarée de loin.',
+        'Cover test de loin : esotropie manifeste d’environ 40 DP (Et), nettement plus large qu’à 33 cm, concordante avec la gêne déclarée de loin.',
     },
     acuite: {
       poids: 3,
-      resultat: 'Sans correction : OD 10/10, OG 10/10. Avec correction légère : identique.',
+      resultat: 'Sans correction optique : OD 10/10, OG 10/10.',
       interpretation: {
         question: 'Que retenez-vous de ces acuités ?',
         options: [
@@ -395,13 +397,13 @@ export const rihanna: CasClinique = {
     },
     refraction: {
       poids: 2,
-      resultat: 'Légère myopie faible bilatérale : −0,50 D sphérique de chaque côté.',
+      resultat: 'Emmétropie aux deux yeux : plan sphérique OD et OG.',
       interpretation: {
         question: 'Cette réfraction explique-t-elle la diplopie aiguë ?',
         options: [
           {
             id: 'non',
-            libelle: 'Non : une faible myopie n’explique pas une diplopie horizontale brutale',
+            libelle: 'Non : une emmétropie n’explique pas une diplopie horizontale brutale',
             correct: true,
           },
           {
@@ -416,7 +418,7 @@ export const rihanna: CasClinique = {
           },
         ],
         explication:
-          'Une faible myopie bilatérale symétrique n’entraîne pas une diplopie soudaine à 38 ans ; il faut chercher une cause neuro-ophtalmologique.',
+          'Une patiente emmétrope sans correction portée ne peut pas présenter une diplopie soudaine par amétropie ; il faut chercher une cause neuro-ophtalmologique.',
       },
     },
     bagolini: {
@@ -708,10 +710,10 @@ export const rihanna: CasClinique = {
 
   compteRenduExpert: [
     'Rihanna, 38 ans. Consultation en urgence pour diplopie horizontale brutale depuis trois jours, sans antécédent de strabisme. Céphalées oppressives matinales, acouphène pulsatile, prise de poids récente.',
-    'Acuités visuelles conservées à 10/10 des deux côtés. Réfraction : faible myopie (−0,50 D), sans lien avec le tableau aigu.',
+    'Acuités visuelles conservées à 10/10 des deux côtés sans correction optique. Réfraction : emmétropie.',
     'Motilité : limitation nette et symétrique de l’abduction des deux yeux, sans atteinte verticale.',
     'Examen sensoriel : diplopie binoculaire horizontale confirmée (verre rouge, Worth).',
-    'Reflets et occlusion : esotropie manifeste, environ 22 DP de près et 32 DP de loin, sans préférence nette de fixation.',
+    'Reflets et occlusion : E\'t ~10 DP en vision de près, Et ~40 DP en vision de loin, sans préférence nette de fixation.',
     'Conclusion : double paralysie du VI chez une femme jeune avec signes d’alarme d’HTIC. Bilan orthoptique complété ; orientation urgente pour fond d’œil à la recherche d’un papilloedème, IRM cérébrale et ponction lombaire avec mesure de la pression du LCR, en coordination neuro-ophtalmologique.',
   ],
 };
