@@ -12,6 +12,8 @@ export type ConfigModeleTete = {
   orbites?: PositionsOrbites;
   /** Ajustement fin des orbites extraites automatiquement [x, y, z] en cm. */
   decalageOrbites?: [number, number, number];
+  /** Centroïdes bruts du mesh Eye (sans reculZ/hausseY), ex. eyes_low Sketchfab. */
+  orbitesCentroidesDirects?: boolean;
   /** Retire des cm a l'ecart interpupillaire total (chaque oeil rapproche de la moitie). */
   reductionEcartPupillaireCm?: number;
   credit?: { titre: string; auteur: string; url: string; licence: string };
@@ -52,7 +54,10 @@ export const MODELES_TETE: Record<string, ConfigModeleTete> = {
   rihanna: {
     url: '/models/rihanna_head_model/rihanna.glb',
     hauteurVisageCm: 22,
-    decalageFin: [0, 0.4, 1.0],
+    decalageFin: [0, 0.55, 1.15],
+    masquer: /^lashes/i,
+    orbitesCentroidesDirects: true,
+    decalageOrbites: [0, 0.06, -0.95],
     credit: {
       titre: 'Rihanna Head Model',
       auteur: 'oYummi',

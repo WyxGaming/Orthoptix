@@ -23,7 +23,7 @@ function rayonEnveloppe(groupe: THREE.Vector3[], centre: THREE.Vector3): number 
  * A partir des meshes « Eye » du modele, retrouve les deux centres orbitaires
  * et un rayon de globe adapte a la taille des orbites.
  */
-function extraireOrbites(racine: THREE.Object3D): PositionsOrbites | null {
+function extraireOrbites(racine: THREE.Object3D, centroidesDirects = false): PositionsOrbites | null {
   const points: THREE.Vector3[] = [];
   let aDesYeux = false;
 
@@ -60,6 +60,13 @@ function extraireOrbites(racine: THREE.Object3D): PositionsOrbites | null {
   const reculZ = 0.55;
   const hausseY = 0.3;
   const ecartX = 0.1;
+  if (centroidesDirects) {
+    return {
+      OD: [centreOD.x, centreOD.y, centreOD.z],
+      OG: [centreOG.x, centreOG.y, centreOG.z],
+      rayon: Math.max(0.35, rayon),
+    };
+  }
   return {
     OD: [centreOD.x - ecartX, centreOD.y + hausseY, centreOD.z - reculZ],
     OG: [centreOG.x + ecartX, centreOG.y + hausseY, centreOG.z - reculZ],
@@ -248,7 +255,7 @@ function TeteMesh({
 
     const orbitesBrutes =
       config.orbites ??
-      extraireOrbites(clone) ??
+      extraireOrbites(clone, config.orbitesCentroidesDirects) ??
       extraireOrbitesVisage(clone) ??
       extraireOrbitesSphere(clone) ??
       ORBITES_DEFAUT;
