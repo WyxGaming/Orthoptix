@@ -1,9 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { esotropieAccommodative } from '../cases/esotropie-accommodative';
 import { esotropiePrecoce } from '../cases/esotropie-precoce';
-import { rihanna } from '../cases/rihanna';
 import { useSession } from './session';
-import type { CasClinique } from './types';
 import type { ExamenId } from './types';
 import { interpretationsExamen } from './types';
 
@@ -145,25 +142,6 @@ describe('distance de fixation', () => {
   it('examine de pres par defaut', () => {
     session().lancerExamen('coverPres');
     expect(session().etat.distanceFixationCm).toBe(33);
-  });
-});
-
-describe('regard pendant le cover test', () => {
-  it.each([
-    ['Léa', esotropiePrecoce],
-    ['Maxime', esotropieAccommodative],
-    ['Rihanna', rihanna],
-  ] as const)('oriente la mire en VP et en VL (%s)', (_nom, cas: CasClinique) => {
-    session().demarrer(cas, 'entrainement');
-
-    session().lancerExamen('coverPres');
-    session().deplacerCible({ azimuthDeg: 25, elevationDeg: -28 });
-    expect(session().etat.gaze).toEqual({ azimuthDeg: 25, elevationDeg: -28 });
-
-    session().lancerExamen('coverLoin');
-    session().deplacerCible({ azimuthDeg: -25, elevationDeg: 18 });
-    expect(session().etat.gaze).toEqual({ azimuthDeg: -25, elevationDeg: 18 });
-    expect(session().etat.distanceFixationCm).toBe(500);
   });
 });
 

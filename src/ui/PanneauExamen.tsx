@@ -41,9 +41,6 @@ const BASES: { valeur: BasePrisme; libelle: string }[] = [
 /** Examens où le zoom oculaire aide la lecture clinique (reflets, cache, versions). */
 const INTERACTIONS_ZOOM_YEUX = new Set(['reflets', 'occlusion', 'motilite']);
 
-/** Examens où l'étudiant oriente la mire (motilité, cover test). */
-const INTERACTIONS_REGARD = new Set(['motilite', 'occlusion']);
-
 function SaisieMesuresConditions({
   combos,
   mesures,
@@ -177,6 +174,7 @@ function CommandesOcclusion() {
           Découvrir
         </Bouton>
       </div>
+      <p className="text-xs text-slate-500">Raccourcis : ← OG · → OD · ↓ découvrir</p>
     </div>
   );
 }
@@ -435,7 +433,7 @@ export function PanneauExamen({
           </p>
         )}
 
-        {INTERACTIONS_REGARD.has(definition.interaction) && <CommandesMotilite />}
+        {definition.interaction === 'motilite' && <CommandesMotilite />}
         {definition.interaction === 'occlusion' && <CommandesOcclusion />}
         {definition.prismes && <CommandesPrismes />}
 
