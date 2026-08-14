@@ -22,8 +22,8 @@ export const rihanna: CasClinique = {
   debutSansCorrection: true,
 
   oculaire: {
-    // E't ~10 DP en VP, Et ~40 DP en VL (double paralysie du VI, plus marquée de loin).
-    deviation: { horizontal: 10, vertical: 0 },
+    // E't ~20 DP en VP, Et ~40 DP en VL (double paralysie du VI, plus marquée de loin).
+    deviation: { horizontal: 20, vertical: 0 },
     deviationLoin: { horizontal: 40, vertical: 0 },
     fixation: { mode: 'alternante', alternanceTemporelleS: 5 },
     limitationAbduction: true,
@@ -303,9 +303,9 @@ export const rihanna: CasClinique = {
     },
     hirschberg: {
       poids: 4,
-      attendu: { min: 8, max: 12, unite: 'DP' },
+      attendu: { min: 17, max: 23, unite: 'DP' },
       resultat:
-        "Reflet cornéen déporté en temporal sur l'œil non fixateur : esotropie de près d'environ 10 DP (E't).",
+        "Reflet cornéen déporté en temporal sur l'œil non fixateur : esotropie de près d'environ 20 DP (E't).",
       interpretation: {
         question: 'Quel est le sens de la déviation ?',
         options: [
@@ -319,9 +319,9 @@ export const rihanna: CasClinique = {
     },
     krimsky: {
       poids: 4,
-      attendu: { min: 8, max: 12, unite: 'DP' },
+      attendu: { min: 17, max: 23, unite: 'DP' },
       resultat:
-        'Recentrage du reflet par prismes base temporale : esotropie de près d’environ 10 DP (E\'t).',
+        'Recentrage du reflet par prismes base temporale : esotropie de près d’environ 20 DP (E\'t).',
     },
     krimskyLoin: {
       poids: 4,
@@ -353,9 +353,9 @@ export const rihanna: CasClinique = {
     },
     coverPres: {
       poids: 5,
-      attendu: { min: 8, max: 12, unite: 'DP' },
+      attendu: { min: 17, max: 23, unite: 'DP' },
       resultat:
-        "Cover test de près positif : mouvement de restitution de dedans en dehors à l'occlusion de chaque œil, esotropie d'environ 10 DP (E't). Alternance spontanée de la fixation toutes les ~5 secondes en position primaire. Diplopie ressentie au décache.",
+        "Cover test de près positif : mouvement de restitution de dedans en dehors à l'occlusion de chaque œil, esotropie d'environ 20 DP (E't). Alternance spontanée de la fixation toutes les ~5 secondes en position primaire. Diplopie ressentie au décache.",
       interpretation: {
         question: 'Que concluez-vous de ce cover test de près ?',
         options: [
@@ -785,7 +785,7 @@ export const rihanna: CasClinique = {
     'Acuités visuelles conservées à 10/10 des deux côtés sans correction optique. Réfraction : emmétropie.',
     'Motilité : limitation nette et symétrique de l’abduction des deux yeux, sans atteinte verticale.',
     'Examen sensoriel : diplopie binoculaire horizontale confirmée (verre rouge, Worth).',
-    'Reflets et occlusion : E\'t ~10 DP en vision de près, Et ~40 DP en vision de loin ; alternance spontanée de la fixation toutes les ~5 secondes.',
+    'Reflets et occlusion : E\'t ~20 DP en vision de près, Et ~40 DP en vision de loin ; alternance spontanée de la fixation toutes les ~5 secondes.',
     'Conclusion : double paralysie du VI chez une femme jeune avec signes d’alarme d’HTIC. Bilan orthoptique complété ; orientation urgente pour fond d’œil à la recherche d’un papilloedème, IRM cérébrale et ponction lombaire avec mesure de la pression du LCR, en coordination neuro-ophtalmologique.',
   ],
 };
