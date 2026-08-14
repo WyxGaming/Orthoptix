@@ -48,6 +48,19 @@ export const MODELES_TETE: Record<string, ConfigModeleTete> = {
       licence: 'CC-BY-4.0',
     },
   },
+  /** Cas 3 — Rihanna, 38 ans. Remplacer credit.url après réception du modèle Sketchfab. */
+  rihanna: {
+    url: '/models/rihanna/rihanna.glb',
+    hauteurVisageCm: 22,
+    decalageFin: [0, 0.6, 1.2],
+    masquer: /^(Lamp|Sphere)/i,
+    credit: {
+      titre: 'Rihanna',
+      auteur: '(Sketchfab — à compléter)',
+      url: 'https://sketchfab.com/',
+      licence: 'CC-BY-4.0',
+    },
+  },
 };
 
 export function configModeleTete(casId: string): ConfigModeleTete {
