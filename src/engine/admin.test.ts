@@ -2,15 +2,19 @@ import { describe, expect, it, beforeEach } from 'vitest';
 import { esotropiePrecoce } from '../cases/esotropie-precoce';
 import {
   ajouterQuestion,
+  ajouterQuestionSynthese,
   ajouterVarianteSynthese,
   appliquerOverrides,
+  criteresOuvertsQuestion,
   overridesCas,
   reinitialiserOverrides,
   retirerQuestion,
+  retirerQuestionSynthese,
+  retirerVarianteBaseSynthese,
   retirerVarianteSynthese,
   verifierMotDePasse,
 } from './admin';
-import { criteresCouvert } from './scoring';
+import { criteresCouvert, evaluerQuestionSynthese } from './scoring';
 
 beforeEach(() => {
   reinitialiserOverrides();
@@ -55,7 +59,7 @@ describe('admin', () => {
     const question = fusionne.synthese.questions.find((q) => q.id === 'signes-pathognomoniques')!;
     expect(question.type).toBe('ouverte');
     if (question.type !== 'ouverte') return;
-    const nml = question.criteres.find((c) => c.id === 'nml')!;
+    const nml = question.criteres!.find((c) => c.id === 'nml')!;
     expect(criteresCouvert('presence de nystagmus latent', [nml])).toHaveLength(1);
   });
 
@@ -63,5 +67,50 @@ describe('admin', () => {
     ajouterVarianteSynthese(esotropiePrecoce.id, 'technique-operatoire', 'geste', 'myotomie');
     retirerVarianteSynthese(esotropiePrecoce.id, 'technique-operatoire', 'geste', 'myotomie');
     expect(overridesCas(esotropiePrecoce.id).syntheseVariantes['technique-operatoire']).toBeUndefined();
+  });
+
+  it('retire une variante de base', () => {
+    retirerVarianteBaseSynthese(esotropiePrecoce.id, 'signes-pathognomoniques', 'nml', 'nml');
+    const fusionne = appliquerOverrides(esotropiePrecoce, overridesCas(esotropiePrecoce.id));
+    const question = fusionne.synthese.questions.find((q) => q.id === 'signes-pathognomoniques')!;
+    if (question.type !== 'ouverte') return;
+    const nml = question.criteres!.find((c) => c.id === 'nml')!;
+    expect(nml.variantes).not.toContain('nml');
+  });
+
+  it('liste les criteres des questions avec alternatives', () => {
+    const question = esotropiePrecoce.synthese.questions.find((q) => q.id === 'technique-operatoire')!;
+    const criteres = criteresOuvertsQuestion(question);
+    expect(criteres.some((c) => c.critereId === 'dose-bilaterale')).toBe(true);
+    expect(criteres.length).toBeGreaterThan(4);
+  });
+
+  it('ajoute une question de synthese', () => {
+    ajouterQuestionSynthese(esotropiePrecoce.id, {
+      type: 'ouverte',
+      question: 'Question admin synthese',
+      poids: 2,
+      explication: 'Explication test',
+      reponseAttendue: 'Reponse test',
+      criteres: [{ id: 'mot-cle', variantes: ['alpha', 'beta'] }],
+      seuil: 1,
+    });
+    const fusionne = appliquerOverrides(esotropiePrecoce, overridesCas(esotropiePrecoce.id));
+    const ajoutee = fusionne.synthese.questions.find((q) => q.question === 'Question admin synthese')!;
+    expect(ajoutee).toBeDefined();
+    const evaluation = evaluerQuestionSynthese(ajoutee, 'reponse avec alpha');
+    expect(evaluation.juste).toBe(true);
+  });
+
+  it('retire une question de synthese ajoutee', () => {
+    const q = ajouterQuestionSynthese(esotropiePrecoce.id, {
+      type: 'ouiNon',
+      question: 'Test oui non',
+      poids: 1,
+      explication: 'Explication',
+      correct: true,
+    });
+    retirerQuestionSynthese(esotropiePrecoce.id, q.id);
+    expect(overridesCas(esotropiePrecoce.id).syntheseQuestions).toHaveLength(0);
   });
 });
