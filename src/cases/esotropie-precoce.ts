@@ -359,16 +359,39 @@ export const esotropiePrecoce: CasClinique = {
     },
 
     tno: {
-      poids: -2,
+      poids: 0,
+      nonContributifSiPresente: true,
+      malusSiPresente: -2,
       resultat: 'Aucune plage perçue en relief.',
       justificationMalus:
-        "L'absence de stéréoscopie est déjà établie par le test de Lang. Quantifier un seuil inexistant ne change ni le diagnostic ni la conduite à tenir.",
+        "Le TNO n'a aucun intérêt devant une esotropie manifeste à grand angle : la stéréoscopie est abolie et quantifier un seuil inexistant ne change ni le diagnostic ni la conduite à tenir.",
     },
     worth: {
-      poids: -2,
+      poids: 2,
+      optionnel: true,
       resultat: 'Perception de deux points seulement.',
-      justificationMalus:
-        'Le Worth ne fait que confirmer une neutralisation déjà prévisible devant un angle de 40 DP avec Lang négatif.',
+      interpretation: {
+        question: 'Que traduit cette perception au test de Worth ?',
+        options: [
+          {
+            id: 'suppression',
+            libelle: 'Suppression de l\'image d\'un œil, sans fusion binoculaire',
+            correct: true,
+          },
+          {
+            id: 'diplopie',
+            libelle: 'Diplopie persistante',
+            correct: false,
+          },
+          {
+            id: 'fusion-normale',
+            libelle: 'Fusion binoculaire normale',
+            correct: false,
+          },
+        ],
+        explication:
+          'Devant une esotropie à grand angle neutralisée depuis l\'enfance, deux points traduisent la suppression sensorielle : c\'est le seul test sensoriel vraiment utile ici, mais il n\'est pas indispensable au diagnostic.',
+      },
     },
     bagolini: {
       poids: -1,
@@ -377,10 +400,31 @@ export const esotropiePrecoce: CasClinique = {
         'Intéressant pour préciser une correspondance rétinienne anormale, mais non essentiel ici : avec un angle large et constant, la neutralisation est acquise.',
     },
     verreRouge: {
-      poids: -2,
+      poids: 2,
+      optionnel: true,
       resultat: 'Un seul point perçu.',
-      justificationMalus:
-        "La recherche de diplopie est sans objet dans un strabisme précoce neutralisé depuis l'enfance.",
+      interpretation: {
+        question: 'Que traduit cette perception au verre rouge ?',
+        options: [
+          {
+            id: 'suppression',
+            libelle: 'Suppression de l\'image d\'un œil, sans diplopie',
+            correct: true,
+          },
+          {
+            id: 'diplopie',
+            libelle: 'Diplopie persistante malgré la déviation',
+            correct: false,
+          },
+          {
+            id: 'fusion-normale',
+            libelle: 'Fusion binoculaire conservée',
+            correct: false,
+          },
+        ],
+        explication:
+          'Un seul point perçu confirme la neutralisation sensorielle installée depuis l\'enfance. Le verre rouge, comme le Worth, est le seul test sensoriel réellement utile ici, sans être indispensable.',
+      },
     },
     bielschowsky: {
       poids: -2,
@@ -433,7 +477,6 @@ export const esotropiePrecoce: CasClinique = {
   },
 
   ordreAttendu: [
-    'tno',
     'motilite',
     'hirschberg',
     'krimsky',
@@ -447,7 +490,7 @@ export const esotropiePrecoce: CasClinique = {
   questionObligatoireEnPremier: 'motif',
 
   commentaireConduiteBilan:
-    'TNO en tête de bilan, puis motilité et mesures ; cover VL avant cover VP ; acuité et réfraction en fin de bilan.',
+    'Motilité et mesures aux reflets en tête de bilan ; cover VL avant cover VP ; acuité et réfraction en fin. Worth ou verre rouge seuls utiles côté sensoriel, sans obligation.',
 
   synthese: {
     questions: [
@@ -564,7 +607,7 @@ export const esotropiePrecoce: CasClinique = {
   compteRenduExpert: [
     "Léa, 16 ans. Strabisme convergent apparu vers 3 mois, correction optique portée depuis, amblyothérapie par occlusion bien suivie dans la petite enfance. Mère porteuse d'un strabisme convergent de naissance.",
     "Correction portée : +4.00 sphérique aux deux yeux. Acuité avec correction OD 10/10 P2, OG 9/10 P2 : pas d'amblyopie résiduelle significative.",
-    'Examen sensoriel : test de Lang négatif, absence de vision stéréoscopique.',
+    'Examen sensoriel : test de Worth — deux points seulement, confirmant la suppression sensorielle.',
     "Motilité : poursuite complète, élévation en adduction bilatérale et marquée par hyperaction des obliques inférieurs, nystagmus manifeste latent léger majoré à l'occlusion.",
     "Reflets : Hirschberg autour de 40 DP, reflet temporalisé sur l'œil dévié. Krimsky concordant, entre 30 et 50 DP, et retrouvé identique sur lumière lointaine.",
     'Occlusion : cover test en VP positif, esotropie alternante sans préférence de fixation, angle total de 35 à 45 DP. Cover test en VL : même angle, donc sans composante accommodative.',

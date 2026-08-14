@@ -163,23 +163,23 @@ describe('bareme', () => {
 
     session().demarrer(esotropiePrecoce, 'evaluation');
     bilanParfait();
-    realiser('worth');
+    realiser('tno');
     const resultat = session().resultat();
 
     expect(resultat.total).toBeLessThan(reference);
-    const ligne = resultat.lignes.find((l) => l.libelle.startsWith('Test de Worth'))!;
+    const ligne = resultat.lignes.find((l) => l.libelle.startsWith('TNO'))!;
     expect(ligne.nature).toBe('malus');
-    expect(ligne.commentaire).toContain('neutralisation');
+    expect(ligne.commentaire).toMatch(/aucun intérêt/i);
   });
 
-  it('retire le bonus de conduite si les epreuves dissociantes precedent le sensoriel', () => {
+  it('retire le bonus de conduite si l ordre des examens essentiels est inverse', () => {
     realiser('coverPres');
-    realiser('tno');
+    realiser('motilite');
     const ligne = session()
       .resultat()
       .lignes.find((l) => l.libelle.startsWith('Conduite du bilan'))!;
     expect(ligne.points).toBe(0);
-    expect(ligne.commentaire).toMatch(/TNO en tête de bilan/i);
+    expect(ligne.commentaire).toMatch(/motilité/i);
   });
 
   it('penalise le Lang realise sur Léa', () => {
@@ -196,6 +196,20 @@ describe('bareme', () => {
     expect(ligne.points).toBe(-2);
     expect(ligne.commentaire).toMatch(/grand angle/i);
     expect(session().resultat().total).toBeLessThan(reference);
+  });
+
+  it('accepte le Worth ou le verre rouge comme examen sensoriel optionnel', () => {
+    bilanParfait();
+    expect(session().resultat().lignes.some((l) => l.libelle.startsWith('Test de Worth'))).toBe(
+      false,
+    );
+
+    session().demarrer(esotropiePrecoce, 'evaluation');
+    bilanParfait();
+    realiser('worth');
+    const lignes = session().resultat().lignes.filter((l) => l.libelle.includes('Worth'));
+    expect(lignes.some((l) => l.nature === 'acquis' && l.points === 2)).toBe(true);
+    expect(session().resultat().pourcentage).toBe(100);
   });
 
   it('retire le bonus anamnese si le motif nest pas demande en premier', () => {
