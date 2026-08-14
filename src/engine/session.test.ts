@@ -212,13 +212,14 @@ describe('bareme', () => {
     expect(session().resultat().pourcentage).toBe(100);
   });
 
-  it('retire le bonus anamnese si le motif nest pas demande en premier', () => {
+  it('penalise d un point si le motif nest pas demande en premier', () => {
     session().poserQuestion('age-apparition');
     session().poserQuestion('motif');
     const ligne = session()
       .resultat()
-      .lignes.find((l) => l.libelle.startsWith("Conduite de l'anamnèse"))!;
-    expect(ligne.points).toBe(0);
+      .lignes.find((l) => l.libelle.startsWith('Motif de consultation'))!;
+    expect(ligne.points).toBe(-1);
+    expect(ligne.nature).toBe('malus');
     expect(ligne.commentaire).toMatch(/motif de consultation/i);
   });
 

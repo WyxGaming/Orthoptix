@@ -17,6 +17,7 @@ export const POINTS_MESURE_JUSTE = 2;
 export const POINTS_INTERPRETATION_JUSTE = 2;
 export const BONUS_CONDUITE_DU_BILAN = 5;
 export const BONUS_CONDUITE_ANAMNESE = 5;
+export const MALUS_MOTIF_PAS_EN_PREMIER = -1;
 
 /** Normalise une chaine pour comparer sans accents ni ponctuation. */
 export function normaliserTexte(texte: string): string {
@@ -420,17 +421,28 @@ export function calculerScore(
     nature: conduite ? 'bonus' : 'manque',
   });
 
-  if (cas.questionObligatoireEnPremier || cas.ordreAnamneseAttendu?.length) {
-    const anamnese = conduiteAnamneseRespectee(cas, journal);
+  if (cas.questionObligatoireEnPremier) {
+    const posees = questionsPosees(journal);
+    if (posees.length > 0 && posees[0]!.id !== cas.questionObligatoireEnPremier) {
+      lignes.push({
+        libelle: 'Motif de consultation non demandé en premier',
+        points: MALUS_MOTIF_PAS_EN_PREMIER,
+        max: 0,
+        commentaire: 'Le motif de consultation doit être demandé en premier.',
+        nature: 'malus',
+      });
+    }
+  }
+
+  if (cas.ordreAnamneseAttendu?.length) {
+    const anamnese = ordreAnamneseRespecte(cas, journal);
     lignes.push({
       libelle: 'Conduite de l\'anamnèse dans l\'ordre',
       points: anamnese ? BONUS_CONDUITE_ANAMNESE : 0,
       max: BONUS_CONDUITE_ANAMNESE,
       commentaire: anamnese
         ? undefined
-        : cas.questionObligatoireEnPremier
-          ? 'Le motif de consultation doit être demandé en premier.'
-          : 'La chronologie des questions d\'anamnèse essentielles n\'a pas été respectée.',
+        : 'La chronologie des questions d\'anamnèse essentielles n\'a pas été respectée.',
       nature: anamnese ? 'bonus' : 'manque',
     });
   }

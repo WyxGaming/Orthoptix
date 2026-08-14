@@ -229,7 +229,7 @@ export type CasClinique = {
    * de l interrogatoire. Seules ces questions comptent ; les autres peuvent s intercaler.
    */
   ordreAnamneseAttendu?: string[];
-  /** Question d anamnese qui doit etre posee en tout premier (les autres libres ensuite). */
+  /** Question d anamnese qui doit etre posee en tout premier (malus si une autre est posee avant). */
   questionObligatoireEnPremier?: string;
   synthese: SyntheseCas;
   /** Compte rendu tel que l'aurait redige un orthoptiste experimente. */

@@ -4,37 +4,25 @@ import { useSession } from '../engine/session';
 import type { QuestionAnamnese } from '../engine/types';
 import { Bouton } from './composants';
 
-function ListeQuestions({
-  questions,
-  questionObligatoireEnPremier,
-}: {
-  questions: QuestionAnamnese[];
-  questionObligatoireEnPremier?: string;
-}) {
+function ListeQuestions({ questions }: { questions: QuestionAnamnese[] }) {
   const poserQuestion = useSession((s) => s.poserQuestion);
   const journal = useSession((s) => s.journal);
   const posees = new Set(journal.filter((a) => a.type === 'question').map((a) => a.id));
-  const motifPose =
-    !questionObligatoireEnPremier || posees.has(questionObligatoireEnPremier);
 
   return (
     <ul className="space-y-1.5">
       {questions.map((q) => {
         const dejaPosee = posees.has(q.id);
-        const verrouillee =
-          !dejaPosee && !motifPose && q.id !== questionObligatoireEnPremier;
         return (
           <li key={q.id}>
             <button
               type="button"
-              disabled={dejaPosee || verrouillee}
+              disabled={dejaPosee}
               onClick={() => poserQuestion(q.id)}
               className={`w-full rounded-md border px-3 py-2 text-left text-sm transition-colors ${
                 dejaPosee
                   ? 'cursor-default border-slate-800 bg-slate-900/40 text-slate-500'
-                  : verrouillee
-                    ? 'cursor-not-allowed border-slate-800/60 text-slate-600'
-                    : 'border-slate-700 text-slate-200 hover:border-sky-600 hover:bg-slate-800'
+                  : 'border-slate-700 text-slate-200 hover:border-sky-600 hover:bg-slate-800'
               }`}
             >
               {q.libelle}
@@ -101,7 +89,6 @@ function EtagereExamens() {
 }
 
 export function PanneauInterrogatoire() {
-  const cas = useSession((s) => s.cas);
   const questions = useSession((s) => s.questionsOrdre);
   const [onglet, setOnglet] = useState<'anamnese' | 'antecedents' | 'examens'>('anamnese');
 
@@ -134,18 +121,8 @@ export function PanneauInterrogatoire() {
       </nav>
 
       <div className="defilement-fin flex-1 overflow-y-auto p-3">
-        {onglet === 'anamnese' && (
-          <ListeQuestions
-            questions={anamnese}
-            questionObligatoireEnPremier={cas.questionObligatoireEnPremier}
-          />
-        )}
-        {onglet === 'antecedents' && (
-          <ListeQuestions
-            questions={antecedents}
-            questionObligatoireEnPremier={cas.questionObligatoireEnPremier}
-          />
-        )}
+        {onglet === 'anamnese' && <ListeQuestions questions={anamnese} />}
+        {onglet === 'antecedents' && <ListeQuestions questions={antecedents} />}
         {onglet === 'examens' && <EtagereExamens />}
       </div>
     </div>
