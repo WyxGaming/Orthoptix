@@ -12,6 +12,14 @@ import { PanneauInterrogatoire } from './ui/PanneauInterrogatoire';
 import { StartScreen } from './ui/StartScreen';
 import { Synthese } from './ui/Synthese';
 
+function PiedDePage() {
+  return (
+    <footer className="shrink-0 border-t border-slate-800/40 py-1.5 text-center text-[11px] text-slate-600">
+      Développé par Simon BARBARAY
+    </footer>
+  );
+}
+
 function Bilan() {
   const cas = useSession((s) => s.cas);
   const mode = useSession((s) => s.mode);
@@ -69,12 +77,15 @@ export function App() {
   const phase = useSession((s) => s.phase);
 
   return (
-    <div className="h-full">
-      {phase === 'accueil' && <StartScreen />}
-      {phase === 'admin' && <AdminPanel />}
-      {phase === 'bilan' && <Bilan />}
-      {phase === 'synthese' && <Synthese />}
-      {phase === 'debriefing' && <Debriefing />}
+    <div className="flex h-full flex-col">
+      <div className="min-h-0 flex-1">
+        {phase === 'accueil' && <StartScreen />}
+        {phase === 'admin' && <AdminPanel />}
+        {phase === 'bilan' && <Bilan />}
+        {phase === 'synthese' && <Synthese />}
+        {phase === 'debriefing' && <Debriefing />}
+      </div>
+      <PiedDePage />
     </div>
   );
 }
