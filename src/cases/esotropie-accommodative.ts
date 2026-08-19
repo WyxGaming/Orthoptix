@@ -259,6 +259,7 @@ export const esotropieAccommodative: CasClinique = {
     upshoot: { OD: 0, OG: 0 },
     dvd: 0,
     kappa: { OD: 0, OG: 0 },
+    boostMotilite: { OD: { gauche: 5 } },
     correction: { OD: { sphere: 5 }, OG: { sphere: 7 } },
     acuite: { OD: '10/10 P2', OG: '10/10 P2' },
   },

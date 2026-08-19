@@ -296,9 +296,13 @@ export const esotropiePrecoce: CasClinique = {
       },
     },
     lang: {
-      poids: 5,
+      poids: 0,
+      nonContributifSiPresente: true,
+      malusSiPresente: -2,
       resultat:
         "Test de Lang négatif : Léa ne reconnaît aucune des figures en relief et ne cherche pas à les saisir.",
+      justificationMalus:
+        "Le Lang n'est pas indiqué devant une esotropie manifeste à grand angle : la stéréoscopie est abolie et l'épreuve n'apporte pas d'argument décisionnel.",
       interpretation: {
         question: 'Que traduit ce résultat ?',
         options: [
@@ -403,16 +407,39 @@ export const esotropiePrecoce: CasClinique = {
     },
 
     tno: {
-      poids: -2,
+      poids: 0,
+      nonContributifSiPresente: true,
+      malusSiPresente: -2,
       resultat: 'Aucune plage perçue en relief.',
       justificationMalus:
-        "L'absence de stéréoscopie est déjà établie par le test de Lang. Quantifier un seuil inexistant ne change ni le diagnostic ni la conduite à tenir.",
+        "Le TNO n'a aucun intérêt devant une esotropie manifeste à grand angle : la stéréoscopie est abolie et quantifier un seuil inexistant ne change ni le diagnostic ni la conduite à tenir.",
     },
     worth: {
-      poids: -2,
+      poids: 2,
+      optionnel: true,
       resultat: 'Perception de deux points seulement.',
-      justificationMalus:
-        'Le Worth ne fait que confirmer une neutralisation déjà prévisible devant un angle de 40 DP avec Lang négatif.',
+      interpretation: {
+        question: 'Que traduit cette perception au test de Worth ?',
+        options: [
+          {
+            id: 'suppression',
+            libelle: 'Suppression de l\'image d\'un œil, sans fusion binoculaire',
+            correct: true,
+          },
+          {
+            id: 'diplopie',
+            libelle: 'Diplopie persistante',
+            correct: false,
+          },
+          {
+            id: 'fusion-normale',
+            libelle: 'Fusion binoculaire normale',
+            correct: false,
+          },
+        ],
+        explication:
+          'Devant une esotropie à grand angle neutralisée depuis l\'enfance, deux points traduisent la suppression sensorielle : c\'est le seul test sensoriel vraiment utile ici, mais il n\'est pas indispensable au diagnostic.',
+      },
     },
     bagolini: {
       poids: -1,
@@ -421,10 +448,31 @@ export const esotropiePrecoce: CasClinique = {
         'Intéressant pour préciser une correspondance rétinienne anormale, mais non essentiel ici : avec un angle large et constant, la neutralisation est acquise.',
     },
     verreRouge: {
-      poids: -2,
+      poids: 2,
+      optionnel: true,
       resultat: 'Un seul point perçu.',
-      justificationMalus:
-        "La recherche de diplopie est sans objet dans un strabisme précoce neutralisé depuis l'enfance.",
+      interpretation: {
+        question: 'Que traduit cette perception au verre rouge ?',
+        options: [
+          {
+            id: 'suppression',
+            libelle: 'Suppression de l\'image d\'un œil, sans diplopie',
+            correct: true,
+          },
+          {
+            id: 'diplopie',
+            libelle: 'Diplopie persistante malgré la déviation',
+            correct: false,
+          },
+          {
+            id: 'fusion-normale',
+            libelle: 'Fusion binoculaire conservée',
+            correct: false,
+          },
+        ],
+        explication:
+          'Un seul point perçu confirme la neutralisation sensorielle installée depuis l\'enfance. Le verre rouge, comme le Worth, est le seul test sensoriel réellement utile ici, sans être indispensable.',
+      },
     },
     bielschowsky: {
       poids: -2,
@@ -477,8 +525,6 @@ export const esotropiePrecoce: CasClinique = {
   },
 
   ordreAttendu: [
-    'lang',
-    'tno',
     'motilite',
     'hirschberg',
     'krimsky',
@@ -489,8 +535,10 @@ export const esotropiePrecoce: CasClinique = {
     'refraction',
   ],
 
+  questionObligatoireEnPremier: 'motif',
+
   commentaireConduiteBilan:
-    'Lang en tête de bilan, puis motilité et mesures ; cover VL avant cover VP ; acuité et réfraction en fin de bilan.',
+    'Motilité et mesures aux reflets en tête de bilan ; cover VL avant cover VP ; acuité et réfraction en fin. Worth ou verre rouge seuls utiles côté sensoriel, sans obligation.',
 
   synthese: {
     questions: [
@@ -550,6 +598,10 @@ export const esotropiePrecoce: CasClinique = {
             id: 'et',
             variantes: ["e't", 'et ', 'esotropie', 'strabisme convergent', 'angle'],
           },
+          {
+            id: 'apparition-precoce',
+            variantes: ['apparition precoce', 'apparition précoce'],
+          },
         ],
         reponseAttendue: "NML, upshoot (hyperaction des obliques inférieurs), E't",
         explication:
@@ -570,36 +622,97 @@ export const esotropiePrecoce: CasClinique = {
         niveau: 'L3',
         question: 'Quelle technique opératoire et sur quel(s) muscle(s) va-t-on opérer ?',
         poids: 4,
-        seuil: 3,
-        criteres: [
+        alternatives: [
           {
-            id: 'geste',
-            // Recul = geste attendu ; « resection » est aussi accepté (formulation fréquente).
-            variantes: ['recul', 'recession', 'resection', 'résection'],
-          },
-          {
-            id: 'muscle',
-            variantes: [
-              'droit medial',
-              'droits mediaux',
-              'medial',
-              'droits internes',
-              'droit interne',
+            id: 'recul-dm-odg',
+            criteres: [
+              {
+                id: 'geste',
+                variantes: ['recul', 'recession', 'récession'],
+              },
+              {
+                id: 'dm',
+                variantes: [
+                  'droit medial',
+                  'droits mediaux',
+                  'dm ',
+                  'droits internes',
+                  'droit interne',
+                ],
+              },
+              {
+                id: 'odg',
+                variantes: [
+                  'odg',
+                  'od et og',
+                  'od og',
+                  'bilateral',
+                  'bilaterale',
+                  'deux yeux',
+                  'aux deux yeux',
+                ],
+              },
             ],
+            seuil: 3,
           },
           {
-            id: 'dose',
-            variantes: ['5 mm', '5mm', 'environ 5'],
-          },
-          {
-            id: 'cote',
-            variantes: ['od', 'og', 'bilateral', 'deux yeux', 'odg', 'bilaterale'],
+            id: 'recul-dm-pli-dl-og',
+            criteres: [
+              {
+                id: 'recul',
+                variantes: ['recul', 'recession', 'récession'],
+              },
+              {
+                id: 'dm-og',
+                variantes: [
+                  'dm og',
+                  'droit medial og',
+                  'droit medial de l og',
+                  'dm de l og',
+                  'droit interne og',
+                ],
+              },
+              {
+                id: 'pli',
+                variantes: ['pli', 'pliage', 'plication', 'resection', 'résection'],
+              },
+              {
+                id: 'dl-og',
+                variantes: [
+                  'dl og',
+                  'droit lateral og',
+                  'droit latéral og',
+                  'dl de l og',
+                  'droit externe og',
+                ],
+              },
+            ],
+            seuil: 4,
           },
         ],
+        bonusCriteres: [
+          {
+            id: 'dose-bilaterale',
+            variantes: ['5 mm', '5mm', '5 millimetres', '5 millimètres', 'environ 5'],
+          },
+          {
+            id: 'dose-unilaterale',
+            variantes: [
+              '5 mm dm / 5 mm dl',
+              '5 mm dm / 5 mm dl og',
+              '5mm dm / 5mm dl og',
+              '5 mm dm et 5 mm dl',
+              '5 mm dm og / 5 mm dl og',
+              '5 mm dm 5 mm dl og',
+              '5 mm dm / 5 mm dl og',
+            ],
+          },
+        ],
+        bonusPoints: 1,
         reponseAttendue:
-          "Recul des droits médiaux OD et OG d'environ 5 mm (loi : 1 mm ≈ 4 DP, soit ~40 DP pour 5 mm bilatéraux).",
+          "Recul des droits médiaux ODG (~5 mm), ou recul du DM OG + pliage du DL OG (5 mm DM / 5 mm DL OG).",
         explication:
-          "Sur une esotropie précoce d'environ 40 DP, le geste de référence est un recul bilatéral des droits médiaux d'environ 5 mm, selon la règle 1 mm ≈ 4 dioptries prismatiques.",
+          "Deux techniques sont possibles : un recul bilatéral des droits médiaux (~5 mm), ou un recul du droit médial OG associé à un pliage du droit latéral OG (5 mm DM / 5 mm DL OG). Préciser la dose apporte un bonus (1 mm ≈ 4 DP).",
       },
     ],
   },
@@ -607,7 +720,7 @@ export const esotropiePrecoce: CasClinique = {
   compteRenduExpert: [
     "Léa, 16 ans. Strabisme convergent apparu vers 3 mois, correction optique portée depuis, amblyothérapie par occlusion bien suivie dans la petite enfance. Mère porteuse d'un strabisme convergent de naissance.",
     "Correction portée : +4.00 sphérique aux deux yeux. Acuité avec correction OD 10/10 P2, OG 9/10 P2 : pas d'amblyopie résiduelle significative.",
-    'Examen sensoriel : test de Lang négatif, absence de vision stéréoscopique.',
+    'Examen sensoriel : test de Worth — deux points seulement, confirmant la suppression sensorielle.',
     "Motilité : poursuite complète, élévation en adduction bilatérale et marquée par hyperaction des obliques inférieurs, nystagmus manifeste latent léger majoré à l'occlusion.",
     "Reflets : Hirschberg autour de 40 DP, reflet temporalisé sur l'œil dévié. Krimsky concordant, entre 30 et 50 DP, et retrouvé identique sur lumière lointaine.",
     'Occlusion : cover test en VP positif, esotropie alternante sans préférence de fixation, angle total de 35 à 45 DP. Cover test en VL : même angle, donc sans composante accommodative.',

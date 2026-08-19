@@ -115,6 +115,14 @@ export type ExamenComplementairePrescrit = {
   essentiel?: boolean;
 };
 
+/** Groupe de criteres : une reponse valide si le seuil est atteint dans ce groupe. */
+export type AlternativeOuverte = {
+  id?: string;
+  criteres: CritereOuvert[];
+  /** Nombre de criteres requis dans ce groupe. Par defaut : tous. */
+  seuil?: number;
+};
+
 /**
  * Question de la synthese diagnostique. QCM, oui/non ou reponse ouverte evaluee
  * par mots-cles (les signes pathognomoniques, la technique chirurgicale…).
@@ -130,9 +138,14 @@ export type QuestionSynthese = {
   | { type: 'ouiNon'; correct: boolean }
   | {
       type: 'ouverte';
-      /** Criteres a retrouver dans la reponse libre. */
-      criteres: CritereOuvert[];
-      /** Nombre de criteres requis pour le score plein. Par defaut : tous. */
+      /** Criteres a retrouver (mode simple). */
+      criteres?: CritereOuvert[];
+      /** Groupes alternatifs : la reponse est valide si l un d eux atteint son seuil. */
+      alternatives?: AlternativeOuverte[];
+      /** Criteres optionnels qui ajoutent un bonus si presents. */
+      bonusCriteres?: CritereOuvert[];
+      bonusPoints?: number;
+      /** Nombre de criteres requis pour le score plein (mode simple). Par defaut : tous. */
       seuil?: number;
       /** Formulation expert, affichee au debriefing. */
       reponseAttendue: string;
@@ -257,6 +270,8 @@ export type CasClinique = {
    * de l interrogatoire. Seules ces questions comptent ; les autres peuvent s intercaler.
    */
   ordreAnamneseAttendu?: string[];
+  /** Question d anamnese qui doit etre posee en tout premier (malus si une autre est posee avant). */
+  questionObligatoireEnPremier?: string;
   synthese: SyntheseCas;
   /** Compte rendu tel que l'aurait redige un orthoptiste experimente. */
   compteRenduExpert: string[];

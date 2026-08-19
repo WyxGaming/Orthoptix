@@ -34,18 +34,22 @@ function reponsesSyntheseParfaites() {
     'type-strabisme': 'esotropie-precoce',
     'signes-pathognomoniques': "NML, upshoot, E't",
     'indication-chirurgicale': 'oui',
-    'technique-operatoire': 'Recul des droits mediaux OD et OG de 5 mm',
+    'technique-operatoire': 'Recul des droits mediaux OD et OG',
   };
 }
 
 function bilanParfait() {
   const { cas, poserQuestion, validerSynthese } = session();
+  if (cas.questionObligatoireEnPremier) {
+    poserQuestion(cas.questionObligatoireEnPremier);
+  }
   for (const q of cas.questions) {
-    if (q.poids > 0) poserQuestion(q.id);
+    if (q.poids > 0 && q.id !== cas.questionObligatoireEnPremier) poserQuestion(q.id);
   }
   for (const id of cas.ordreAttendu) {
     const examen = cas.examens[id];
     if (examen && examen.poids < 0) continue;
+    if (examen?.nonContributifSiPresente) continue;
     realiser(id);
   }
   validerSynthese(reponsesSyntheseParfaites());
@@ -159,23 +163,64 @@ describe('bareme', () => {
 
     session().demarrer(esotropiePrecoce, 'evaluation');
     bilanParfait();
-    realiser('worth');
+    realiser('tno');
     const resultat = session().resultat();
 
     expect(resultat.total).toBeLessThan(reference);
-    const ligne = resultat.lignes.find((l) => l.libelle.startsWith('Test de Worth'))!;
+    const ligne = resultat.lignes.find((l) => l.libelle.startsWith('TNO'))!;
     expect(ligne.nature).toBe('malus');
-    expect(ligne.commentaire).toContain('neutralisation');
+    expect(ligne.commentaire).toMatch(/aucun intérêt/i);
   });
 
-  it('retire le bonus de conduite si les epreuves dissociantes precedent le sensoriel', () => {
+  it('retire le bonus de conduite si l ordre des examens essentiels est inverse', () => {
     realiser('coverPres');
+    realiser('motilite');
+    const ligne = session()
+      .resultat()
+      .lignes.find((l) => l.libelle.startsWith('Conduite du bilan'))!;
+    expect(ligne.points).toBe(0);
+    expect(ligne.commentaire).toMatch(/motilité/i);
+  });
+
+  it('penalise le Lang realise sur Léa', () => {
+    bilanParfait();
+    const reference = session().resultat().total;
+
+    session().demarrer(esotropiePrecoce, 'evaluation');
+    bilanParfait();
     realiser('lang');
     const ligne = session()
       .resultat()
-      .lignes.find((l) => l.libelle.startsWith('Conduite'))!;
-    expect(ligne.points).toBe(0);
-    expect(ligne.commentaire).toMatch(/Lang en tête de bilan/i);
+      .lignes.find((l) => l.libelle.startsWith('Test de Lang'))!;
+    expect(ligne.nature).toBe('malus');
+    expect(ligne.points).toBe(-2);
+    expect(ligne.commentaire).toMatch(/grand angle/i);
+    expect(session().resultat().total).toBeLessThan(reference);
+  });
+
+  it('accepte le Worth ou le verre rouge comme examen sensoriel optionnel', () => {
+    bilanParfait();
+    expect(session().resultat().lignes.some((l) => l.libelle.startsWith('Test de Worth'))).toBe(
+      false,
+    );
+
+    session().demarrer(esotropiePrecoce, 'evaluation');
+    bilanParfait();
+    realiser('worth');
+    const lignes = session().resultat().lignes.filter((l) => l.libelle.includes('Worth'));
+    expect(lignes.some((l) => l.nature === 'acquis' && l.points === 2)).toBe(true);
+    expect(session().resultat().pourcentage).toBe(100);
+  });
+
+  it('penalise d un point si le motif nest pas demande en premier', () => {
+    session().poserQuestion('age-apparition');
+    session().poserQuestion('motif');
+    const ligne = session()
+      .resultat()
+      .lignes.find((l) => l.libelle.startsWith('Motif de consultation'))!;
+    expect(ligne.points).toBe(-1);
+    expect(ligne.nature).toBe('malus');
+    expect(ligne.commentaire).toMatch(/motif de consultation/i);
   });
 
   it('refuse une mesure hors de la fourchette attendue', () => {

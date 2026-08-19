@@ -80,6 +80,11 @@ export type ParametresOculaires = {
   nystagmus?: Nystagmus;
   /** Angle kappa en DP. A zero, le reflet traduit directement l'angle objectif. */
   kappa: Record<Eye, number>;
+  /**
+   * Supplement d azimuth en motilite (degres), par exemple pour corriger une
+   * pseudo-limitation a l abduction sur un regard lateral.
+   */
+  boostMotilite?: Partial<Record<Eye, { gauche?: number; droite?: number }>>;
   correction: Record<Eye, Refraction>;
   acuite: Record<Eye, string>;
   /**
@@ -305,6 +310,10 @@ export function etatOculaire(
       // OD abducte vers les azimuts croissants, OG vers les decroissants.
       azimuthDeg = eye === 'OD' ? Math.min(azimuthDeg, azimuthPrimaire) : Math.max(azimuthDeg, azimuthPrimaire);
     }
+
+    const boost = params.boostMotilite?.[eye];
+    if (boost?.gauche && etat.gaze.azimuthDeg <= -15) azimuthDeg -= boost.gauche;
+    if (boost?.droite && etat.gaze.azimuthDeg >= 15) azimuthDeg += boost.droite;
 
     const elevationDeg =
       mire.elevationDeg + versionVerticaleDeg + prismToDegrees(devVerticaleDp);

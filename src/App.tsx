@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSession } from './engine/session';
 import { CHAMP_ENSEMBLE_DEG, DISTANCE_OBSERVATEUR } from './scene/geometrie';
 import { PatientScene } from './scene/PatientScene';
@@ -24,7 +24,34 @@ function Bilan() {
   const cas = useSession((s) => s.cas);
   const mode = useSession((s) => s.mode);
   const passerALaSynthese = useSession((s) => s.passerALaSynthese);
+  const occlure = useSession((s) => s.occlure);
   const [zoom, setZoom] = useState(false);
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      const cible = event.target;
+      if (
+        cible instanceof HTMLInputElement ||
+        cible instanceof HTMLTextAreaElement ||
+        cible instanceof HTMLSelectElement
+      ) {
+        return;
+      }
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        occlure('OD');
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        occlure('OG');
+      } else if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        occlure('aucune');
+      }
+    };
+
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [occlure]);
 
   return (
     <div className="flex h-full flex-col">
@@ -36,6 +63,9 @@ function Bilan() {
           <p className="text-xs text-slate-500">{cas.patient.motif}</p>
         </div>
         <div className="flex items-center gap-3">
+          <span className="hidden text-xs text-slate-500 sm:inline">
+            Occlusion : ← OD · → OG · ↓ découvrir
+          </span>
           <span className="text-xs uppercase tracking-wider text-slate-500">
             Mode {mode === 'entrainement' ? 'entraînement' : 'évaluation'}
           </span>

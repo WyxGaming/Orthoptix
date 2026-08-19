@@ -18,6 +18,7 @@ export const POINTS_MESURE_JUSTE = 2;
 export const POINTS_INTERPRETATION_JUSTE = 2;
 export const BONUS_CONDUITE_DU_BILAN = 5;
 export const BONUS_CONDUITE_ANAMNESE = 5;
+export const MALUS_MOTIF_PAS_EN_PREMIER = -1;
 
 /** Normalise une chaine pour comparer sans accents ni ponctuation. */
 export function normaliserTexte(texte: string): string {
@@ -53,9 +54,9 @@ export function examensComplementairesDetectes(
 export function evaluerQuestionSynthese(
   question: QuestionSynthese,
   reponse: string | undefined,
-): { points: number; juste: boolean; commentaire?: string } {
+): { points: number; max: number; juste: boolean; commentaire?: string } {
   if (reponse === undefined || reponse.trim() === '') {
-    return { points: 0, juste: false, commentaire: question.explication };
+    return { points: 0, max: question.poids, juste: false, commentaire: question.explication };
   }
 
   if (question.type === 'qcm') {
@@ -63,6 +64,7 @@ export function evaluerQuestionSynthese(
     const juste = reponse === bonne?.id;
     return {
       points: juste ? question.poids : 0,
+      max: question.poids,
       juste,
       commentaire: juste ? undefined : question.explication,
     };
@@ -73,6 +75,7 @@ export function evaluerQuestionSynthese(
     const juste = normaliserTexte(reponse) === attendu;
     return {
       points: juste ? question.poids : 0,
+      max: question.poids,
       juste,
       commentaire: juste ? undefined : question.explication,
     };
@@ -88,6 +91,7 @@ export function evaluerQuestionSynthese(
       : Math.round((question.poids * essentielsTrouves.length) / Math.max(1, seuil));
     return {
       points,
+      max: question.poids,
       juste,
       commentaire: juste
         ? undefined
@@ -95,18 +99,43 @@ export function evaluerQuestionSynthese(
     };
   }
 
-  const trouves = criteresCouvert(reponse, question.criteres);
-  const seuil = question.seuil ?? question.criteres.length;
+  const bonus =
+    question.bonusCriteres?.length &&
+    criteresCouvert(reponse, question.bonusCriteres).length > 0
+      ? (question.bonusPoints ?? 0)
+      : 0;
+  const commentaireEchec = `${question.explication} Attendu : ${question.reponseAttendue}`;
+
+  if (question.alternatives?.length) {
+    let bestRatio = 0;
+    let juste = false;
+    for (const alt of question.alternatives) {
+      const trouves = criteresCouvert(reponse, alt.criteres);
+      const seuil = alt.seuil ?? alt.criteres.length;
+      if (trouves.length >= seuil) juste = true;
+      bestRatio = Math.max(bestRatio, trouves.length / Math.max(1, seuil));
+    }
+    const points = (juste ? question.poids : Math.round((question.poids * bestRatio))) + bonus;
+    return {
+      points,
+      max: question.poids,
+      juste,
+      commentaire: juste ? undefined : commentaireEchec,
+    };
+  }
+
+  const criteres = question.criteres ?? [];
+  const trouves = criteresCouvert(reponse, criteres);
+  const seuil = question.seuil ?? criteres.length;
   const juste = trouves.length >= seuil;
-  const points = juste
-    ? question.poids
-    : Math.round((question.poids * trouves.length) / Math.max(1, seuil));
+  const points =
+    (juste ? question.poids : Math.round((question.poids * trouves.length) / Math.max(1, seuil))) +
+    bonus;
   return {
     points,
+    max: question.poids,
     juste,
-    commentaire: juste
-      ? undefined
-      : `${question.explication} Attendu : ${question.reponseAttendue}`,
+    commentaire: juste ? undefined : commentaireEchec,
   };
 }
 
@@ -275,6 +304,19 @@ export function ordreAnamneseRespecte(cas: CasClinique, journal: ActionJournal[]
   return positions.every((p, i) => i === 0 || p > positions[i - 1]!);
 }
 
+/** Conduite de l anamnese : motif en premier, ou ordre relatif attendu. */
+export function conduiteAnamneseRespectee(cas: CasClinique, journal: ActionJournal[]): boolean {
+  const posees = questionsPosees(journal);
+  if (cas.questionObligatoireEnPremier) {
+    const premiere = posees[0];
+    if (!premiere || premiere.id !== cas.questionObligatoireEnPremier) return false;
+  }
+  if (cas.ordreAnamneseAttendu?.length) {
+    return ordreAnamneseRespecte(cas, journal);
+  }
+  return true;
+}
+
 export function calculerScore(
   cas: CasClinique,
   journal: ActionJournal[],
@@ -418,7 +460,7 @@ export function calculerScore(
     lignes.push({
       libelle: `Synthèse ${index + 1}${niveau} — ${question.question}`,
       points: evaluation.points,
-      max: question.poids,
+      max: evaluation.max,
       commentaire: evaluation.commentaire,
       nature: evaluation.juste ? 'acquis' : 'manque',
     });
@@ -435,6 +477,19 @@ export function calculerScore(
         'Les épreuves dissociantes ont été conduites avant l\'évaluation sensorielle, ce qui peut rompre la binocularité avant de l\'avoir mesurée.',
     nature: conduite ? 'bonus' : 'manque',
   });
+
+  if (cas.questionObligatoireEnPremier) {
+    const posees = questionsPosees(journal);
+    if (posees.length > 0 && posees[0]!.id !== cas.questionObligatoireEnPremier) {
+      lignes.push({
+        libelle: 'Motif de consultation non demandé en premier',
+        points: MALUS_MOTIF_PAS_EN_PREMIER,
+        max: 0,
+        commentaire: 'Le motif de consultation doit être demandé en premier.',
+        nature: 'malus',
+      });
+    }
+  }
 
   if (cas.ordreAnamneseAttendu?.length) {
     const anamnese = ordreAnamneseRespecte(cas, journal);
@@ -456,6 +511,6 @@ export function calculerScore(
     lignes,
     total,
     max,
-    pourcentage: max > 0 ? Math.max(0, Math.round((total / max) * 100)) : 0,
+    pourcentage: max > 0 ? Math.min(100, Math.max(0, Math.round((total / max) * 100))) : 0,
   };
 }
