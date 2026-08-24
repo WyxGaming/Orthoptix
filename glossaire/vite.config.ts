@@ -4,7 +4,7 @@ import { fileURLToPath, URL } from 'node:url';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/Orthoptix/glossaire/',
+  base: process.env.VITE_BASE ?? '/Orthoptix/glossaire/',
   plugins: [react()],
   resolve: {
     alias: {
