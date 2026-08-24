@@ -1,0 +1,29 @@
+name: Deploy glossaire to Vercel
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - 'glossaire/**'
+      - '.github/workflows/deploy-glossaire-vercel.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm run build:glossaire:standalone
+        env:
+          VITE_SUPABASE_URL: https://qbucwgppwtlnjdajflcn.supabase.co
+          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFidWN3Z3Bwd3RsbmpkYWpmbGNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1NDE5NDMsImV4cCI6MjEwMjExNzk0M30.A7FYbI1JqXHv_2KWPW0IBdsnqvWkLVK1Ovo_LbV_peo
+      - uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: glossaire
+          vercel-args: '--prod'
