@@ -1,0 +1,23 @@
+name: Sync glossaire-orthoptie
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - 'glossaire/**'
+      - '.github/workflows/sync-glossaire-orthoptie.yml'
+      - 'scripts/sync-glossaire-orthoptie.mjs'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Push glossaire/ to glossaire-orthoptie
+        env:
+          GLOSSAIRE_SYNC_TOKEN: ${{ secrets.GLOSSAIRE_SYNC_TOKEN }}
+        run: node scripts/sync-glossaire-orthoptie.mjs
