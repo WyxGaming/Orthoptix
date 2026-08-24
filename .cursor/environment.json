@@ -1,0 +1,6 @@
+{
+  "name": "Orthoptix + Glossaire",
+  "repositoryDependencies": [
+    "github.com/WyxGaming/glossaire-orthoptie"
+  ]
+}
