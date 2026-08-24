@@ -18,8 +18,9 @@
     "prepare:rihanna-model": "node scripts/prepare-rihanna-model.mjs",
     "prepare:lancaster-image": "node scripts/prepare-lancaster-image.mjs",
     "build:glossaire": "npm ci --prefix glossaire && npm run build --prefix glossaire",
+    "build:glossaire:pages": "npm ci --prefix glossaire && VITE_BASE=/Orthoptix/glossaire/ npm run build --prefix glossaire",
     "build:glossaire:standalone": "npm ci --prefix glossaire && VITE_BASE=/ npm run build --prefix glossaire",
-    "build:pages:all": "npm run build:pages && npm run build:glossaire && mkdir -p dist/glossaire && cp -r glossaire/dist/* dist/glossaire/"
+    "build:pages:all": "npm run build:pages && npm run build:glossaire:pages && mkdir -p dist/glossaire && cp -r glossaire/dist/* dist/glossaire/"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",

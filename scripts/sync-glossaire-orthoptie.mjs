@@ -58,10 +58,24 @@ for (const name of entries) {
 
 const viteConfigPath = join(target, 'vite.config.ts');
 const viteConfig = readFileSync(viteConfigPath, 'utf8');
-writeFileSync(
-  viteConfigPath,
-  viteConfig.replace(/\s*base:\s*['"][^'"]+['"],?\n/, '\n'),
-);
+const standaloneBase = viteConfig.replace(
+  /base:\s*process\.env\.VITE_BASE\s*\?\?\s*['"][^'"]+['"],?\n/,
+  "  base: '/',\n",
+).replace(/\s*base:\s*['"][^'"]+['"],?\n/, "  base: '/',\n");
+writeFileSync(viteConfigPath, standaloneBase);
+
+const vercelConfigPath = join(target, 'vercel.json');
+if (existsSync(vercelConfigPath)) {
+  const vercelConfig = JSON.parse(readFileSync(vercelConfigPath, 'utf8'));
+  vercelConfig.build = {
+    ...vercelConfig.build,
+    env: {
+      ...vercelConfig.build?.env,
+      VITE_BASE: '/',
+    },
+  };
+  writeFileSync(vercelConfigPath, `${JSON.stringify(vercelConfig, null, 2)}\n`);
+}
 
 execSync('git add -A', { cwd: target, stdio: 'inherit' });
 const status = execSync('git status --porcelain', { cwd: target, encoding: 'utf8' });
