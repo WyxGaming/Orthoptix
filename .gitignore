@@ -17,3 +17,4 @@ public/models/april/scene.gltf
 public/models/april/scene.bin
 public/models/april/textures/*.png
 .vercel
+glossaire/.bolt/
