@@ -32,6 +32,7 @@ import {
   ADSENSE_SLOTS_INLINE,
   MAX_INLINE_ADS,
   adsenseInlineEnabled,
+  pickInlineAdGaps,
 } from "@/lib/adsense";
 
 /* ============================================================
@@ -1181,6 +1182,16 @@ export default function OrthoGlossaire() {
 
   const presentLetters = Object.keys(filteredGrouped).sort();
 
+  const inlineAdByGap = useMemo(() => {
+    if (!adsenseInlineEnabled) return new Map();
+    const placements = pickInlineAdGaps(
+      presentLetters.length - 1,
+      MAX_INLINE_ADS,
+      ADSENSE_SLOTS_INLINE
+    );
+    return new Map(placements.map(({ gapIndex, slot }) => [gapIndex, slot]));
+  }, [presentLetters.length]);
+
   function scrollToLetter(letter) {
     const el = document.getElementById(`og-letter-${letter}`);
     el?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1613,13 +1624,10 @@ export default function OrthoGlossaire() {
                       <TermCard key={t.id} t={t} adminView={false} />
                     ))}
                   </section>
-                  {adsenseInlineEnabled &&
-                    letterIndex < presentLetters.length - 1 &&
-                    letterIndex < MAX_INLINE_ADS &&
-                    ADSENSE_SLOTS_INLINE[letterIndex] && (
+                  {inlineAdByGap.has(letterIndex) && (
                       <AdSenseUnit
                         key={`ad-${letter}-${presentLetters[letterIndex + 1]}`}
-                        slot={ADSENSE_SLOTS_INLINE[letterIndex]}
+                        slot={inlineAdByGap.get(letterIndex)}
                         className="og-ad-inline og-no-print"
                         label={`Publicité entre ${letter} et ${presentLetters[letterIndex + 1]}`}
                       />

@@ -23,6 +23,33 @@ export const adsenseSidebarEnabled = adsenseEnabled && Boolean(ADSENSE_SLOT_SIDE
 export const adsenseInlineEnabled =
   adsenseEnabled && ADSENSE_SLOTS_INLINE.length > 0;
 
+/** Jusqu'à maxAds espacements répartis uniformément (1 pub max par trou). */
+export function pickInlineAdGaps(
+  gapCount: number,
+  maxAds: number,
+  slots: string[]
+): { gapIndex: number; slot: string }[] {
+  if (gapCount <= 0 || slots.length === 0) return [];
+
+  const adCount = Math.min(maxAds, gapCount, slots.length);
+  if (adCount <= 0) return [];
+
+  const gapIndices: number[] = [];
+  if (adCount === 1) {
+    gapIndices.push(Math.floor((gapCount - 1) / 2));
+  } else {
+    for (let i = 0; i < adCount; i++) {
+      gapIndices.push(Math.round((i * (gapCount - 1)) / (adCount - 1)));
+    }
+  }
+
+  const unique = [...new Set(gapIndices)].sort((a, b) => a - b);
+  return unique.map((gapIndex, slotIndex) => ({
+    gapIndex,
+    slot: slots[slotIndex],
+  }));
+}
+
 declare global {
   interface Window {
     adsbygoogle?: unknown[];
