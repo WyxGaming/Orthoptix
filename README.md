@@ -31,21 +31,36 @@ Les globes oculaires cliniques (reflets, cover, prismes) restent générés par 
 Le projet est une app Vite/React prête pour Vercel (`vercel.json` : build `npm run build`,
 sortie `dist`).
 
-### Via le tableau de bord (recommandé)
+### Déploiement automatique (recommandé)
+
+À chaque push sur `master`, **GitHub Actions** déploie automatiquement :
+
+| Site | Workflow | URL |
+|------|----------|-----|
+| Orthoptix (cas cliniques) | `Deploy Orthoptix to Vercel` | https://orthoptix.vercel.app |
+| Glossaire intégré | `Deploy glossaire to Vercel` | si configuré |
+| GitHub Pages | `Deploy to GitHub Pages` | https://wyxgaming.github.io/Orthoptix/ |
+
+**Secrets à ajouter** dans [Orthoptix → Settings → Secrets → Actions](https://github.com/WyxGaming/Orthoptix/settings/secrets/actions) :
+
+| Secret | Description |
+|--------|-------------|
+| `VERCEL_TOKEN` | Token Vercel : [vercel.com/account/tokens](https://vercel.com/account/tokens) |
+| `VERCEL_ORG_ID` | ID équipe/compte : `vercel teams ls` ou onglet General du projet Vercel |
+| `VERCEL_PROJECT_ID` | ID projet Orthoptix (`orthoptix.vercel.app`) |
+| `VERCEL_GLOSSAIRE_PROJECT_ID` | (optionnel) ID projet glossaire si le workflow glossaire est utilisé |
+
+Une fois les secrets configurés, tout merge sur `master` met à jour Vercel en quelques minutes.
+
+### Via le tableau de bord Vercel (alternative)
 
 1. Poussez le dépôt sur GitHub.
-2. Sur [vercel.com/new](https://vercel.com/new), importez le dépôt.
+2. Sur [vercel.com/new](https://vercel.com/new), importez le dépôt `WyxGaming/Orthoptix`.
 3. Laissez les réglages détectés (Framework : Vite, Build : `npm run build`, Output : `dist`).
-4. Deploy — l’URL publique est fournie à la fin.
-
-Chaque push sur `main` / `master` redéploie automatiquement.
+4. Deploy — Vercel redéploie aussi automatiquement à chaque push sur `master` si le dépôt est lié.
 
 **Site à jour (GitHub Pages)** : https://wyxgaming.github.io/Orthoptix/  
 (déploiement automatique via GitHub Actions à chaque push sur `master`)
-
-**Vercel** : si vous utilisez https://orthoptix.vercel.app, vérifiez dans le
-tableau de bord Vercel que le projet est bien lié au dépôt GitHub et à la branche
-`master`, puis lancez un redéploiement manuel si besoin.
 
 ### Via la CLI
 
