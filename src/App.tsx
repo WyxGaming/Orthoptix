@@ -11,15 +11,7 @@ import { PanneauExamen } from './ui/PanneauExamen';
 import { PanneauInterrogatoire } from './ui/PanneauInterrogatoire';
 import { StartScreen } from './ui/StartScreen';
 import { Synthese } from './ui/Synthese';
-
-function PiedDePage() {
-  return (
-    <footer className="shrink-0 border-t border-line bg-surface/60 py-2 text-center text-[11px] text-ink-faint">
-      Développé par Simon BARBARAY
-    </footer>
-  );
-}
-
+import { PiedDePageInstitutionnel } from './ui/PiedDePageInstitutionnel';
 function Bilan() {
   const cas = useSession((s) => s.cas);
   const mode = useSession((s) => s.mode);
@@ -115,7 +107,7 @@ export function App() {
         {phase === 'synthese' && <Synthese />}
         {phase === 'debriefing' && <Debriefing />}
       </div>
-      <PiedDePage />
+      <PiedDePageInstitutionnel />
     </div>
   );
 }

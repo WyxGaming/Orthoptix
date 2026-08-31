@@ -25,6 +25,7 @@ import { readGlossaryCache, writeGlossaryCache } from "@/lib/glossary-cache";
 import FlashcardMode from "@/components/FlashcardMode";
 import QuizMode from "@/components/QuizMode";
 import AbbreviationsLexicon from "@/components/AbbreviationsLexicon";
+import PiedDePageInstitutionnel from "@/components/PiedDePageInstitutionnel";
 import { DEFAULT_ABBREVIATIONS, ABBREVIATION_CATEGORIES } from "@/data/abbreviations";
 
 /* ============================================================
@@ -350,6 +351,61 @@ const STYLES = `
   background: var(--pending);
   border: 1.5px solid var(--surface);
 }
+
+.og-site-footer {
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+  padding: 1.75rem 1rem 2rem;
+  margin-top: 1rem;
+}
+.og-site-footer-inner {
+  max-width: 56rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+}
+.og-partner-logos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+}
+.og-partner-logo-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 3.5rem;
+  max-width: 9.5rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  background: #fff;
+}
+.og-partner-logo {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+.og-site-footer-legal {
+  max-width: 36rem;
+  text-align: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  line-height: 1.55;
+  color: var(--ink-muted);
+}
+.og-site-footer-legal a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.og-site-footer-legal a:hover { color: var(--accent-deep); }
+.og-cc-badge-link { opacity: 0.92; transition: opacity 0.15s ease; }
+.og-cc-badge-link:hover { opacity: 1; }
+.og-cc-badge { height: 2rem; width: auto; }
 
 @media print {
   .og-header, .og-sidebar, .og-no-print, .og-study-nav { display: none !important; }
@@ -1707,6 +1763,8 @@ export default function OrthoGlossaire() {
           )}
         </div>
       )}
+
+      <PiedDePageInstitutionnel />
 
       {showWelcome && (
         <WelcomeModal
