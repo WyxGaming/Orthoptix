@@ -1,4 +1,4 @@
-# Modèle 3D — Rihanna (cas 3)
+# Modèle 3D — Jessica (cas 3)
 
 - **Source** : [Rihanna Head Model](https://sketchfab.com/3d-models/rihanna-head-model-a5c312e6a56d4566af4b848159e8b541) par [oYummi](https://sketchfab.com/oYummi) (CC-BY-4.0)
 - **Fichier servi** : `rihanna.glb`

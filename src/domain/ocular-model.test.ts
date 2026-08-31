@@ -282,21 +282,21 @@ describe('correction ASC/SC et loupes +3', () => {
 });
 
 describe('fixation alternante temporelle', () => {
-  const rihannaFixation: ParametresOculaires = {
+  const jessicaFixation: ParametresOculaires = {
     ...lea,
     fixation: { mode: 'alternante', alternanceTemporelleS: 5 },
   };
 
   it('alterne le fixateur toutes les 5 secondes en position primaire', () => {
-    expect(oeilFixateurEffectif(rihannaFixation, { ...enPositionPrimaire('OD'), tempsS: 0 })).toBe('OD');
-    expect(oeilFixateurEffectif(rihannaFixation, { ...enPositionPrimaire('OD'), tempsS: 4.9 })).toBe('OD');
-    expect(oeilFixateurEffectif(rihannaFixation, { ...enPositionPrimaire('OD'), tempsS: 5 })).toBe('OG');
-    expect(oeilFixateurEffectif(rihannaFixation, { ...enPositionPrimaire('OD'), tempsS: 10 })).toBe('OD');
+    expect(oeilFixateurEffectif(jessicaFixation, { ...enPositionPrimaire('OD'), tempsS: 0 })).toBe('OD');
+    expect(oeilFixateurEffectif(jessicaFixation, { ...enPositionPrimaire('OD'), tempsS: 4.9 })).toBe('OD');
+    expect(oeilFixateurEffectif(jessicaFixation, { ...enPositionPrimaire('OD'), tempsS: 5 })).toBe('OG');
+    expect(oeilFixateurEffectif(jessicaFixation, { ...enPositionPrimaire('OD'), tempsS: 10 })).toBe('OD');
   });
 
   it('priorise le regard lateral sur l alternance temporelle', () => {
     const regardDroite = { ...enPositionPrimaire('OG'), tempsS: 6, gaze: { azimuthDeg: 20, elevationDeg: 0 } };
-    expect(oeilFixateurEffectif(rihannaFixation, regardDroite)).toBe('OD');
+    expect(oeilFixateurEffectif(jessicaFixation, regardDroite)).toBe('OD');
   });
 });
 

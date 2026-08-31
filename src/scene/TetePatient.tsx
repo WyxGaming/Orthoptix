@@ -7,7 +7,7 @@ import { ORBITES_DEFAUT, type PositionsOrbites } from './orbites';
 
 const estOeilModele = (nom: string) => /eye/i.test(nom) && !/eyelash/i.test(nom);
 
-/** Hair cards / barbe : nom de mesh (Rihanna) ou nom de matériau (April « hair »). */
+/** Hair cards / barbe : nom de mesh (Jessica) ou nom de matériau (April « hair »). */
 const estMateriauCheveux = (nomMesh: string, mat: THREE.Material): boolean =>
   /hair/i.test(nomMesh) ||
   /hair/i.test(mat.name ?? '') ||

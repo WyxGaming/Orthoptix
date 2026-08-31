@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Optimise la photo du test de Lancaster pour l'examen Rihanna.
+ * Optimise la photo du test de Lancaster pour l'examen Jessica.
  *
  * Usage :
  *   node scripts/prepare-lancaster-image.mjs [fichier-source]

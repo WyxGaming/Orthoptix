@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { rihanna } from '../cases/rihanna';
+import { jessica } from '../cases/jessica';
 import {
   evaluerQuestionSynthese,
   examensComplementairesDetectes,
 } from './scoring';
 
 describe('examensComplementairesDetectes', () => {
-  const question = rihanna.synthese.questions.find((q) => q.id === 'examens-complementaires');
+  const question = jessica.synthese.questions.find((q) => q.id === 'examens-complementaires');
   if (question?.type !== 'examensComplementaires') {
     throw new Error('Question examens-complementaires introuvable');
   }
@@ -40,8 +40,8 @@ describe('examensComplementairesDetectes', () => {
   });
 });
 
-describe('synthese Rihanna — étiologie et symptômes', () => {
-  const question = rihanna.synthese.questions.find((q) => q.id === 'etiologie-symptomes');
+describe('synthese Jessica — étiologie et symptômes', () => {
+  const question = jessica.synthese.questions.find((q) => q.id === 'etiologie-symptomes');
   if (question?.type !== 'ouverte') {
     throw new Error('Question etiologie-symptomes introuvable');
   }

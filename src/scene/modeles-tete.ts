@@ -54,8 +54,8 @@ export const MODELES_TETE: Record<string, ConfigModeleTete> = {
       licence: 'CC-BY-4.0',
     },
   },
-  /** Cas 3 — Rihanna, 38 ans. */
-  rihanna: {
+  /** Cas 3 — Jessica, 38 ans. */
+  jessica: {
     url: '/models/rihanna_head_model/rihanna.glb',
     hauteurVisageCm: 22,
     decalageFin: [0, 0.55, 1.15],
