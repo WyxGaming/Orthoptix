@@ -27,7 +27,7 @@ export function StartScreen() {
   };
 
   return (
-    <div className="mx-auto flex min-h-full max-w-3xl flex-col justify-center gap-8 p-8 md:p-12">
+    <div className="mx-auto flex max-w-3xl flex-col gap-6 p-6 md:gap-8 md:p-10">
       <header className="space-y-2">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent-deep">Orthoptix</p>
         <h1 className="text-3xl font-light tracking-tight text-ink md:text-4xl">

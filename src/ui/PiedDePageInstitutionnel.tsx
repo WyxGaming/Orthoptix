@@ -23,16 +23,16 @@ export function PiedDePageInstitutionnel() {
   const annee = new Date().getFullYear();
 
   return (
-    <footer className="shrink-0 border-t border-line bg-surface/80 px-4 py-6">
-      <div className="mx-auto flex max-w-5xl flex-col items-center gap-5">
-        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+    <footer className="shrink-0 border-t border-line bg-surface/80 px-3 py-3">
+      <div className="mx-auto flex max-w-5xl flex-col items-center gap-2.5">
+        <div className="flex flex-wrap items-center justify-center gap-2">
           {PARTENAIRES.map(({ fichier, alt, large }) => (
             <div
               key={fichier}
-              className={`flex items-center justify-center rounded-lg border border-line bg-white px-2 py-1.5 ${
+              className={`flex items-center justify-center rounded-md border border-line bg-white px-1.5 py-1 ${
                 large
-                  ? 'h-16 max-w-[12rem] sm:h-20 sm:max-w-[14rem]'
-                  : 'h-14 max-w-[9.5rem] sm:h-16 sm:max-w-[10.5rem]'
+                  ? 'h-11 max-w-[9rem] sm:h-12 sm:max-w-[10rem]'
+                  : 'h-9 max-w-[7rem] sm:h-10 sm:max-w-[8rem]'
               }`}
             >
               <img
@@ -46,40 +46,37 @@ export function PiedDePageInstitutionnel() {
           ))}
         </div>
 
-        <div className="max-w-2xl space-y-2 text-center text-[11px] leading-relaxed text-ink-faint">
-          <p>
-            © {annee} Simon BARBARAY, Maxence RATEAUX et Alice LECLERCQ. Tous droits réservés.
-          </p>
-          <p>
-            Contenu diffusé sous licence{' '}
-            <a
-              href={LICENCE_CC}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-ink-muted underline decoration-line underline-offset-2 hover:text-ink"
-            >
-              Creative Commons Attribution — Pas d&apos;utilisation commerciale — Pas de
-              Modification 4.0 International
-            </a>
-            . Toute reproduction, diffusion ou adaptation sans autorisation est interdite.
-          </p>
+        <div className="flex max-w-3xl flex-col items-center gap-1.5 sm:flex-row sm:gap-3">
+          <div className="text-center text-[10px] leading-snug text-ink-faint sm:text-left">
+            <p>© {annee} Simon BARBARAY, Maxence RATEAUX et Alice LECLERCQ.</p>
+            <p>
+              <a
+                href={LICENCE_CC}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-ink-muted underline decoration-line underline-offset-2 hover:text-ink"
+              >
+                CC BY-NC-ND 4.0
+              </a>
+              {' '}— reproduction interdite sans autorisation.
+            </p>
+          </div>
+          <a
+            href={LICENCE_CC}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Licence Creative Commons BY-NC-ND 4.0"
+            className="shrink-0 opacity-90 transition-opacity hover:opacity-100"
+          >
+            <img
+              src={urlPartenaire('cc-by-nc-nd.png')}
+              alt="Licence CC BY-NC-ND 4.0"
+              className="h-6 w-auto"
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
         </div>
-
-        <a
-          href={LICENCE_CC}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Licence Creative Commons BY-NC-ND 4.0"
-          className="opacity-90 transition-opacity hover:opacity-100"
-        >
-          <img
-            src={urlPartenaire('cc-by-nc-nd.png')}
-            alt="Licence CC BY-NC-ND 4.0"
-            className="h-8 w-auto"
-            loading="lazy"
-            decoding="async"
-          />
-        </a>
       </div>
     </footer>
   );
