@@ -60,43 +60,43 @@ function FormulaireQuestion({
         ))}
       </div>
       <label className="block space-y-1 text-sm">
-        <span className="text-slate-400">Question</span>
+        <span className="text-ink-muted">Question</span>
         <input
           value={libelle}
           onChange={(e) => setLibelle(e.target.value)}
-          className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-sky-500"
+          className="w-full rounded-md border border-line bg-cream-deep px-3 py-2 text-ink outline-none focus:border-accent-deep"
           placeholder="Libellé de la question"
         />
       </label>
       <label className="block space-y-1 text-sm">
-        <span className="text-slate-400">Réponse du patient / des parents</span>
+        <span className="text-ink-muted">Réponse du patient / des parents</span>
         <textarea
           value={reponse}
           onChange={(e) => setReponse(e.target.value)}
           rows={3}
-          className="w-full resize-y rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-sky-500"
+          className="w-full resize-y rounded-md border border-line bg-cream-deep px-3 py-2 text-ink outline-none focus:border-accent-deep"
         />
       </label>
       <div className="flex flex-wrap gap-3">
-        <label className="flex items-center gap-2 text-sm text-slate-400">
+        <label className="flex items-center gap-2 text-sm text-ink-muted">
           Poids
           <input
             type="number"
             value={poids}
             onChange={(e) => setPoids(e.target.value)}
-            className="w-20 rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-slate-100 outline-none focus:border-sky-500"
+            className="w-20 rounded-md border border-line bg-cream-deep px-2 py-1 text-ink outline-none focus:border-accent-deep"
           />
         </label>
-        <span className="self-center text-xs text-slate-600">
+        <span className="self-center text-xs text-ink-faint">
           0 = neutre, positif = essentielle, négatif = pénalisée
         </span>
       </div>
       <label className="block space-y-1 text-sm">
-        <span className="text-slate-400">Commentaire pédagogique (optionnel)</span>
+        <span className="text-ink-muted">Commentaire pédagogique (optionnel)</span>
         <input
           value={commentaire}
           onChange={(e) => setCommentaire(e.target.value)}
-          className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-sky-500"
+          className="w-full rounded-md border border-line bg-cream-deep px-3 py-2 text-ink outline-none focus:border-accent-deep"
         />
       </label>
       <Bouton ton="principal" onClick={soumettre} disabled={!libelle.trim() || !reponse.trim()}>
@@ -202,90 +202,90 @@ function FormulaireQuestionSynthese({
         ))}
       </div>
       <label className="block space-y-1 text-sm">
-        <span className="text-slate-400">Question</span>
+        <span className="text-ink-muted">Question</span>
         <textarea
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           rows={2}
-          className="w-full resize-y rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-sky-500"
+          className="w-full resize-y rounded-md border border-line bg-cream-deep px-3 py-2 text-ink outline-none focus:border-accent-deep"
         />
       </label>
-      <label className="flex items-center gap-2 text-sm text-slate-400">
+      <label className="flex items-center gap-2 text-sm text-ink-muted">
         Poids
         <input
           type="number"
           value={poids}
           onChange={(e) => setPoids(e.target.value)}
-          className="w-20 rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-slate-100 outline-none focus:border-sky-500"
+          className="w-20 rounded-md border border-line bg-cream-deep px-2 py-1 text-ink outline-none focus:border-accent-deep"
         />
       </label>
       {type === 'ouverte' && (
         <>
           <label className="block space-y-1 text-sm">
-            <span className="text-slate-400">Critères et mots acceptés</span>
+            <span className="text-ink-muted">Critères et mots acceptés</span>
             <textarea
               value={criteresTexte}
               onChange={(e) => setCriteresTexte(e.target.value)}
               rows={4}
               placeholder={'nml|nml, nystagmus manifeste latent\nupshoot|upshoot, hyperaction obliques'}
-              className="w-full resize-y rounded-md border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-xs text-slate-100 outline-none focus:border-sky-500"
+              className="w-full resize-y rounded-md border border-line bg-cream-deep px-3 py-2 font-mono text-xs text-ink outline-none focus:border-accent-deep"
             />
-            <span className="text-xs text-slate-600">
+            <span className="text-xs text-ink-faint">
               Une ligne par critère : identifiant | mot1, mot2, mot3
             </span>
           </label>
-          <label className="flex items-center gap-2 text-sm text-slate-400">
+          <label className="flex items-center gap-2 text-sm text-ink-muted">
             Seuil (critères requis)
             <input
               type="number"
               min={1}
               value={seuil}
               onChange={(e) => setSeuil(e.target.value)}
-              className="w-20 rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-slate-100 outline-none focus:border-sky-500"
+              className="w-20 rounded-md border border-line bg-cream-deep px-2 py-1 text-ink outline-none focus:border-accent-deep"
             />
           </label>
           <label className="block space-y-1 text-sm">
-            <span className="text-slate-400">Réponse attendue (débriefing)</span>
+            <span className="text-ink-muted">Réponse attendue (débriefing)</span>
             <input
               value={reponseAttendue}
               onChange={(e) => setReponseAttendue(e.target.value)}
-              className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-sky-500"
+              className="w-full rounded-md border border-line bg-cream-deep px-3 py-2 text-ink outline-none focus:border-accent-deep"
             />
           </label>
         </>
       )}
       {type === 'qcm' && (
         <label className="block space-y-1 text-sm">
-          <span className="text-slate-400">Options QCM</span>
+          <span className="text-ink-muted">Options QCM</span>
           <textarea
             value={optionsQcm}
             onChange={(e) => setOptionsQcm(e.target.value)}
             rows={4}
-            className="w-full resize-y rounded-md border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-xs text-slate-100 outline-none focus:border-sky-500"
+            className="w-full resize-y rounded-md border border-line bg-cream-deep px-3 py-2 font-mono text-xs text-ink outline-none focus:border-accent-deep"
           />
-          <span className="text-xs text-slate-600">
+          <span className="text-xs text-ink-faint">
             Une ligne par option : id | libellé | oui (si correcte) ou non
           </span>
         </label>
       )}
       {type === 'ouiNon' && (
-        <label className="flex items-center gap-2 text-sm text-slate-300">
+        <label className="flex items-center gap-2 text-sm text-ink/80">
           <input
             type="checkbox"
             checked={correctOuiNon}
             onChange={(e) => setCorrectOuiNon(e.target.checked)}
-            className="rounded border-slate-600 bg-slate-950"
+            className="rounded border-line/80 bg-cream-deep"
           />
           La bonne réponse est « Oui »
         </label>
       )}
       <label className="block space-y-1 text-sm">
-        <span className="text-slate-400">Explication (débriefing)</span>
+        <span className="text-ink-muted">Explication (débriefing)</span>
         <textarea
           value={explication}
           onChange={(e) => setExplication(e.target.value)}
           rows={2}
-          className="w-full resize-y rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-sky-500"
+          className="w-full resize-y rounded-md border border-line bg-cream-deep px-3 py-2 text-ink outline-none focus:border-accent-deep"
         />
       </label>
       <Bouton ton="principal" onClick={soumettre} disabled={!question.trim() || !explication.trim()}>
@@ -307,22 +307,22 @@ function ListeQuestionsAdmin({
   void revision;
   const questions = overridesCas(casId).questions;
   if (questions.length === 0) {
-    return <p className="text-sm text-slate-500">Aucune question ajoutée pour ce cas.</p>;
+    return <p className="text-sm text-ink-muted">Aucune question ajoutée pour ce cas.</p>;
   }
   return (
     <ul className="space-y-2">
       {questions.map((q) => (
         <li
           key={q.id}
-          className="flex items-start justify-between gap-3 rounded-md border border-slate-800 bg-slate-950/40 p-3"
+          className="flex items-start justify-between gap-3 rounded-lg border border-line bg-cream-deep/50 p-3"
         >
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <Etiquette>{q.rubrique === 'anamnese' ? 'Anamnèse' : 'Antécédents'}</Etiquette>
-              <span className="font-mono text-[10px] text-slate-600">{q.poids} pt</span>
+              <span className="font-mono text-[10px] text-ink-faint">{q.poids} pt</span>
             </div>
-            <p className="mt-1 text-sm text-slate-200">{q.libelle}</p>
-            <p className="mt-1 text-xs text-slate-400">{q.reponse}</p>
+            <p className="mt-1 text-sm text-ink/90">{q.libelle}</p>
+            <p className="mt-1 text-xs text-ink-muted">{q.reponse}</p>
           </div>
           <Bouton
             ton="danger"
@@ -351,21 +351,21 @@ function ListeQuestionsSyntheseAdmin({
   void revision;
   const questions = overridesCas(casId).syntheseQuestions;
   if (questions.length === 0) {
-    return <p className="text-sm text-slate-500">Aucune question de synthèse ajoutée.</p>;
+    return <p className="text-sm text-ink-muted">Aucune question de synthèse ajoutée.</p>;
   }
   return (
     <ul className="space-y-2">
       {questions.map((q) => (
         <li
           key={q.id}
-          className="flex items-start justify-between gap-3 rounded-md border border-slate-800 bg-slate-950/40 p-3"
+          className="flex items-start justify-between gap-3 rounded-lg border border-line bg-cream-deep/50 p-3"
         >
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <Etiquette>{q.type === 'ouverte' ? 'Ouverte' : q.type === 'qcm' ? 'QCM' : 'Oui/Non'}</Etiquette>
-              <span className="font-mono text-[10px] text-slate-600">{q.poids} pt</span>
+              <span className="font-mono text-[10px] text-ink-faint">{q.poids} pt</span>
             </div>
-            <p className="mt-1 text-sm text-slate-200">{q.question}</p>
+            <p className="mt-1 text-sm text-ink/90">{q.question}</p>
           </div>
           <Bouton
             ton="danger"
@@ -463,13 +463,13 @@ function LigneCritereEditor({
   onSupprimer: () => void;
 }) {
   return (
-    <div className="space-y-1 rounded-md border border-slate-800 bg-slate-950/40 p-2">
+    <div className="space-y-1 rounded-lg border border-line bg-cream-deep/50 p-2">
       <div className="flex gap-2">
         <input
           value={ligne.id}
           onChange={(e) => onChange({ ...ligne, id: e.target.value })}
           placeholder="Identifiant du critère"
-          className="w-40 rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-xs text-slate-100 outline-none focus:border-sky-500"
+          className="w-40 rounded-md border border-line bg-cream-deep px-2 py-1 text-xs text-ink outline-none focus:border-accent-deep"
         />
         <Bouton ton="danger" onClick={onSupprimer}>
           Supprimer
@@ -480,7 +480,7 @@ function LigneCritereEditor({
         onChange={(e) => onChange({ ...ligne, variantes: e.target.value })}
         rows={2}
         placeholder="Mots acceptés, séparés par des virgules"
-        className="w-full resize-y rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-xs text-slate-100 outline-none focus:border-sky-500"
+        className="w-full resize-y rounded-md border border-line bg-cream-deep px-2 py-1 text-xs text-ink outline-none focus:border-accent-deep"
       />
     </div>
   );
@@ -527,9 +527,9 @@ function EditeurCriteresQuestion({
   };
 
   return (
-    <div className="rounded-md border border-slate-800 p-4">
+    <div className="rounded-md border border-line p-4">
       <div className="flex flex-wrap items-start justify-between gap-2">
-        <p className="text-sm font-medium text-slate-200">{question.question}</p>
+        <p className="text-sm font-medium text-ink/90">{question.question}</p>
         <div className="flex gap-2">
           {overrideActif && !adminAjoutee && <Etiquette>Modifié</Etiquette>}
           <Bouton ton="discret" onClick={() => setOuvert(!ouvert)}>
@@ -543,15 +543,15 @@ function EditeurCriteresQuestion({
           {(question.criteres !== undefined || etat.criteres.length > 0) && (
             <div className="space-y-2">
               <div className="flex flex-wrap items-center gap-3">
-                <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <p className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
                   Critères simples
                 </p>
-                <label className="flex items-center gap-2 text-xs text-slate-400">
+                <label className="flex items-center gap-2 text-xs text-ink-muted">
                   Seuil
                   <input
                     value={etat.seuil}
                     onChange={(e) => setEtat({ ...etat, seuil: e.target.value })}
-                    className="w-16 rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-slate-100 outline-none focus:border-sky-500"
+                    className="w-16 rounded-md border border-line bg-cream-deep px-2 py-1 text-ink outline-none focus:border-accent-deep"
                   />
                 </label>
               </div>
@@ -582,11 +582,11 @@ function EditeurCriteresQuestion({
 
           {(question.alternatives !== undefined || etat.alternatives.length > 0) && (
             <div className="space-y-3">
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <p className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
                 Alternatives (réponses possibles)
               </p>
               {etat.alternatives.map((alt, altIndex) => (
-                <div key={`alt-${altIndex}`} className="space-y-2 rounded-md border border-slate-800 p-3">
+                <div key={`alt-${altIndex}`} className="space-y-2 rounded-md border border-line p-3">
                   <div className="flex flex-wrap gap-2">
                     <input
                       value={alt.id}
@@ -596,9 +596,9 @@ function EditeurCriteresQuestion({
                         setEtat({ ...etat, alternatives });
                       }}
                       placeholder="Identifiant de l'option"
-                      className="min-w-0 flex-1 rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-xs text-slate-100 outline-none focus:border-sky-500"
+                      className="min-w-0 flex-1 rounded-md border border-line bg-cream-deep px-2 py-1 text-xs text-ink outline-none focus:border-accent-deep"
                     />
-                    <label className="flex items-center gap-2 text-xs text-slate-400">
+                    <label className="flex items-center gap-2 text-xs text-ink-muted">
                       Seuil
                       <input
                         value={alt.seuil}
@@ -607,7 +607,7 @@ function EditeurCriteresQuestion({
                           alternatives[altIndex] = { ...alt, seuil: e.target.value };
                           setEtat({ ...etat, alternatives });
                         }}
-                        className="w-16 rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-slate-100 outline-none focus:border-sky-500"
+                        className="w-16 rounded-md border border-line bg-cream-deep px-2 py-1 text-ink outline-none focus:border-accent-deep"
                       />
                     </label>
                     <Bouton
@@ -680,15 +680,15 @@ function EditeurCriteresQuestion({
             etat.bonusPoints) && (
             <div className="space-y-2">
               <div className="flex flex-wrap items-center gap-3">
-                <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <p className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
                   Bonus optionnel
                 </p>
-                <label className="flex items-center gap-2 text-xs text-slate-400">
+                <label className="flex items-center gap-2 text-xs text-ink-muted">
                   Points bonus
                   <input
                     value={etat.bonusPoints}
                     onChange={(e) => setEtat({ ...etat, bonusPoints: e.target.value })}
-                    className="w-16 rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-slate-100 outline-none focus:border-sky-500"
+                    className="w-16 rounded-md border border-line bg-cream-deep px-2 py-1 text-ink outline-none focus:border-accent-deep"
                   />
                 </label>
               </div>
@@ -723,7 +723,7 @@ function EditeurCriteresQuestion({
             </div>
           )}
 
-          <div className="flex flex-wrap gap-2 border-t border-slate-800 pt-3">
+          <div className="flex flex-wrap gap-2 border-t border-line pt-3">
             <Bouton ton="principal" onClick={sauvegarder}>
               Enregistrer les critères
             </Bouton>
@@ -753,7 +753,7 @@ function SectionEditionCriteres({
 
   if (ouvertes.length === 0) {
     return (
-      <p className="text-sm text-slate-500">
+      <p className="text-sm text-ink-muted">
         Ce cas n'a pas de question ouverte en synthèse (ajoutez-en une ci-dessus).
       </p>
     );
@@ -794,8 +794,8 @@ export function AdminPanel() {
     <div className="mx-auto max-w-4xl space-y-6 p-8">
       <header className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-100">Administration</h1>
-          <p className="mt-1 text-sm text-slate-400">
+          <h1 className="text-2xl font-semibold text-ink">Administration</h1>
+          <p className="mt-1 text-sm text-ink-muted">
             Enrichir les cas cliniques : questions d'anamnèse, questions de synthèse et mots
             acceptés pour les réponses ouvertes. Les modifications sont enregistrées localement
             dans ce navigateur.
@@ -822,12 +822,12 @@ export function AdminPanel() {
                 onClick={() => setCasId(c.id)}
                 className={`w-full rounded-md border p-3 text-left transition-colors ${
                   c.id === casId
-                    ? 'border-sky-500 bg-sky-950/40'
-                    : 'border-slate-800 hover:border-slate-600'
+                    ? 'border-accent-deep bg-accent-soft'
+                    : 'border-line hover:border-accent/40'
                 }`}
               >
-                <div className="font-medium text-slate-100">{c.titre}</div>
-                <div className="text-sm text-slate-400">
+                <div className="font-medium text-ink">{c.titre}</div>
+                <div className="text-sm text-ink-muted">
                   {ov.questions.length} question(s) anamnèse · {ov.syntheseQuestions.length}{' '}
                   question(s) synthèse
                 </div>
@@ -837,7 +837,7 @@ export function AdminPanel() {
         </div>
       </Carte>
 
-      <nav className="flex gap-2 border-b border-slate-800 pb-2">
+      <nav className="flex gap-2 border-b border-line pb-2">
         {(
           [
             ['anamnese', 'Anamnèse / antécédents'],
@@ -848,10 +848,10 @@ export function AdminPanel() {
             key={cle}
             type="button"
             onClick={() => setOnglet(cle)}
-            className={`rounded-md px-3 py-1.5 text-sm ${
+            className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${
               onglet === cle
-                ? 'bg-sky-950/50 text-sky-200'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-accent-soft text-accent-deep font-medium'
+                : 'ui-tab'
             }`}
           >
             {label}
@@ -881,7 +881,7 @@ export function AdminPanel() {
             </Carte>
           </div>
           <Carte titre="Critères des réponses ouvertes">
-            <p className="mb-4 text-xs text-slate-500">
+            <p className="mb-4 text-xs text-ink-muted">
               Modifiez les critères, les mots acceptés, les seuils et les alternatives pour
               chaque question ouverte. Les changements sont enregistrés localement dans ce
               navigateur.
@@ -920,10 +920,10 @@ export function ModalConnexionAdmin({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4">
-      <div className="w-full max-w-sm rounded-lg border border-slate-700 bg-slate-900 p-5 shadow-xl">
-        <h2 className="text-lg font-medium text-slate-100">Mode administrateur</h2>
-        <p className="mt-1 text-sm text-slate-400">Mot de passe requis.</p>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/20 p-4">
+      <div className="w-full max-w-sm rounded-xl border border-line bg-surface p-5 shadow-lg">
+        <h2 className="text-lg font-medium text-ink">Mode administrateur</h2>
+        <p className="mt-1 text-sm text-ink-muted">Mot de passe requis.</p>
         <input
           type="password"
           value={motDePasse}
@@ -932,10 +932,10 @@ export function ModalConnexionAdmin({
             setErreur(false);
           }}
           onKeyDown={(e) => e.key === 'Enter' && valider()}
-          className="mt-4 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-sky-500"
+          className="mt-4 w-full rounded-md border border-line bg-cream-deep px-3 py-2 text-ink outline-none focus:border-accent-deep"
           autoFocus
         />
-        {erreur && <p className="mt-2 text-sm text-rose-400">Mot de passe incorrect.</p>}
+        {erreur && <p className="mt-2 text-sm text-rose-700">Mot de passe incorrect.</p>}
         <div className="mt-4 flex justify-end gap-2">
           <Bouton ton="discret" onClick={onFermer}>
             Annuler

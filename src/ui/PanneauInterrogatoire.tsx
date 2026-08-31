@@ -21,12 +21,12 @@ function ListeQuestions({ questions }: { questions: QuestionAnamnese[] }) {
               onClick={() => poserQuestion(q.id)}
               className={`w-full rounded-md border px-3 py-2 text-left text-sm transition-colors ${
                 dejaPosee
-                  ? 'cursor-default border-slate-800 bg-slate-900/40 text-slate-500'
-                  : 'border-slate-700 text-slate-200 hover:border-sky-600 hover:bg-slate-800'
+                  ? 'cursor-default border-line bg-cream-deep/60 text-ink-faint'
+                  : 'ui-choice'
               }`}
             >
               {q.libelle}
-              {dejaPosee && <span className="ml-2 text-xs text-slate-600">posée</span>}
+              {dejaPosee && <span className="ml-2 text-xs text-ink-faint">posée</span>}
             </button>
           </li>
         );
@@ -47,7 +47,7 @@ function EtagereExamens() {
         const examens = Object.values(CATALOGUE_EXAMENS).filter((e) => e.rubrique === rubrique);
         return (
           <div key={rubrique}>
-            <h3 className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+            <h3 className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-ink-muted">
               {LIBELLES_RUBRIQUES[rubrique]}
             </h3>
             <div className="flex flex-wrap gap-1.5">
@@ -64,7 +64,7 @@ function EtagereExamens() {
                   >
                     {examen.nom}
                     {count > 0 && (
-                      <span className="ml-1.5 text-emerald-400">
+                      <span className="ml-1.5 text-accent-deep">
                         {repetable && count > 1 ? `✓×${count}` : '✓'}
                       </span>
                     )}
@@ -75,7 +75,7 @@ function EtagereExamens() {
           </div>
         );
       })}
-      <p className="pt-1 text-xs text-slate-500">
+      <p className="pt-1 text-xs text-ink-muted">
         Tous les examens du cabinet sont accessibles à tout moment. À vous de choisir ceux
         qu'appelle ce tableau clinique — et de renoncer aux autres. Passez la souris sur un examen
         pour en relire le principe. {cas.patient.prenom} est coopérant{cas.patient.sexe === 'F' ? 'e' : ''}.
@@ -96,8 +96,8 @@ export function PanneauInterrogatoire() {
   const antecedents = questions.filter((q) => q.rubrique === 'antecedents');
 
   return (
-    <div className="flex h-full min-h-[24rem] flex-col rounded-lg border border-slate-800 bg-slate-900/60">
-      <nav className="flex shrink-0 border-b border-slate-800">
+    <div className="flex h-full min-h-[24rem] flex-col ui-panel">
+      <nav className="flex ui-panel-header shrink-0">
         {(
           [
             ['anamnese', 'Anamnèse'],
@@ -111,8 +111,8 @@ export function PanneauInterrogatoire() {
             onClick={() => setOnglet(cle)}
             className={`flex-1 px-3 py-2 text-xs font-semibold uppercase tracking-wider transition-colors ${
               onglet === cle
-                ? 'border-b-2 border-sky-500 text-sky-300'
-                : 'text-slate-500 hover:text-slate-300'
+                ? 'ui-tab-active'
+                : 'ui-tab'
             }`}
           >
             {libelle}

@@ -14,7 +14,7 @@ import { Synthese } from './ui/Synthese';
 
 function PiedDePage() {
   return (
-    <footer className="shrink-0 border-t border-slate-800/40 py-1.5 text-center text-[11px] text-slate-600">
+    <footer className="shrink-0 border-t border-line bg-surface/60 py-2 text-center text-[11px] text-ink-faint">
       Développé par Simon BARBARAY
     </footer>
   );
@@ -55,18 +55,18 @@ function Bilan() {
 
   return (
     <div className="flex h-full flex-col">
-      <header className="flex shrink-0 items-center justify-between border-b border-slate-800 px-5 py-2.5">
+      <header className="flex shrink-0 items-center justify-between border-b border-line px-5 py-2.5">
         <div>
-          <h1 className="font-semibold text-slate-100">
+          <h1 className="font-semibold text-ink">
             {cas.patient.prenom}, {cas.patient.age} ans
           </h1>
-          <p className="text-xs text-slate-500">{cas.patient.motif}</p>
+          <p className="text-xs text-ink-muted">{cas.patient.motif}</p>
         </div>
         <div className="flex items-center gap-3">
-          <span className="hidden text-xs text-slate-500 sm:inline">
+          <span className="hidden text-xs text-ink-muted sm:inline">
             Occlusion : ← OD · → OG · ↓ découvrir
           </span>
-          <span className="text-xs uppercase tracking-wider text-slate-500">
+          <span className="text-xs uppercase tracking-wider text-ink-muted">
             Mode {mode === 'entrainement' ? 'entraînement' : 'évaluation'}
           </span>
           <Bouton ton="principal" onClick={passerALaSynthese}>
@@ -81,14 +81,14 @@ function Bilan() {
         <div className="flex min-h-0 flex-col gap-4">
           {/* Le canevas et le panneau d examen se partagent la hauteur : sans cela, un
               cover test (prismes + interpretation) pousse « Consigner » hors ecran. */}
-          <div className="relative min-h-[16rem] flex-[3] overflow-hidden rounded-lg border border-slate-800 bg-slate-950">
+          <div className="relative min-h-[16rem] flex-[3] overflow-hidden rounded-xl border border-line bg-canvas">
             <Canvas
               className="!h-full !w-full"
               camera={{ position: [0, 0, DISTANCE_OBSERVATEUR], fov: CHAMP_ENSEMBLE_DEG }}
               shadows={false}
               gl={{ antialias: true, alpha: false }}
             >
-              <color attach="background" args={['#272757']} />
+              <color attach="background" args={['#EDE6DA']} />
               <PatientScene zoomReflets={zoom} />
             </Canvas>
           </div>
