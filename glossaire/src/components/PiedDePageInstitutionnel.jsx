@@ -1,16 +1,4 @@
-const PARTENAIRES = [
-  { fichier: "universite-paris-cite.png", alt: "Université Paris Cité" },
-  { fichier: "ap-hp-centre-upc.png", alt: "AP-HP Centre Université Paris Cité" },
-  { fichier: "centre-borelli.jpg", alt: "Centre Borelli" },
-  { fichier: "necker-enfants-malades.jpg", alt: "Necker — Enfants malades, Hôpital universitaire" },
-  { fichier: "ophtara.jpg", alt: "OPHTARA — Centre de maladies rares en ophtalmologie" },
-];
-
-const LICENCE_CC = "https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr";
-
-function urlPartenaire(fichier) {
-  return `${import.meta.env.BASE_URL}partenaires/${fichier}`;
-}
+import { LICENCE_CC, urlPartenaire } from "@/data/partenaires";
 
 export default function PiedDePageInstitutionnel() {
   const annee = new Date().getFullYear();
@@ -18,20 +6,6 @@ export default function PiedDePageInstitutionnel() {
   return (
     <footer className="og-site-footer">
       <div className="og-site-footer-inner">
-        <div className="og-partner-logos">
-          {PARTENAIRES.map(({ fichier, alt }) => (
-            <div key={fichier} className="og-partner-logo-wrap">
-              <img
-                src={urlPartenaire(fichier)}
-                alt={alt}
-                className="og-partner-logo"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-          ))}
-        </div>
-
         <div className="og-site-footer-legal">
           <p>
             © {annee} Simon BARBARAY, Maxence RATEAUX et Alice LECLERCQ. Tous droits réservés.
