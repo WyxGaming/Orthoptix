@@ -25,7 +25,14 @@ import { readGlossaryCache, writeGlossaryCache } from "@/lib/glossary-cache";
 import FlashcardMode from "@/components/FlashcardMode";
 import QuizMode from "@/components/QuizMode";
 import AbbreviationsLexicon from "@/components/AbbreviationsLexicon";
+import AdSenseUnit from "@/components/AdSenseUnit";
+import AdSenseSidebar from "@/components/AdSenseSidebar";
 import { DEFAULT_ABBREVIATIONS, ABBREVIATION_CATEGORIES } from "@/data/abbreviations";
+import {
+  ADSENSE_SLOTS_INLINE,
+  MAX_INLINE_ADS,
+  adsenseInlineEnabled,
+} from "@/lib/adsense";
 
 /* ============================================================
    CONFIGURATION
@@ -351,8 +358,69 @@ const STYLES = `
   border: 1.5px solid var(--surface);
 }
 
+.og-ad-wrap {
+  overflow: hidden;
+}
+.og-ad-label {
+  margin-bottom: 0.35rem;
+  opacity: 0.65;
+}
+.og-ad-inline {
+  margin: 0.5rem 0 2rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px dashed var(--line);
+  border-radius: 0.75rem;
+  background: var(--surface);
+}
+
+.og-ad-sidebar {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 15;
+  display: none;
+  align-items: stretch;
+  transition: transform 0.25s ease;
+}
+@media (min-width: 1280px) {
+  .og-ad-sidebar { display: flex; }
+}
+.og-ad-sidebar.collapsed {
+  transform: translateY(-50%) translateX(calc(100% - 2rem));
+}
+.og-ad-sidebar-toggle {
+  flex-shrink: 0;
+  width: 2rem;
+  min-height: 5rem;
+  border: 1px solid var(--line);
+  border-right: none;
+  border-radius: 0.5rem 0 0 0.5rem;
+  background: var(--surface);
+  color: var(--ink-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.og-ad-sidebar-toggle:hover {
+  color: var(--ink);
+  background: var(--accent-soft);
+}
+.og-ad-sidebar-panel {
+  width: 160px;
+  padding: 0.5rem;
+  border: 1px solid var(--line);
+  border-right: none;
+  border-radius: 0.75rem 0 0 0.75rem;
+  background: var(--surface);
+  box-shadow: -4px 0 18px rgba(22,48,43,0.06);
+}
+.og-ad-sidebar-unit .og-ad-label { display: none; }
+
 @media print {
-  .og-header, .og-sidebar, .og-no-print, .og-study-nav { display: none !important; }
+  .og-header, .og-sidebar, .og-no-print, .og-study-nav, .og-ad-sidebar, .og-ad-inline { display: none !important; }
   .og-root { background: #fff !important; }
   .og-card { border: 1px solid #ccc !important; box-shadow: none !important; break-inside: avoid; }
   .og-letter-big { font-size: 1.5rem !important; }
@@ -1478,6 +1546,8 @@ export default function OrthoGlossaire() {
       ) : view === "abbreviations" ? (
         <AbbreviationsLexicon abbreviations={abbreviations} categories={ABBREVIATION_CATEGORIES} />
       ) : view === "glossary" ? (
+        <>
+        <AdSenseSidebar />
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex gap-8">
           {/* SIDEBAR A-Z + Categories */}
           <aside className="og-sidebar hidden sm:flex flex-col pr-4 gap-0.5 sticky top-[70px] self-start h-fit og-no-print">
@@ -1529,23 +1599,37 @@ export default function OrthoGlossaire() {
                 <p className="og-eyebrow">Essayez un autre mot, ou proposez-le au glossaire.</p>
               </div>
             ) : (
-              presentLetters.map((letter) => (
-                <section key={letter} id={`og-letter-${letter}`} className="mb-8 scroll-mt-20">
-                  <div className="og-letter-row">
-                    <span className="og-letter-big">{letter}</span>
-                    <span className="og-letter-rule" />
-                    <span className="og-letter-count">
-                      {filteredGrouped[letter].length} terme{filteredGrouped[letter].length > 1 ? "s" : ""}
-                    </span>
-                  </div>
-                  {filteredGrouped[letter].map((t) => (
-                    <TermCard key={t.id} t={t} adminView={false} />
-                  ))}
-                </section>
+              presentLetters.map((letter, letterIndex) => (
+                <div key={letter}>
+                  <section id={`og-letter-${letter}`} className="mb-8 scroll-mt-20">
+                    <div className="og-letter-row">
+                      <span className="og-letter-big">{letter}</span>
+                      <span className="og-letter-rule" />
+                      <span className="og-letter-count">
+                        {filteredGrouped[letter].length} terme{filteredGrouped[letter].length > 1 ? "s" : ""}
+                      </span>
+                    </div>
+                    {filteredGrouped[letter].map((t) => (
+                      <TermCard key={t.id} t={t} adminView={false} />
+                    ))}
+                  </section>
+                  {adsenseInlineEnabled &&
+                    letterIndex < presentLetters.length - 1 &&
+                    letterIndex < MAX_INLINE_ADS &&
+                    ADSENSE_SLOTS_INLINE[letterIndex] && (
+                      <AdSenseUnit
+                        key={`ad-${letter}-${presentLetters[letterIndex + 1]}`}
+                        slot={ADSENSE_SLOTS_INLINE[letterIndex]}
+                        className="og-ad-inline og-no-print"
+                        label={`Publicité entre ${letter} et ${presentLetters[letterIndex + 1]}`}
+                      />
+                    )}
+                </div>
               ))
             )}
           </main>
         </div>
+        </>
       ) : (
         /* ADMIN VIEW */
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
