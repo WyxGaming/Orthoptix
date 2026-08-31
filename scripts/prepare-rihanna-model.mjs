@@ -1,5 +1,5 @@
 /**
- * Prépare rihanna.glb pour le cas Rihanna (modèle Sketchfab « Rihanna Head Model »).
+ * Prépare rihanna.glb pour le cas Jessica (modèle Sketchfab « Rihanna Head Model »).
  *
  * Lit public/models/rihanna_head_model/ (scene.gltf, scene.bin, textures/).
  * Génère des textures procédurales uniquement si des fichiers manquent.

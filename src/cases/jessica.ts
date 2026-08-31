@@ -7,12 +7,12 @@ import type { CasClinique } from '../engine/types';
  * intracrânienne (HTIC) pas encore diagnostiquée. L'étudiant doit orienter vers
  * les examens complémentaires de l'HTIC en synthèse.
  */
-export const rihanna: CasClinique = {
-  id: 'rihanna',
-  titre: 'Rihanna, 38 ans, consulte en urgence pour une vision double',
-  resume: 'Rihanna, 38 ans, consulte en urgence pour une vision double apparue brutalement.',
+export const jessica: CasClinique = {
+  id: 'jessica',
+  titre: 'Jessica, 38 ans, consulte en urgence pour une vision double',
+  resume: 'Jessica, 38 ans, consulte en urgence pour une vision double apparue brutalement.',
   patient: {
-    prenom: 'Rihanna',
+    prenom: 'Jessica',
     age: 38,
     sexe: 'F',
     motif:
@@ -619,7 +619,7 @@ export const rihanna: CasClinique = {
   },
 
   compteRenduExpert: [
-    'Rihanna, 38 ans. Consultation en urgence pour diplopie horizontale brutale depuis trois jours, sans antécédent de strabisme. Céphalées oppressives matinales, acouphène pulsatile, prise de poids récente.',
+    'Jessica, 38 ans. Consultation en urgence pour diplopie horizontale brutale depuis trois jours, sans antécédent de strabisme. Céphalées oppressives matinales, acouphène pulsatile, prise de poids récente.',
     'Acuités visuelles conservées à 10/10 des deux côtés sans correction optique. Réfraction : emmétropie.',
     'Motilité : limitation nette et symétrique de l’abduction des deux yeux, sans atteinte verticale.',
     'Examen sensoriel : diplopie binoculaire horizontale confirmée (verre rouge, Worth).',
