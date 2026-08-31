@@ -37,6 +37,7 @@ const entries = [
   'package.json',
   'package-lock.json',
   'postcss.config.js',
+  'public',
   'scripts',
   'src',
   'supabase',
