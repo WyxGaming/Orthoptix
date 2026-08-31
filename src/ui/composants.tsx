@@ -3,10 +3,10 @@ import type { ReactNode } from 'react';
 type TonBouton = 'principal' | 'neutre' | 'discret' | 'danger';
 
 const STYLES_BOUTON: Record<TonBouton, string> = {
-  principal: 'bg-sky-600 hover:bg-sky-500 text-white border-sky-500',
-  neutre: 'bg-slate-800 hover:bg-slate-700 text-slate-100 border-slate-600',
-  discret: 'bg-transparent hover:bg-slate-800 text-slate-300 border-slate-700',
-  danger: 'bg-rose-900/60 hover:bg-rose-800 text-rose-100 border-rose-700',
+  principal: 'bg-accent-deep hover:bg-accent text-white border-accent-deep',
+  neutre: 'bg-surface hover:bg-cream-deep text-ink border-line',
+  discret: 'bg-transparent hover:bg-cream-deep text-ink-muted border-line',
+  danger: 'bg-blush-soft hover:bg-blush text-rose-800 border-blush',
 };
 
 export function Bouton({
@@ -32,8 +32,8 @@ export function Bouton({
       title={title}
       onClick={onClick}
       disabled={disabled}
-      className={`rounded-md border px-3 py-1.5 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
-        actif ? 'bg-sky-700 border-sky-400 text-white' : STYLES_BOUTON[ton]
+      className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+        actif ? 'border-accent-deep bg-accent-soft text-accent-deep' : STYLES_BOUTON[ton]
       } ${className}`}
     >
       {children}
@@ -56,12 +56,10 @@ export function Carte({
   actions?: ReactNode;
 }) {
   return (
-    <section
-      className={`rounded-lg border border-slate-800 bg-slate-900/60 backdrop-blur ${className}`}
-    >
+    <section className={`ui-panel ${className}`}>
       {titre && (
-        <header className="flex shrink-0 items-center justify-between border-b border-slate-800 px-4 py-2">
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-400">{titre}</h2>
+        <header className="ui-panel-header flex shrink-0 items-center justify-between">
+          <h2 className="ui-panel-title">{titre}</h2>
           {actions}
         </header>
       )}
@@ -72,9 +70,11 @@ export function Carte({
 
 export function Etiquette({ children, ton = 'neutre' }: { children: ReactNode; ton?: 'neutre' | 'positif' | 'negatif' }) {
   const styles = {
-    neutre: 'bg-slate-800 text-slate-300',
-    positif: 'bg-emerald-900/60 text-emerald-200',
-    negatif: 'bg-rose-900/60 text-rose-200',
+    neutre: 'bg-cream-deep text-ink-muted',
+    positif: 'bg-sage-soft text-accent-deep',
+    negatif: 'bg-blush-soft text-rose-700',
   }[ton];
-  return <span className={`rounded px-1.5 py-0.5 text-[11px] font-medium ${styles}`}>{children}</span>;
+  return (
+    <span className={`rounded-md px-2 py-0.5 text-[11px] font-medium ${styles}`}>{children}</span>
+  );
 }

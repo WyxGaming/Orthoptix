@@ -26,7 +26,7 @@ function ChampExamensComplementaires({
         }}
         rows={4}
         placeholder="Ex. fond d'œil, IRM encéphale, ponction lombaire, bilan sanguin…"
-        className="w-full resize-y rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none placeholder:text-slate-600 focus:border-sky-500"
+        className="ui-input w-full resize-y"
       />
       <Bouton
         disabled={!valeur.trim()}
@@ -38,7 +38,7 @@ function ChampExamensComplementaires({
       {consultes && (
         <div className="space-y-2">
           {detectes.length === 0 ? (
-            <p className="rounded-md border border-amber-800/60 bg-amber-950/20 px-3 py-2 text-sm text-amber-200/90">
+            <p className="rounded-md border border-honey-soft bg-honey-soft px-3 py-2 text-sm text-amber-900/80">
               Aucun examen reconnu dans votre prescription. Vérifiez les intitulés (fond d'œil,
               IRM, ponction lombaire, bilan sanguin…).
             </p>
@@ -46,9 +46,9 @@ function ChampExamensComplementaires({
             detectes.map((examen) => (
               <div
                 key={examen.id}
-                className="rounded-md border border-sky-800/50 bg-sky-950/25 px-3 py-2"
+                className="rounded-md border border-accent/30 bg-accent-soft/40 px-3 py-2"
               >
-                <div className="text-xs font-semibold uppercase tracking-wide text-sky-300">
+                <div className="text-xs font-semibold uppercase tracking-wide text-accent-deep">
                   {examen.libelle}
                 </div>
                 {examen.imageResultat ? (
@@ -56,15 +56,15 @@ function ChampExamensComplementaires({
                     <img
                       src={examen.imageResultat}
                       alt={examen.legendeImage ?? examen.libelle}
-                      className="max-h-80 w-full rounded border border-slate-700/80 bg-slate-950 object-contain"
+                      className="max-h-80 w-full rounded border border-line bg-surface object-contain"
                     />
                     {examen.legendeImage && (
-                      <figcaption className="text-xs text-slate-400">{examen.legendeImage}</figcaption>
+                      <figcaption className="text-xs text-ink-muted">{examen.legendeImage}</figcaption>
                     )}
                   </figure>
                 ) : (
                   examen.resultat && (
-                    <p className="mt-1 text-sm text-slate-200">{examen.resultat}</p>
+                    <p className="mt-1 text-sm text-ink/90">{examen.resultat}</p>
                   )
                 )}
               </div>
@@ -101,8 +101,8 @@ function ChampQuestion({
             onClick={() => onChange(option.id)}
             className={`block w-full rounded-md border px-3 py-2 text-left text-sm ${
               valeur === option.id
-                ? 'border-sky-500 bg-sky-950/40 text-slate-100'
-                : 'border-slate-700 text-slate-300 hover:border-slate-500'
+                ? 'ui-choice-selected'
+                : 'ui-choice'
             }`}
           >
             {option.libelle}
@@ -140,7 +140,7 @@ function ChampQuestion({
       onChange={(e) => onChange(e.target.value)}
       rows={3}
       placeholder="Votre réponse…"
-      className="w-full resize-y rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none placeholder:text-slate-600 focus:border-sky-500"
+      className="ui-input w-full resize-y"
     />
   );
 }
@@ -164,9 +164,9 @@ export function Synthese() {
       <Carte titre="Votre bilan" className="w-2/5 self-start">
         <ol className="space-y-2">
           {bilan.map((ligne) => (
-            <li key={ligne.id} className="border-l-2 border-slate-700 pl-2.5">
-              <div className="text-xs font-medium text-sky-300">{ligne.titre}</div>
-              <div className="text-sm text-slate-300">{ligne.contenu}</div>
+            <li key={ligne.id} className="border-l-2 border-accent/40 pl-2.5">
+              <div className="text-xs font-medium text-accent-deep">{ligne.titre}</div>
+              <div className="text-sm text-ink/80">{ligne.contenu}</div>
             </li>
           ))}
         </ol>
@@ -178,8 +178,8 @@ export function Synthese() {
             {cas.synthese.questions.map((question, index) => (
               <div key={question.id} className="space-y-2">
                 <div className="flex items-start justify-between gap-3">
-                  <p className="text-sm text-slate-200">
-                    <span className="mr-2 font-mono text-xs text-slate-500">{index + 1}.</span>
+                  <p className="text-sm text-ink/90">
+                    <span className="mr-2 font-mono text-xs text-ink-muted">{index + 1}.</span>
                     {question.question}
                   </p>
                   {question.niveau && <Etiquette>{question.niveau}</Etiquette>}

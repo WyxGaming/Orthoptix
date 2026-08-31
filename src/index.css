@@ -1,7 +1,26 @@
 @import 'tailwindcss';
 
+@theme {
+  --color-cream: #faf6f0;
+  --color-cream-deep: #f0e8dc;
+  --color-surface: #fffcf8;
+  --color-ink: #3a4a45;
+  --color-ink-muted: #6e827a;
+  --color-ink-faint: #9aada5;
+  --color-line: #e6ddd2;
+  --color-accent: #9cc4b8;
+  --color-accent-deep: #6fa898;
+  --color-accent-soft: #d4e8e1;
+  --color-blush: #e8c4c4;
+  --color-blush-soft: #f5e8e8;
+  --color-sage-soft: #dcebe3;
+  --color-honey-soft: #f5edd8;
+  --color-canvas: #ede6da;
+  --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 html,
@@ -12,16 +31,55 @@ body,
 }
 
 body {
-  background: #272757;
-  color: #e6edf3;
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Barre de defilement discrete pour les panneaux lateraux. */
+/* Barre de défilement discrète pour les panneaux latéraux. */
 .defilement-fin::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 .defilement-fin::-webkit-scrollbar-thumb {
-  background: #30363d;
-  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-line) 80%, var(--color-ink-faint));
+  border-radius: 999px;
+}
+
+@layer components {
+  .ui-panel {
+    @apply rounded-xl border border-line bg-surface/95 shadow-sm;
+  }
+
+  .ui-panel-header {
+    @apply border-b border-line px-4 py-2.5;
+  }
+
+  .ui-panel-title {
+    @apply text-[11px] font-semibold uppercase tracking-wider text-ink-muted;
+  }
+
+  .ui-selected {
+    @apply border-accent-deep bg-accent-soft;
+  }
+
+  .ui-tab-active {
+    @apply border-b-2 border-accent-deep text-accent-deep;
+  }
+
+  .ui-tab {
+    @apply text-ink-muted transition-colors hover:text-ink;
+  }
+
+  .ui-input {
+    @apply rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink outline-none placeholder:text-ink-faint focus:border-accent-deep;
+  }
+
+  .ui-choice {
+    @apply rounded-lg border border-line bg-surface px-3 py-2 text-left text-sm text-ink/90 transition-colors hover:border-accent/50 hover:bg-cream-deep/60;
+  }
+
+  .ui-choice-selected {
+    @apply border-accent-deep bg-accent-soft text-ink;
+  }
 }

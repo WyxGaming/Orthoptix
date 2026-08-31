@@ -27,12 +27,14 @@ export function StartScreen() {
   };
 
   return (
-    <div className="mx-auto flex min-h-full max-w-3xl flex-col justify-center gap-6 p-8">
-      <header>
-        <h1 className="text-3xl font-semibold text-slate-100">Orthoptix</h1>
-        <p className="mt-1 text-slate-400">
-          Bilan orthoptique simulé sur patient virtuel, pour les étudiants en ophtalmologie et en
-          orthoptie.
+    <div className="mx-auto flex min-h-full max-w-3xl flex-col justify-center gap-8 p-8 md:p-12">
+      <header className="space-y-2">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent-deep">Orthoptix</p>
+        <h1 className="text-3xl font-light tracking-tight text-ink md:text-4xl">
+          Bilan orthoptique simulé
+        </h1>
+        <p className="max-w-xl text-base leading-relaxed text-ink-muted">
+          Patient virtuel 3D pour les étudiants en ophtalmologie et en orthoptie.
         </p>
       </header>
 
@@ -43,16 +45,16 @@ export function StartScreen() {
               key={c.id}
               type="button"
               onClick={() => setCasId(c.id)}
-              className={`w-full rounded-md border p-3 text-left transition-colors ${
+              className={`w-full rounded-xl border p-4 text-left transition-colors ${
                 c.id === casId
-                  ? 'border-sky-500 bg-sky-950/40'
-                  : 'border-slate-800 hover:border-slate-600'
+                  ? 'border-accent-deep bg-accent-soft'
+                  : 'border-line hover:border-accent/40'
               }`}
             >
-              <div className="font-medium text-slate-100">{c.titre}</div>
-              <div className="text-sm text-slate-400">{c.resume}</div>
+              <div className="font-medium text-ink">{c.titre}</div>
+              <div className="text-sm text-ink-muted">{c.resume}</div>
               {casCliniquePrepare(c).questions.length > c.questions.length && (
-                <div className="mt-1 text-xs text-sky-500/80">
+                <div className="mt-1 text-xs text-accent-deep/80">
                   +{casCliniquePrepare(c).questions.length - c.questions.length} question(s)
                   administrateur
                 </div>
@@ -67,24 +69,24 @@ export function StartScreen() {
           <button
             type="button"
             onClick={() => setMode('entrainement')}
-            className={`flex-1 rounded-md border p-3 text-left ${
-              mode === 'entrainement' ? 'border-sky-500 bg-sky-950/40' : 'border-slate-800'
+            className={`flex-1 rounded-xl border p-4 text-left ${
+              mode === 'entrainement' ? 'border-accent-deep bg-accent-soft' : 'border-line'
             }`}
           >
-            <div className="font-medium text-slate-100">Entraînement</div>
-            <div className="text-sm text-slate-400">
+            <div className="font-medium text-ink">Entraînement</div>
+            <div className="text-sm text-ink-muted">
               Chaque geste est commenté immédiatement, avec la justification clinique.
             </div>
           </button>
           <button
             type="button"
             onClick={() => setMode('evaluation')}
-            className={`flex-1 rounded-md border p-3 text-left ${
-              mode === 'evaluation' ? 'border-sky-500 bg-sky-950/40' : 'border-slate-800'
+            className={`flex-1 rounded-xl border p-4 text-left ${
+              mode === 'evaluation' ? 'border-accent-deep bg-accent-soft' : 'border-line'
             }`}
           >
-            <div className="font-medium text-slate-100">Évaluation</div>
-            <div className="text-sm text-slate-400">
+            <div className="font-medium text-ink">Évaluation</div>
+            <div className="text-sm text-ink-muted">
               Aucun retour pendant le bilan : score et debriefing complets à la fin.
             </div>
           </button>
@@ -92,7 +94,7 @@ export function StartScreen() {
       </Carte>
 
       <div className="flex items-center justify-between">
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-ink-muted">
           {cas.patient.prenom}, {cas.patient.age} ans. {cas.patient.motif}
         </p>
         <Bouton ton="principal" onClick={() => demarrer(casBase, mode)}>
@@ -101,7 +103,7 @@ export function StartScreen() {
       </div>
 
       {questionsAdmin > 0 && (
-        <p className="text-xs text-sky-500/80">
+        <p className="text-xs text-accent-deep/80">
           Ce cas inclut {questionsAdmin} question(s) ajoutée(s) en administration.
         </p>
       )}
@@ -122,10 +124,10 @@ export function StartScreen() {
       />
 
       {credit3d && (
-        <p className="text-[11px] leading-relaxed text-slate-600">
+        <p className="text-[11px] leading-relaxed text-ink-faint">
           Modèle 3D basé sur{' '}
           <a
-            className="text-slate-500 underline decoration-slate-700 hover:text-slate-400"
+            className="text-ink-muted underline decoration-line hover:text-accent-deep"
             href={credit3d.url}
             target="_blank"
             rel="noreferrer"
@@ -134,7 +136,7 @@ export function StartScreen() {
           </a>{' '}
           par{' '}
           <a
-            className="text-slate-500 underline decoration-slate-700 hover:text-slate-400"
+            className="text-ink-muted underline decoration-line hover:text-accent-deep"
             href={`https://sketchfab.com/${credit3d.auteur}`}
             target="_blank"
             rel="noreferrer"
@@ -143,7 +145,7 @@ export function StartScreen() {
           </a>
           , sous licence{' '}
           <a
-            className="text-slate-500 underline decoration-slate-700 hover:text-slate-400"
+            className="text-ink-muted underline decoration-line hover:text-accent-deep"
             href="https://creativecommons.org/licenses/by/4.0/"
             target="_blank"
             rel="noreferrer"

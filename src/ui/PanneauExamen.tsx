@@ -54,11 +54,11 @@ function SaisieMesuresConditions({
   dejaConsignes: Set<string>;
 }) {
   return (
-    <div className="space-y-2 rounded-md border border-slate-800 bg-slate-950/40 p-3">
-      <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+    <div className="space-y-2 rounded-lg border border-line bg-cream-deep/50 p-3">
+      <p className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
         Mesures en dioptries prismatiques
       </p>
-      <p className="text-xs text-slate-500">
+      <p className="text-xs text-ink-muted">
         Renseignez l angle pour chaque condition. Basculez les conditions ci-dessus pour observer
         le patient, puis saisissez la mesure correspondante.
       </p>
@@ -69,7 +69,7 @@ function SaisieMesuresConditions({
           return (
             <label
               key={cle}
-              className={`flex items-center gap-2 text-sm ${consigne ? 'text-slate-500' : 'text-slate-300'}`}
+              className={`flex items-center gap-2 text-sm ${consigne ? 'text-ink-muted' : 'text-ink/80'}`}
             >
               <span className="min-w-[10rem]">{libelleConditionsMesure(combo)}</span>
               <input
@@ -78,10 +78,10 @@ function SaisieMesuresConditions({
                 inputMode="decimal"
                 placeholder="0"
                 disabled={consigne}
-                className="w-24 rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-right font-mono text-slate-100 outline-none focus:border-sky-500 disabled:opacity-60"
+                className="w-24 ui-input w-24 px-2 py-1 text-right font-mono disabled:opacity-60"
               />
-              <span className="text-slate-500">DP</span>
-              {consigne && <span className="text-xs text-slate-600">consignée</span>}
+              <span className="text-ink-muted">DP</span>
+              {consigne && <span className="text-xs text-ink-faint">consignée</span>}
             </label>
           );
         })}
@@ -102,8 +102,8 @@ function CommandesConditions({
   distance?: 'pres' | 'loin';
 }) {
   return (
-    <div className="space-y-2 rounded-md border border-slate-800 bg-slate-950/40 p-3">
-      <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+    <div className="space-y-2 rounded-lg border border-line bg-cream-deep/50 p-3">
+      <p className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
         Conditions de l'examen
       </p>
       {options.choixCorrection && (
@@ -123,12 +123,12 @@ function CommandesConditions({
         </div>
       )}
       {options.choixLoupesPlus3 && distance !== 'loin' && (
-        <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-300">
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-ink/80">
           <input
             type="checkbox"
             checked={Boolean(conditions.loupesPlus3)}
             onChange={(e) => onChange({ ...conditions, loupesPlus3: e.target.checked })}
-            className="rounded border-slate-600 bg-slate-950"
+            className="rounded border-line/80 bg-cream-deep"
           />
           Loupes +3 en VP (test accommodatif)
         </label>
@@ -189,7 +189,7 @@ function CommandesOcclusion() {
           Découvrir
         </Bouton>
       </div>
-      <p className="text-xs text-slate-500">Raccourcis : ← OD · → OG · ↓ découvrir</p>
+      <p className="text-xs text-ink-muted">Raccourcis : ← OD · → OG · ↓ découvrir</p>
     </div>
   );
 }
@@ -207,9 +207,9 @@ function CommandesPrismes() {
   };
 
   return (
-    <div className="space-y-2 rounded-md border border-slate-800 bg-slate-950/40 p-3">
+    <div className="space-y-2 rounded-lg border border-line bg-cream-deep/50 p-3">
       <div className="flex flex-wrap items-center gap-1.5">
-        <span className="text-xs text-slate-500">Prisme devant</span>
+        <span className="text-xs text-ink-muted">Prisme devant</span>
         {EYES.map((e) => (
           <Bouton key={e} actif={oeil === e} onClick={() => setOeil(e)}>
             {e}
@@ -232,7 +232,7 @@ function CommandesPrismes() {
       </div>
       <div className="flex items-center gap-2">
         <Bouton onClick={() => appliquer(puissance - 2)}>−2</Bouton>
-        <span className="w-24 text-center font-mono text-lg text-slate-100">{puissance} DP</span>
+        <span className="w-24 text-center font-mono text-lg text-ink">{puissance} DP</span>
         <Bouton onClick={() => appliquer(puissance + 2)}>+2</Bouton>
         <Bouton ton="discret" onClick={() => appliquer(0)}>
           Retirer
@@ -295,7 +295,7 @@ export function PanneauExamen({
   if (!examenEnCours) {
     return (
       <Carte titre="Examen en cours" className="h-full">
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-ink-muted">
           Aucun examen en cours. Choisissez un examen dans l'onglet Examens, ou passez à la
           synthèse quand votre bilan vous paraît complet.
         </p>
@@ -431,7 +431,7 @@ export function PanneauExamen({
       }
     >
       <div className="defilement-fin min-h-0 flex-1 space-y-3 overflow-y-auto p-4">
-        <p className="text-sm text-slate-400">{definition.description}</p>
+        <p className="text-sm text-ink-muted">{definition.description}</p>
 
         {optionsExamen && (optionsExamen.choixCorrection || optionsExamen.choixLoupesPlus3) && (
           <CommandesConditions
@@ -443,7 +443,7 @@ export function PanneauExamen({
         )}
 
         {definition.distance === 'loin' && (
-          <p className="rounded-md border border-amber-900/60 bg-amber-950/30 px-3 py-2 text-xs text-amber-200/90">
+          <p className="rounded-lg border border-honey-soft bg-honey-soft px-3 py-2 text-xs text-amber-900/80">
             Mire à 5 mètres, hors du champ visuel.
           </p>
         )}
@@ -468,20 +468,20 @@ export function PanneauExamen({
               !examenNonContributif && (
                 <>
                   {examenEffectif?.imageResultat ? (
-                    <figure className="space-y-2 rounded-md border border-slate-700 bg-slate-950/60 p-3">
+                    <figure className="space-y-2 rounded-md border border-line bg-cream-deep/60 p-3">
                       <img
                         src={examenEffectif.imageResultat}
                         alt={examenEffectif.legendeImage ?? definition.nom}
-                        className="max-h-80 w-full rounded border border-slate-700/80 bg-slate-950 object-contain"
+                        className="max-h-80 w-full rounded border border-line bg-surface object-contain"
                       />
                       {(examenEffectif.resultat || examenEffectif.legendeImage) && (
-                        <figcaption className="text-xs text-slate-400">
+                        <figcaption className="text-xs text-ink-muted">
                           {examenEffectif.resultat || examenEffectif.legendeImage}
                         </figcaption>
                       )}
                     </figure>
                   ) : (
-                    <p className="rounded-md border border-slate-700 bg-slate-950/60 p-3 text-sm text-slate-200">
+                    <p className="rounded-md border border-line bg-cream-deep/60 p-3 text-sm text-ink/90">
                       {examenEffectif?.resultat ?? 'Le test ne montre rien de particulier.'}
                     </p>
                   )}
@@ -501,16 +501,16 @@ export function PanneauExamen({
         )}
 
         {demandeMesure && (
-          <label className="flex items-center gap-2 text-sm text-slate-300">
+          <label className="flex items-center gap-2 text-sm text-ink/80">
             Mesure retenue
             <input
               value={mesure}
               onChange={(e) => setMesure(e.target.value)}
               inputMode="decimal"
               placeholder="0"
-              className="w-24 rounded-md border border-slate-700 bg-slate-950 px-2 py-1 text-right font-mono text-slate-100 outline-none focus:border-sky-500"
+              className="w-24 rounded-md border border-line bg-cream-deep px-2 py-1 text-right font-mono text-ink outline-none focus:border-accent-deep"
             />
-            <span className="text-slate-500">dioptries prismatiques</span>
+            <span className="text-ink-muted">dioptries prismatiques</span>
           </label>
         )}
 
@@ -518,7 +518,7 @@ export function PanneauExamen({
           (definition.interaction !== 'presentation' || resultatRevele) &&
           interpretationsConditionnelles.map((interp) => (
             <fieldset key={interp.id} className="space-y-1.5">
-              <legend className="mb-1 text-sm text-slate-300">{interp.question}</legend>
+              <legend className="mb-1 text-sm text-ink/80">{interp.question}</legend>
               {interp.options.map((option) => (
                 <button
                   key={option.id}
@@ -526,8 +526,8 @@ export function PanneauExamen({
                   onClick={() => choisirInterpretation(interp.id, option.id)}
                   className={`block w-full rounded-md border px-3 py-2 text-left text-sm ${
                     interpretationsActives[interp.id] === option.id
-                      ? 'border-sky-500 bg-sky-950/40 text-slate-100'
-                      : 'border-slate-700 text-slate-300 hover:border-slate-500'
+                      ? 'ui-choice-selected'
+                      : 'ui-choice'
                   }`}
                 >
                   {option.libelle}
@@ -539,7 +539,7 @@ export function PanneauExamen({
         {interpretationsExamenNiveau.length > 0 &&
           interpretationsExamenNiveau.map((interp) => (
             <fieldset key={interp.id} className="space-y-1.5">
-              <legend className="mb-1 text-sm text-slate-300">{interp.question}</legend>
+              <legend className="mb-1 text-sm text-ink/80">{interp.question}</legend>
               {interp.options.map((option) => (
                 <button
                   key={option.id}
@@ -547,8 +547,8 @@ export function PanneauExamen({
                   onClick={() => choisirInterpretation(interp.id, option.id)}
                   className={`block w-full rounded-md border px-3 py-2 text-left text-sm ${
                     interpretationsActives[interp.id] === option.id
-                      ? 'border-sky-500 bg-sky-950/40 text-slate-100'
-                      : 'border-slate-700 text-slate-300 hover:border-slate-500'
+                      ? 'ui-choice-selected'
+                      : 'ui-choice'
                   }`}
                 >
                   {option.libelle}
@@ -558,7 +558,7 @@ export function PanneauExamen({
           ))}
 
         {demandeMesuresMultiples && combosMesure.length > 0 && (
-          <ul className="text-xs text-slate-500">
+          <ul className="text-xs text-ink-muted">
             {combosMesure.map((combo) => {
               const cle = cleConditions(combo);
               const mesureOk = dejaConsignes.has(cle) || mesureValide(mesures[cle] ?? '');
@@ -578,7 +578,7 @@ export function PanneauExamen({
         )}
       </div>
 
-      <div className="flex shrink-0 items-center gap-2 border-t border-slate-800 px-4 py-3">
+      <div className="flex shrink-0 items-center gap-2 border-t border-line px-4 py-3">
         <Bouton ton="principal" onClick={consigner} disabled={!peutConsigner}>
           Consigner l'examen
         </Bouton>
