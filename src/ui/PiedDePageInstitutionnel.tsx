@@ -1,10 +1,16 @@
-const PARTENAIRES = [
-  { fichier: 'universite-paris-cite.png', alt: 'Université Paris Cité' },
+type Partenaire = {
+  fichier: string;
+  alt: string;
+  large?: boolean;
+};
+
+const PARTENAIRES: Partenaire[] = [
+  { fichier: 'universite-paris-cite.png', alt: 'Université Paris Cité', large: true },
   { fichier: 'ap-hp-centre-upc.png', alt: 'AP-HP Centre Université Paris Cité' },
   { fichier: 'centre-borelli.jpg', alt: 'Centre Borelli' },
   { fichier: 'necker-enfants-malades.jpg', alt: 'Necker — Enfants malades, Hôpital universitaire' },
   { fichier: 'ophtara.jpg', alt: 'OPHTARA — Centre de maladies rares en ophtalmologie' },
-] as const;
+];
 
 const LICENCE_CC =
   'https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr';
@@ -20,10 +26,14 @@ export function PiedDePageInstitutionnel() {
     <footer className="shrink-0 border-t border-line bg-surface/80 px-4 py-6">
       <div className="mx-auto flex max-w-5xl flex-col items-center gap-5">
         <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-          {PARTENAIRES.map(({ fichier, alt }) => (
+          {PARTENAIRES.map(({ fichier, alt, large }) => (
             <div
               key={fichier}
-              className="flex h-14 max-w-[9.5rem] items-center justify-center rounded-lg border border-line bg-white px-2 py-1.5 sm:h-16 sm:max-w-[10.5rem]"
+              className={`flex items-center justify-center rounded-lg border border-line bg-white px-2 py-1.5 ${
+                large
+                  ? 'h-16 max-w-[12rem] sm:h-20 sm:max-w-[14rem]'
+                  : 'h-14 max-w-[9.5rem] sm:h-16 sm:max-w-[10.5rem]'
+              }`}
             >
               <img
                 src={urlPartenaire(fichier)}
