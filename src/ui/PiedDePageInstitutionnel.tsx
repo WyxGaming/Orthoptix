@@ -19,11 +19,7 @@ function urlPartenaire(fichier: string) {
   return `${import.meta.env.BASE_URL}partenaires/${fichier}`;
 }
 
-export function PiedDePageInstitutionnel({
-  onOpenMentionsLegales,
-}: {
-  onOpenMentionsLegales?: () => void;
-}) {
+export function PiedDePageInstitutionnel() {
   const annee = new Date().getFullYear();
 
   return (
@@ -63,30 +59,6 @@ export function PiedDePageInstitutionnel({
                 CC BY-NC-ND 4.0
               </a>
               {' '}— reproduction interdite sans autorisation.
-              {onOpenMentionsLegales ? (
-                <>
-                  {' '}
-                  ·{' '}
-                  <button
-                    type="button"
-                    onClick={onOpenMentionsLegales}
-                    className="text-ink-muted underline decoration-line underline-offset-2 hover:text-ink"
-                  >
-                    Mentions légales
-                  </button>
-                </>
-              ) : (
-                <>
-                  {' '}
-                  ·{' '}
-                  <a
-                    href="#mentions-legales"
-                    className="text-ink-muted underline decoration-line underline-offset-2 hover:text-ink"
-                  >
-                    Mentions légales
-                  </a>
-                </>
-              )}
             </p>
           </div>
           <a

@@ -12,8 +12,6 @@ import { PanneauInterrogatoire } from './ui/PanneauInterrogatoire';
 import { StartScreen } from './ui/StartScreen';
 import { Synthese } from './ui/Synthese';
 import { PiedDePageInstitutionnel } from './ui/PiedDePageInstitutionnel';
-import { MentionsLegales } from './ui/MentionsLegales';
-import { useMentionsLegalesRoute } from './hooks/useMentionsLegalesRoute';
 function Bilan() {
   const cas = useSession((s) => s.cas);
   const mode = useSession((s) => s.mode);
@@ -99,24 +97,17 @@ function Bilan() {
 
 export function App() {
   const phase = useSession((s) => s.phase);
-  const { mentionsOpen, openMentions, closeMentions } = useMentionsLegalesRoute();
 
   return (
     <div className="flex h-full flex-col">
       <div className="min-h-0 flex-1 overflow-y-auto">
-        {mentionsOpen ? (
-          <MentionsLegales onRetour={closeMentions} />
-        ) : (
-          <>
-            {phase === 'accueil' && <StartScreen />}
-            {phase === 'admin' && <AdminPanel />}
-            {phase === 'bilan' && <Bilan />}
-            {phase === 'synthese' && <Synthese />}
-            {phase === 'debriefing' && <Debriefing />}
-          </>
-        )}
+        {phase === 'accueil' && <StartScreen />}
+        {phase === 'admin' && <AdminPanel />}
+        {phase === 'bilan' && <Bilan />}
+        {phase === 'synthese' && <Synthese />}
+        {phase === 'debriefing' && <Debriefing />}
       </div>
-      <PiedDePageInstitutionnel onOpenMentionsLegales={openMentions} />
+      <PiedDePageInstitutionnel />
     </div>
   );
 }
