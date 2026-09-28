@@ -28,8 +28,8 @@ export function MentionsLegales({ onRetour }: MentionsLegalesProps) {
           <p>
             Le présent site est un projet pédagogique développé par{' '}
             <strong>Simon Barbaray et Maxence Rateaux</strong>, orthoptistes, rattachés à l&apos;
-            <strong>Hôpital Necker – Enfants Malades</strong> et à la formation en orthoptie de l&apos;Université
-            Paris Cité (anciennement Université Paris Descartes – Paris 5).
+            <strong>Hôpital Necker – Enfants Malades</strong> et à la formation en orthoptie de l&apos;Université Paris
+            Cité.
           </p>
           <p>
             Le site a pour objectif de proposer gratuitement un outil pédagogique consacré au vocabulaire utilisé en
@@ -43,9 +43,9 @@ export function MentionsLegales({ onRetour }: MentionsLegalesProps) {
               <br />
               <a
                 className="text-accent-deep underline decoration-line underline-offset-2 hover:text-ink"
-                href="mailto:Simon.Barbaray@APHP.fr"
+                href="mailto:simon.barbaray@aphp.fr"
               >
-                Simon.Barbaray@APHP.fr
+                ✉️ simon.barbaray@aphp.fr
               </a>
             </li>
             <li>
@@ -53,9 +53,9 @@ export function MentionsLegales({ onRetour }: MentionsLegalesProps) {
               <br />
               <a
                 className="text-accent-deep underline decoration-line underline-offset-2 hover:text-ink"
-                href="mailto:Maxence.Rateaux@APHP.fr"
+                href="mailto:maxence.rateaux@aphp.fr"
               >
-                Maxence.Rateaux@APHP.fr
+                ✉️ maxence.rateaux@aphp.fr
               </a>
             </li>
           </ul>
